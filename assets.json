@@ -65,5 +65,16 @@
         "url": "https://pan.quark.cn/s/c920bf0db0e2"
       }
     ]
+  },
+  {
+    "name": "关卡原型/UE建模神器 - Blockout Tools Plugin",
+    "desc": "Blockout Tools 是一套轻量且极其易于使用的工具，可在虚幻引擎 4 和 5 中快速遮挡/灰盒您的关卡。它由各种原始元素组成，具有方便的缩放和变换控件以及自定义三平面网格材料，可简化关卡设计工作流程。\n\n 如何使用：\n\n在放置模式中选择新的“封锁工具”自定义类别\n只需将遮挡类型拖到您的关卡上即可\n重要提示：这不是一个建模工具，其预期用途是封锁关卡。目前不支持布尔运算。另外，请务必查看“BlockoutToolsPlugin Content/Maps”中的示例地图。\n\n 特征：\n\n使用矢量 3D 小部件或内部详细信息面板轻松扩展元素\n在放置模式下从新的自定义类别超快速访问屏蔽\n不言自明的设置\n可配置的 Blockouts 外观和颜色\n默认遮蔽颜色、网格大小等可以在项目设置中配置\n支持对象旋转的局部对齐三平面网格材料\n世界对齐的三平面网格材料\n支持定制材料\n 轻的\n 15 封锁\n 自定义编辑器图标",
+    "preview": "https://img.cg3da.com/wp-content/uploads/UELTCJ-P312-Blockout-Tools-Plugin-1.webp",
+    "links": [
+      {
+        "name": "百度网盘",
+        "url": "https://pan.baidu.com/wap/init?surl=dg4IHvX5WM7QWuprDIFtyg&pwd=znuk"
+      }
+    ]
   }
 ]
