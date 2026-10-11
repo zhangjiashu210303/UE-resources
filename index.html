@@ -153,11 +153,29 @@
     display:grid;place-items:center;border-bottom:1px solid var(--border)}
   .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block;
     transition:transform .65s cubic-bezier(.2,.8,.3,1)}
-  .card:hover .thumb img{transform:scale(1.07)}
+  .card:hover .thumb img,.card:hover .thumb video{transform:scale(1.07)}
   .thumb.previewable{cursor:zoom-in}
   .thumb .ph{font-size:12.5px;color:#5b6178;letter-spacing:.5px;padding:0 12px;text-align:center}
   .thumb-veil{position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(180deg,transparent 48%,rgba(6,7,10,.75))}
+
+  /* 播放按钮覆盖 */
+  .play-overlay{
+    position:absolute;top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:54px;height:54px;border-radius:50%;
+    display:grid;place-items:center;
+    background:rgba(0,0,0,.55);
+    border:1.5px solid rgba(255,255,255,.32);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    color:#fff;pointer-events:none;
+    transition:transform .3s cubic-bezier(.2,.8,.3,1),background .3s,border-color .3s;
+    box-shadow:0 12px 30px -10px rgba(0,0,0,.9)}
+  .play-overlay svg{width:22px;height:22px;margin-left:3px}
+  .card:hover .play-overlay{
+    transform:translate(-50%,-50%) scale(1.12);
+    background:rgba(124,92,255,.85);
+    border-color:rgba(255,255,255,.55)}
 
   .badge{position:absolute;top:11px;left:11px;font-size:10.5px;font-weight:700;letter-spacing:.7px;
     padding:4px 9px;border-radius:7px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.15);
@@ -392,7 +410,6 @@
 
   <section class="list-section" id="listEl">
     <div class="list-inner">
-
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="pill" id="count">共 <b>—</b> 项</div>
@@ -406,9 +423,7 @@
           <button class="btn primary" id="allBtn" disabled>全部下载</button>
         </div>
       </div>
-
       <div class="grid" id="grid"></div>
-
     </div>
   </section>
 
@@ -424,40 +439,32 @@
       </div>
       <button class="modal-x" id="editClose">✕</button>
     </div>
-
     <div class="modal-body">
       <div class="field">
         <label>名称 <span class="hint">必填</span></label>
         <input id="fName" placeholder="例如：T_Rock_Cliff_01.png">
       </div>
-
       <div class="field">
         <label>描述 <span class="hint">可选，显示在名称下方</span></label>
         <textarea id="fDesc" placeholder="例如：岩石悬崖漫反射贴图，2K 分辨率，含法线"></textarea>
       </div>
-
       <div class="field">
         <label>保存目录 <span class="hint">可选</span></label>
         <input id="fDir" placeholder="例如：/Game/Textures/Terrain">
       </div>
-
       <div class="field">
         <label>预览媒体 <span class="hint">可选，图片或视频地址</span></label>
         <input id="fPreview" placeholder="https://... 或 data:image/...">
       </div>
-
       <div class="section-label">
         <span>下载链接 <span class="hint">可添加多个</span></span>
       </div>
-
       <div id="linkBox"></div>
-
       <button type="button" class="add-link" id="addLinkBtn">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         添加链接
       </button>
     </div>
-
     <div class="modal-foot">
       <button class="btn" id="editCancel">取消</button>
       <button class="btn primary" id="genBtn">生成 JSON</button>
@@ -475,14 +482,12 @@
       </div>
       <button class="modal-x" id="resultClose">✕</button>
     </div>
-
     <div class="modal-body">
       <div class="result-tip">
         打开 <b>assets.json</b>，把下面这段粘贴到 <b>[</b> 和 <b>]</b> 之间（多个条目用逗号隔开），保存后提交即可。
       </div>
       <textarea class="result-ta" id="resultBox" readonly spellcheck="false"></textarea>
     </div>
-
     <div class="modal-foot">
       <button class="btn" id="resultDone">关闭</button>
       <button class="btn primary" id="copyBtn">复制 JSON</button>
@@ -526,8 +531,6 @@
 (function () {
   'use strict';
 
-  /* ============ 配置 ============ */
-  /* 会依次尝试这些文件名，找到第一个可用的就用 */
   var JSON_CANDIDATES = [
     './assets.json',
     './Assets.json',
@@ -585,18 +588,18 @@
   var DESC_KEYS = ['desc','description','intro','summary','note','remark','描述','简介','说明','备注'];
   var DIR_KEYS  = ['downloadDir','download_dir','downloadPath','dir','directory','folder','path','savePath','outDir','outputDir','目录','下载目录','保存目录','路径'];
   var PREVIEW_KEYS = ['preview','previewUrl','cover','poster','thumbnail','thumb','封面','预览','预览图','缩略图'];
+  var PREVIEW_TYPE_KEYS = ['previewType','mediaType','type','预览类型'];
   var URL_KEYS  = ['url','downloadUrl','download_url','src','source','href','link','image','img','picture','pic','video','videoUrl','file','地址','下载地址','链接','图片','视频'];
   var MIRROR_KEYS = ['url2','link2','download2','mirror','backup','备用地址','下载地址二','链接二','备用链接'];
 
   var IMG_EXT = { png:1,jpg:1,jpeg:1,gif:1,webp:1,bmp:1,svg:1,avif:1,tga:1,exr:1,hdr:1,psd:1,ico:1 };
-  var VID_EXT = { mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,ogv:1,wmv:1,flv:1 };
+  var VID_EXT = { mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,ogv:1,wmv:1,flv:1,m3u8:1 };
   var DL_EXT = { zip:1,rar:1,'7z':1,tar:1,gz:1,bz2:1,xz:1,
     png:1,jpg:1,jpeg:1,gif:1,webp:1,bmp:1,svg:1,psd:1,
     mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,
     pdf:1,txt:1,json:1,fbx:1,obj:1,blend:1,max:1,
     uasset:1,umap:1,upk:1,exe:1,dmg:1,apk:1,iso:1,bin:1 };
 
-  /* ============ 状态 ============ */
   var items = [];
   var filtered = [];
   var loadedPos = 0;
@@ -606,11 +609,9 @@
   var animating = false;
   var lastDiag = [];
 
-  /* ============ DOM ============ */
   var $ = function (id) { return document.getElementById(id); };
 
   var heroEl   = $('heroEl');
-  var heroBadge= $('heroBadge');
   var listEl   = $('listEl');
   var gridEl   = $('grid');
   var countEl  = $('count');
@@ -779,6 +780,7 @@
     var desc = pick(raw, DESC_KEYS);
     var dir  = pick(raw, DIR_KEYS);
 
+    /* 预览媒体 */
     var previewUrl = pick(raw, PREVIEW_KEYS) || '';
     if (!previewUrl) {
       var lv = raw.video || raw.videoUrl || '';
@@ -788,8 +790,16 @@
     }
     previewUrl = String(previewUrl || '').trim();
 
-    var links = [];
+    /* 允许 JSON 里明确指定预览类型：previewType: "video" / "image" */
+    var explicitType = pick(raw, PREVIEW_TYPE_KEYS);
+    var previewType;
+    if (explicitType === 'video' || explicitType === 'image') {
+      previewType = explicitType;
+    } else {
+      previewType = guessMediaType(previewUrl);
+    }
 
+    var links = [];
     if (Array.isArray(raw.links)) {
       for (var i = 0; i < raw.links.length; i++) {
         var L = raw.links[i];
@@ -841,7 +851,7 @@
       desc: desc ? String(desc) : '',
       dir: dir ? String(dir) : '',
       preview: previewUrl,
-      previewType: guessMediaType(previewUrl),
+      previewType: previewType,
       links: finalLinks
     };
   }
@@ -943,10 +953,8 @@
     return { name: name, downloadDir: dir, url: cv.toDataURL('image/jpeg', 0.85) };
   }
 
-  /* ============ 加载 JSON：多候选 + 详细诊断 ============ */
-
+  /* ============ 加载 JSON ============ */
   function tryFetchOne(url) {
-    /* 加时间戳参数绕过 CDN 缓存 */
     var bust = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now();
     return fetch(bust, { cache: 'no-store', credentials: 'same-origin' })
       .then(function (res) {
@@ -955,14 +963,9 @@
         return res.text();
       })
       .then(function (text) {
-        /* 去掉 UTF-8 BOM */
         text = text.replace(/^\uFEFF/, '').replace(/^\s+/, '');
         if (!text) throw new Error('内容为空');
-
-        /* GitHub Pages 404 页面会返回 HTML */
-        if (text.charAt(0) === '<') {
-          throw new Error('返回的是 HTML 页面，不是 JSON');
-        }
+        if (text.charAt(0) === '<') throw new Error('返回的是 HTML 页面，不是 JSON');
 
         var data;
         try { data = JSON.parse(text); }
@@ -985,7 +988,6 @@
       if (Array.isArray(data.files)) return data.files;
       if (Array.isArray(data.images)) return data.images;
       if (Array.isArray(data.data)) return data.data;
-      /* 单个对象也当一条 */
       if (data.name || data.url || data.links) return [data];
     }
     return null;
@@ -994,11 +996,8 @@
   function loadJSON() {
     var diag = [];
     var i = 0;
-
     function next() {
-      if (i >= JSON_CANDIDATES.length) {
-        return Promise.resolve({ ok: false, diag: diag });
-      }
+      if (i >= JSON_CANDIDATES.length) return Promise.resolve({ ok: false, diag: diag });
       var url = JSON_CANDIDATES[i++];
       return tryFetchOne(url).then(function (list) {
         diag.push({ url: url, status: 'ok', msg: '成功，共 ' + list.length + ' 条' });
@@ -1041,10 +1040,8 @@
           onLoaded(false, r.url);
           return;
         }
-        lastDiag = r.diag;
       }
       lastDiag = r.diag;
-      /* 全都失败 → 预览模式 */
       items = makePreviewItems().map(normalize);
       onLoaded(true, null);
     }).catch(function (e) {
@@ -1083,7 +1080,6 @@
     }
   }
 
-  /* ============ 诊断弹窗 ============ */
   function showDiag() {
     var html = '';
     for (var i = 0; i < lastDiag.length; i++) {
@@ -1160,6 +1156,124 @@
     countEl.innerHTML = txt;
   }
 
+  /* ============ 视频缩略图（第一帧 + 播放按钮） ============ */
+  function buildVideoThumb(thumb, url) {
+    var v = document.createElement('video');
+    v.muted = true;
+    v.playsInline = true;
+    v.preload = 'auto';
+    v.controls = false;
+    v.loop = false;
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    v.setAttribute('muted', '');
+    v.setAttribute('disablepictureinpicture', '');
+    v.src = url;
+
+    var firstFrameDone = false;
+    var failed = false;
+
+    function seekToFirstFrame() {
+      if (firstFrameDone) return;
+      firstFrameDone = true;
+      try {
+        /* 跳到 0.05 秒，绝大多数编码的第一帧是可解码的 */
+        v.currentTime = 0.05;
+      } catch (e) {
+        /* Safari 老版本可能报错，忽略 */
+      }
+    }
+
+    /* 元数据加载后立刻 seek */
+    v.addEventListener('loadedmetadata', function () {
+      /* 如果时长小于 0.05 秒，就直接用 0 */
+      var dur = v.duration;
+      if (isFinite(dur) && dur > 0 && dur < 0.1) {
+        try { v.currentTime = 0; } catch (e) {}
+        firstFrameDone = true;
+      } else {
+        seekToFirstFrame();
+      }
+    });
+
+    v.addEventListener('loadeddata', function () {
+      /* 已经可以渲染帧了 */
+      if (v.readyState >= 2) {
+        if (!firstFrameDone) seekToFirstFrame();
+      }
+    });
+
+    v.addEventListener('canplay', function () {
+      if (!firstFrameDone) seekToFirstFrame();
+    });
+
+    /* 3 秒后如果还没渲染出画面，认为加载失败 */
+    var timer = setTimeout(function () {
+      if (failed) return;
+      if (v.readyState < 2) {
+        failed = true;
+        try { v.remove(); } catch (e) {}
+        var ph = document.createElement('span');
+        ph.className = 'ph';
+        ph.textContent = '视频加载超时';
+        thumb.appendChild(ph);
+        thumb.classList.remove('previewable');
+        thumb.style.cursor = 'default';
+        var ov = thumb.querySelector('.play-overlay');
+        if (ov) ov.remove();
+      }
+    }, 3000);
+
+    v.addEventListener('error', function () {
+      if (failed) return;
+      failed = true;
+      clearTimeout(timer);
+      try { v.remove(); } catch (e) {}
+      var ph = document.createElement('span');
+      ph.className = 'ph';
+      ph.textContent = '视频预览不可用';
+      thumb.appendChild(ph);
+      thumb.classList.remove('previewable');
+      thumb.style.cursor = 'default';
+      var ov = thumb.querySelector('.play-overlay');
+      if (ov) ov.remove();
+    });
+
+    thumb.appendChild(v);
+    thumb.classList.add('previewable');
+
+    /* 播放按钮覆盖层 */
+    var playIcon = document.createElement('div');
+    playIcon.className = 'play-overlay';
+    playIcon.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+        '<path d="M8 5v14l11-7z"/>' +
+      '</svg>';
+    thumb.appendChild(playIcon);
+
+    thumb.appendChild(makeVeil());
+  }
+
+  function buildImageThumb(thumb, url) {
+    var img = document.createElement('img');
+    img.alt = '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.src = url;
+    img.addEventListener('error', function () {
+      img.remove();
+      var ph = document.createElement('span');
+      ph.className = 'ph';
+      ph.textContent = '图片预览不可用';
+      thumb.appendChild(ph);
+      thumb.classList.remove('previewable');
+      thumb.style.cursor = 'default';
+    });
+    thumb.appendChild(img);
+    thumb.classList.add('previewable');
+    thumb.appendChild(makeVeil());
+  }
+
   function buildCard(item, idx, order) {
     var card = document.createElement('article');
     card.className = 'card';
@@ -1172,38 +1286,15 @@
     var thumb = document.createElement('div');
     thumb.className = 'thumb';
 
-    if (item.previewType === 'image') {
-      var img = document.createElement('img');
-      img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
-      img.src = item.preview;
-      img.addEventListener('error', function () {
-        img.remove();
-        var ph = document.createElement('span');
-        ph.className = 'ph'; ph.textContent = '预览不可用';
-        thumb.appendChild(ph);
-        thumb.classList.remove('previewable'); thumb.style.cursor = 'default';
-      });
-      thumb.appendChild(img);
-      thumb.classList.add('previewable');
-      thumb.appendChild(makeVeil());
-    } else if (item.previewType === 'video') {
-      var v = document.createElement('video');
-      v.muted = true; v.preload = 'metadata'; v.src = item.preview;
-      v.addEventListener('error', function () {
-        v.remove();
-        var ph2 = document.createElement('span');
-        ph2.className = 'ph'; ph2.textContent = '预览不可用';
-        thumb.appendChild(ph2);
-        thumb.classList.remove('previewable'); thumb.style.cursor = 'default';
-      });
-      thumb.appendChild(v);
-      thumb.classList.add('previewable');
-      thumb.appendChild(makeVeil());
+    if (item.previewType === 'video' && item.preview) {
+      buildVideoThumb(thumb, item.preview);
+    } else if (item.previewType === 'image' && item.preview) {
+      buildImageThumb(thumb, item.preview);
     } else {
-      var ph3 = document.createElement('span');
-      ph3.className = 'ph';
-      ph3.textContent = panName ? panName + ' 分享' : '暂无预览';
-      thumb.appendChild(ph3);
+      var ph = document.createElement('span');
+      ph.className = 'ph';
+      ph.textContent = panName ? panName + ' 分享' : '暂无预览';
+      thumb.appendChild(ph);
     }
 
     var badge = document.createElement('span');
@@ -1380,27 +1471,59 @@
     toast(msg, fail ? 'error' : 'success', 5000);
   }
 
-  /* ============ 预览 ============ */
+  /* ============ 预览（灯箱） ============ */
   function openLightbox(item) {
     if (!item || !item.preview) return;
     if (item.previewType !== 'image' && item.previewType !== 'video') return;
+
     lbBody.innerHTML = '';
+
     if (item.previewType === 'video') {
       var v = document.createElement('video');
-      v.src = item.preview; v.controls = true; v.autoplay = true;
+      v.src = item.preview;
+      v.controls = true;
+      v.autoplay = true;
+      v.playsInline = true;
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+      v.style.maxWidth = '88vw';
+      v.style.maxHeight = '76vh';
+      v.addEventListener('error', function () {
+        lbBody.innerHTML = '';
+        var err = document.createElement('div');
+        err.style.cssText = 'padding:40px;color:#8b90a4;font-size:14px;text-align:center';
+        err.textContent = '视频无法播放，请检查链接或格式';
+        lbBody.appendChild(err);
+      });
       lbBody.appendChild(v);
     } else {
       var img = document.createElement('img');
-      img.src = item.preview; img.alt = '';
+      img.src = item.preview;
+      img.alt = '';
+      img.addEventListener('error', function () {
+        lbBody.innerHTML = '';
+        var err = document.createElement('div');
+        err.style.cssText = 'padding:40px;color:#8b90a4;font-size:14px;text-align:center';
+        err.textContent = '图片无法加载';
+        lbBody.appendChild(err);
+      });
       lbBody.appendChild(img);
     }
+
     var nm = item.name || '预览';
     lbCap.innerHTML = '<b>' + esc(nm) + '</b>' + esc(item.desc || item.dir || '');
     lightbox.classList.add('on');
   }
   function closeLightbox() {
     lightbox.classList.remove('on');
-    setTimeout(function () { lbBody.innerHTML = ''; }, 300);
+    setTimeout(function () {
+      /* 关闭灯箱时停止视频播放 */
+      var vids = lbBody.querySelectorAll('video');
+      for (var i = 0; i < vids.length; i++) {
+        try { vids[i].pause(); vids[i].src = ''; } catch (e) {}
+      }
+      lbBody.innerHTML = '';
+    }, 300);
   }
 
   /* ============ 表单 ============ */
@@ -1455,7 +1578,14 @@
     var out = { name: name };
     var desc = fDesc.value.trim(); if (desc) out.desc = desc;
     var dir = fDir.value.trim(); if (dir) out.downloadDir = dir;
-    var prev = fPreview.value.trim(); if (prev) out.preview = prev;
+    var prev = fPreview.value.trim();
+    if (prev) {
+      out.preview = prev;
+      /* 如果预览是视频，明确写出类型，便于准确识别 */
+      var t = guessMediaType(prev);
+      if (t === 'video') out.previewType = 'video';
+      else if (t === 'image') out.previewType = 'image';
+    }
     out.links = links;
 
     resultBox.value = JSON.stringify(out, null, 2);
