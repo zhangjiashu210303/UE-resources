@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>资源下载中心</title>
 <style>
   :root{
@@ -16,28 +16,39 @@
     --ok:#22d3a5;
     --err:#ff5f6d;
     --radius:18px;
+    --anim:.68s;
+    --ease:cubic-bezier(.65,0,.35,1);
   }
 
   *{box-sizing:border-box}
   [hidden]{display:none !important}
 
-  html{scroll-behavior:smooth}
-  body{
+  html,body{
     margin:0;
+    padding:0;
+    height:100%;
+    overflow:hidden;
     background:var(--bg);
     color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
+    overscroll-behavior:none;
   }
 
   /* ============================================
-     主界面：渐变色彩 + 极光光斑
+     舞台：两个全屏页叠加
      ============================================ */
-  .hero{
+  .stage{
     position:fixed;
     inset:0;
-    z-index:1;
+    overflow:hidden;
+  }
+
+  /* ---------- 主界面 ---------- */
+  .hero{
+    position:absolute;
+    inset:0;
+    z-index:2;
     overflow:hidden;
     display:flex;
     flex-direction:column;
@@ -47,12 +58,13 @@
       radial-gradient(ellipse 90% 70% at 50% 108%, rgba(248,87,166,.22), transparent 65%),
       radial-gradient(ellipse 60% 50% at 8% 88%, rgba(34,211,165,.16), transparent 60%),
       linear-gradient(165deg, #0a0b14 0%, #0e0a1c 38%, #0a0e18 72%, #06070a 100%);
-    transition:transform .85s cubic-bezier(.65,0,.35,1), opacity .5s ease;
+    transform:translateY(0);
+    transition:transform var(--anim) var(--ease), opacity .45s ease;
+    will-change:transform;
   }
-  .hero.gone{
+  .hero.up{
     transform:translateY(-100%);
-    opacity:0;
-    pointer-events:none;
+    opacity:.25;
   }
 
   .aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none}
@@ -76,7 +88,6 @@
     mask-image:radial-gradient(ellipse 78% 62% at 50% 40%,#000 15%,transparent 78%);
   }
 
-  /* 顶栏 */
   .topbar{
     position:relative;z-index:10;
     display:flex;align-items:center;justify-content:space-between;gap:20px;
@@ -116,7 +127,6 @@
   .btn.primary:hover{box-shadow:0 18px 42px -14px rgba(124,92,255,1)}
   .btn svg{width:15px;height:15px;flex:none}
 
-  /* 主界面中央内容 */
   .hero-center{
     position:relative;z-index:5;
     flex:1;
@@ -162,11 +172,11 @@
     color:var(--muted);
   }
 
-  /* 下滑提示 */
   .hero-scroll{
     display:inline-flex;flex-direction:column;align-items:center;gap:10px;
     font-size:11px;color:#5f6577;letter-spacing:2px;text-transform:uppercase;
     animation:heroFloat 2.8s ease-in-out infinite;
+    pointer-events:none;
   }
   .hero-scroll .chev{
     width:36px;height:36px;border-radius:50%;
@@ -177,18 +187,22 @@
   .hero-scroll svg{width:17px;height:17px;opacity:.8}
   @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 
-  /* ============================================
-     列表区
-     ============================================ */
+  /* ---------- 列表页 ---------- */
   .list-section{
-    position:relative;
-    z-index:2;
-    margin-top:100vh;
-    min-height:100vh;
+    position:absolute;
+    inset:0;
+    z-index:1;
+    overflow-y:auto;
+    overflow-x:hidden;
     background:var(--bg);
-    border-radius:36px 36px 0 0;
-    box-shadow:0 -50px 100px -40px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.07);
-    padding:40px 0 100px;
+    transform:translateY(100%);
+    transition:transform var(--anim) var(--ease);
+    will-change:transform;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+  }
+  .list-section.active{
+    transform:translateY(0);
   }
   .list-section::before{
     content:'';
@@ -198,11 +212,15 @@
     width:44px;height:4px;
     border-radius:2px;
     background:rgba(255,255,255,.16);
+    pointer-events:none;
   }
 
-  .wrap{position:relative;max-width:1360px;margin:0 auto;padding:0 28px}
+  .list-inner{
+    max-width:1360px;
+    margin:0 auto;
+    padding:40px 28px 100px;
+  }
 
-  /* 工具栏 */
   .toolbar{
     display:flex;align-items:center;justify-content:space-between;gap:16px;
     flex-wrap:wrap;margin-bottom:24px;
@@ -229,7 +247,6 @@
   .search:focus{border-color:rgba(124,92,255,.65);background:rgba(124,92,255,.08);box-shadow:0 0 0 4px rgba(124,92,255,.15)}
   .search:disabled{opacity:.4;cursor:not-allowed}
 
-  /* 卡片网格 */
   .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(252px,1fr));
@@ -243,7 +260,7 @@
     background:linear-gradient(170deg,rgba(255,255,255,.06),rgba(255,255,255,.018));
     overflow:hidden;
     backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    animation:cardIn .6s cubic-bezier(.2,.85,.3,1) backwards;
+    animation:cardIn .55s cubic-bezier(.2,.85,.3,1) backwards;
     transition:transform .45s cubic-bezier(.4,0,.2,1),border-color .4s,box-shadow .45s;
   }
   .card:hover{
@@ -251,7 +268,7 @@
     border-color:rgba(124,92,255,.55);
     box-shadow:0 30px 60px -28px rgba(0,0,0,.98),0 0 0 1px rgba(124,92,255,.25),0 0 40px -16px rgba(124,92,255,.6);
   }
-  @keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+  @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 
   .thumb{
     position:relative;aspect-ratio:4/3;overflow:hidden;
@@ -328,7 +345,6 @@
   }
   .act.pan:hover{filter:brightness(1.1)}
 
-  /* 骨架屏 */
   .skel{background:linear-gradient(90deg,#12141a 25%,#1c1f27 37%,#12141a 63%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite}
   @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
   .skel-card{border-color:rgba(255,255,255,.05);animation:none}
@@ -410,9 +426,8 @@
     .brand p{display:none}
     .hero-center{padding:0 18px 60px}
     .hero-desc{margin-bottom:52px}
-    .wrap{padding:0 18px}
-    .list-section{border-radius:28px 28px 0 0;padding:34px 0 80px}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(162px,1fr));gap:14px}
+    .list-inner{padding:36px 18px 80px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
     .search{width:100%}
     .toolbar{align-items:stretch}
     .toolbar-right{width:100%}
@@ -422,67 +437,71 @@
 </head>
 <body>
 
-<!-- ============================================
-     主界面
-     ============================================ -->
-<div class="hero" id="hero">
-  <div class="aurora"><i></i><i></i><i></i><i></i></div>
-  <div class="mesh"></div>
+<div class="stage">
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">◈</div>
-      <div>
-        <h1>资源下载中心</h1>
-        <p>所有内容 · 一处获取</p>
+  <!-- ============================================
+       主界面
+       ============================================ -->
+  <div class="hero" id="heroEl">
+    <div class="aurora"><i></i><i></i><i></i><i></i></div>
+    <div class="mesh"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">◈</div>
+        <div>
+          <h1>资源下载中心</h1>
+          <p>所有内容 · 一处获取</p>
+        </div>
       </div>
-    </div>
-    <div class="top-actions">
-      <button class="btn" id="reloadBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
-        刷新
-      </button>
-    </div>
-  </header>
-
-  <div class="hero-center">
-    <div class="hero-badge">
-      <span class="pulse"></span>
-      <span id="heroBadgeText">资源在线</span>
-    </div>
-
-    <h2>下载你需要的<br>每一份资源</h2>
-    <p class="hero-desc">图片、视频、素材合集，点一下就能保存到本地。<br>向下滑动查看全部内容。</p>
-
-    <div class="hero-scroll">
-      <div class="chev">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      <div class="top-actions">
+        <button class="btn" id="reloadBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          刷新
+        </button>
       </div>
-      <span>向下滑动</span>
+    </header>
+
+    <div class="hero-center">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        <span id="heroBadgeText">资源在线</span>
+      </div>
+
+      <h2>下载你需要的<br>每一份资源</h2>
+      <p class="hero-desc">图片、视频、素材合集，点一下就能保存到本地。<br>向下滑动查看全部内容。</p>
+
+      <div class="hero-scroll">
+        <div class="chev">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <span>向下滑动</span>
+      </div>
     </div>
   </div>
+
+  <!-- ============================================
+       列表页
+       ============================================ -->
+  <section class="list-section" id="listEl">
+    <div class="list-inner">
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="pill" id="count">共 <b>—</b> 项</div>
+        </div>
+        <div class="toolbar-right">
+          <input class="search" id="search" placeholder="搜索名称或目录" autocomplete="off" disabled>
+          <button class="btn primary" id="allBtn" disabled>全部下载</button>
+        </div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+    </div>
+  </section>
+
 </div>
-
-<!-- ============================================
-     列表区
-     ============================================ -->
-<section class="list-section">
-  <div class="wrap">
-
-    <div class="toolbar">
-      <div class="toolbar-left">
-        <div class="pill" id="count">共 <b>—</b> 项</div>
-      </div>
-      <div class="toolbar-right">
-        <input class="search" id="search" placeholder="搜索名称或目录" autocomplete="off" disabled>
-        <button class="btn primary" id="allBtn" disabled>全部下载</button>
-      </div>
-    </div>
-
-    <div class="grid" id="grid"></div>
-
-  </div>
-</section>
 
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">✕</button>
@@ -499,7 +518,7 @@
   /* ============ 配置 ============ */
   var JSON_URL = './assets.json';
   var BATCH = 12;
-  var THRESHOLD = 60;   /* 下滑超过这个像素主界面就上移消失 */
+  var ANIM_MS = 700;   /* 与 CSS 里 --anim 对齐 */
 
   var PAN_LIST = [
     { host: 'pan.baidu.com',      name: '百度网盘' },
@@ -554,10 +573,15 @@
   var io = null;
   var sentinel = null;
 
+  /* 页面状态机 */
+  var pageState = 'hero';   /* 'hero' | 'list' */
+  var animating = false;
+
   /* ============ DOM ============ */
   var $ = function (id) { return document.getElementById(id); };
 
-  var heroEl    = $('hero');
+  var heroEl    = $('heroEl');
+  var listEl    = $('listEl');
   var gridEl    = $('grid');
   var countEl   = $('count');
   var searchEl  = $('search');
@@ -566,6 +590,91 @@
   var lbBody    = $('lbBody');
   var lbCap     = $('lbCaption');
   var toastBox  = $('toasts');
+
+  /* ============ 页面切换 ============ */
+
+  function goToList() {
+    if (animating || pageState !== 'hero') return;
+    animating = true;
+    pageState = 'list';
+    heroEl.classList.add('up');
+    listEl.classList.add('active');
+    listEl.scrollTop = 0;
+    setTimeout(function () { animating = false; }, ANIM_MS);
+  }
+
+  function goToHero() {
+    if (animating || pageState !== 'list') return;
+    animating = true;
+    pageState = 'hero';
+    heroEl.classList.remove('up');
+    listEl.classList.remove('active');
+    setTimeout(function () { animating = false; }, ANIM_MS);
+  }
+
+  /* 桌面滚轮 */
+  window.addEventListener('wheel', function (e) {
+    if (animating) return;
+
+    if (pageState === 'hero') {
+      /* 主界面：向下滚一点点，立即上移消失 */
+      if (e.deltaY > 0) goToList();
+    } else {
+      /* 列表页：滚到顶再往上滚，立即把主界面滑下来 */
+      if (e.deltaY < 0 && listEl.scrollTop <= 0) goToHero();
+    }
+  }, { passive: true });
+
+  /* 键盘（PageUp/Down、方向键、空格） */
+  window.addEventListener('keydown', function (e) {
+    if (animating) return;
+    var k = e.key;
+
+    if (pageState === 'hero') {
+      if (k === 'ArrowDown' || k === 'PageDown' || k === ' ') {
+        e.preventDefault();
+        goToList();
+      }
+    } else {
+      if ((k === 'ArrowUp' || k === 'PageUp') && listEl.scrollTop <= 0) {
+        e.preventDefault();
+        goToHero();
+      } else if (k === ' ') {
+        if (listEl.scrollTop + listEl.clientHeight >= listEl.scrollHeight - 2) {
+          e.preventDefault();
+          goToHero();
+        }
+      }
+    }
+  });
+
+  /* 触摸 */
+  var touchStartY = 0;
+  var touchMoved = false;
+
+  window.addEventListener('touchstart', function (e) {
+    touchStartY = e.touches[0].clientY;
+    touchMoved = false;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', function (e) {
+    if (animating) return;
+    var dy = e.touches[0].clientY - touchStartY;
+
+    if (pageState === 'hero') {
+      /* 手指往上滑（dy < 0）= 内容往上走 → 进入列表 */
+      if (dy < -28 && !touchMoved) {
+        touchMoved = true;
+        goToList();
+      }
+    } else {
+      /* 手指往下滑（dy > 0）且列表已经在顶部 → 回主界面 */
+      if (dy > 28 && listEl.scrollTop <= 0 && !touchMoved) {
+        touchMoved = true;
+        goToHero();
+      }
+    }
+  }, { passive: true });
 
   /* ============ 工具 ============ */
 
@@ -804,24 +913,6 @@
     };
   }
 
-  /* ============ 主界面滑动控制 ============ */
-
-  var hasGone = false;
-
-  function onScroll() {
-    var y = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (!hasGone && y > THRESHOLD) {
-      hasGone = true;
-      heroEl.classList.add('gone');
-    } else if (hasGone && y <= 20) {
-      hasGone = false;
-      heroEl.classList.remove('gone');
-    }
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-
   /* ============ 加载 ============ */
 
   function boot() {
@@ -923,7 +1014,7 @@
       if (!io) {
         io = new IntersectionObserver(function (entries) {
           if (entries[0].isIntersecting) loadMore(searchEl.value.trim().toLowerCase());
-        }, { rootMargin: '500px 0px' });
+        }, { root: listEl, rootMargin: '500px 0px' });
       }
       gridEl.appendChild(sentinel);
       io.observe(sentinel);
@@ -945,7 +1036,7 @@
     var card = document.createElement('article');
     card.className = 'card';
     card.dataset.i = idx;
-    card.style.animationDelay = Math.min(order * 45, 400) + 'ms';
+    card.style.animationDelay = Math.min(order * 40, 320) + 'ms';
 
     var hasUrl = !!item.url;
     var isPan = !!item.pan;
@@ -1218,6 +1309,7 @@
     if (e.key === 'Escape' && lightbox.classList.contains('on')) closeLightbox();
   });
 
+  /* 开屏加载 */
   boot();
 })();
 </script>
