@@ -24,9 +24,7 @@
   [hidden]{display:none !important}
 
   html,body{
-    margin:0;
-    padding:0;
-    height:100%;
+    margin:0;padding:0;height:100%;
     overflow:hidden;
     background:var(--bg);
     color:var(--text);
@@ -36,22 +34,14 @@
   }
 
   /* ============================================
-     舞台：两个全屏页叠加
+     舞台
      ============================================ */
-  .stage{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-  }
+  .stage{position:fixed;inset:0;overflow:hidden}
 
   /* ---------- 主界面 ---------- */
   .hero{
-    position:absolute;
-    inset:0;
-    z-index:2;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
+    position:absolute;inset:0;z-index:2;overflow:hidden;
+    display:flex;flex-direction:column;
     background:
       radial-gradient(ellipse 80% 60% at 18% 10%, rgba(124,92,255,.30), transparent 62%),
       radial-gradient(ellipse 70% 55% at 85% 12%, rgba(0,179,255,.24), transparent 60%),
@@ -62,10 +52,7 @@
     transition:transform var(--anim) var(--ease), opacity .45s ease;
     will-change:transform;
   }
-  .hero.up{
-    transform:translateY(-100%);
-    opacity:.25;
-  }
+  .hero.up{transform:translateY(-100%);opacity:.25}
 
   .aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none}
   .aurora i{position:absolute;border-radius:50%;filter:blur(120px);will-change:transform}
@@ -91,8 +78,7 @@
   .topbar{
     position:relative;z-index:10;
     display:flex;align-items:center;justify-content:space-between;gap:20px;
-    padding:20px 30px;
-    max-width:1400px;width:100%;margin:0 auto;
+    padding:20px 30px;max-width:1400px;width:100%;margin:0 auto;
   }
   .brand{display:flex;align-items:center;gap:14px;min-width:0}
   .logo{
@@ -128,14 +114,9 @@
   .btn svg{width:15px;height:15px;flex:none}
 
   .hero-center{
-    position:relative;z-index:5;
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:0 28px 80px;
+    position:relative;z-index:5;flex:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:0 28px 80px;
   }
 
   .hero-badge{
@@ -144,8 +125,7 @@
     border:1px solid rgba(124,92,255,.4);
     background:rgba(124,92,255,.12);
     backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    font-size:12px;color:#c8bcff;letter-spacing:.6px;
-    margin-bottom:34px;
+    font-size:12px;color:#c8bcff;letter-spacing:.6px;margin-bottom:34px;
   }
   .hero-badge .pulse{
     width:7px;height:7px;border-radius:50%;background:var(--ok);
@@ -157,26 +137,19 @@
   .hero h2{
     margin:0 0 22px;
     font-size:clamp(34px,6.2vw,68px);
-    font-weight:720;
-    line-height:1.1;
-    letter-spacing:-1.2px;
+    font-weight:720;line-height:1.1;letter-spacing:-1.2px;
     background:linear-gradient(175deg,#ffffff 20%,#b8aef0 65%,#7fb6ff 110%);
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
   }
   .hero-desc{
-    margin:0 auto 64px;
-    max-width:540px;
-    font-size:16px;line-height:1.85;
-    color:var(--muted);
+    margin:0 auto 64px;max-width:540px;
+    font-size:16px;line-height:1.85;color:var(--muted);
   }
 
   .hero-scroll{
     display:inline-flex;flex-direction:column;align-items:center;gap:10px;
     font-size:11px;color:#5f6577;letter-spacing:2px;text-transform:uppercase;
-    animation:heroFloat 2.8s ease-in-out infinite;
-    pointer-events:none;
+    animation:heroFloat 2.8s ease-in-out infinite;pointer-events:none;
   }
   .hero-scroll .chev{
     width:36px;height:36px;border-radius:50%;
@@ -189,11 +162,8 @@
 
   /* ---------- 列表页 ---------- */
   .list-section{
-    position:absolute;
-    inset:0;
-    z-index:1;
-    overflow-y:auto;
-    overflow-x:hidden;
+    position:absolute;inset:0;z-index:1;
+    overflow-y:auto;overflow-x:hidden;
     background:var(--bg);
     transform:translateY(100%);
     transition:transform var(--anim) var(--ease);
@@ -201,25 +171,15 @@
     -webkit-overflow-scrolling:touch;
     overscroll-behavior:contain;
   }
-  .list-section.active{
-    transform:translateY(0);
-  }
+  .list-section.active{transform:translateY(0)}
   .list-section::before{
-    content:'';
-    position:absolute;
-    top:14px;left:50%;
+    content:'';position:absolute;top:14px;left:50%;
     transform:translateX(-50%);
-    width:44px;height:4px;
-    border-radius:2px;
-    background:rgba(255,255,255,.16);
-    pointer-events:none;
+    width:44px;height:4px;border-radius:2px;
+    background:rgba(255,255,255,.16);pointer-events:none;
   }
 
-  .list-inner{
-    max-width:1360px;
-    margin:0 auto;
-    padding:40px 28px 100px;
-  }
+  .list-inner{max-width:1360px;margin:0 auto;padding:40px 28px 100px}
 
   .toolbar{
     display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -249,7 +209,7 @@
 
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(252px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
     gap:22px;
   }
   .card{
@@ -308,11 +268,20 @@
     backdrop-filter:blur(8px);
   }
 
-  .meta{padding:16px 17px 14px;flex:1;min-width:0}
+  .meta{padding:16px 17px 12px;flex:1;min-width:0}
   .name{
-    font-size:14px;font-weight:600;letter-spacing:.2px;
+    font-size:14.5px;font-weight:600;letter-spacing:.2px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    margin-bottom:8px;
+    margin-bottom:6px;
+  }
+  .desc{
+    font-size:12.5px;color:var(--muted);line-height:1.6;
+    margin-bottom:10px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    word-break:break-word;
   }
   .dir{
     display:flex;align-items:center;gap:7px;
@@ -322,28 +291,40 @@
   .dir svg{width:12px;height:12px;flex:none;opacity:.75}
   .dir span{overflow:hidden;text-overflow:ellipsis}
 
-  .ops{display:flex;gap:8px;padding:0 17px 17px}
-  .act{
-    flex:1;padding:10px 10px;border-radius:11px;
-    border:1px solid var(--border);background:rgba(255,255,255,.04);
+  .links{
+    display:flex;flex-direction:column;gap:7px;
+    padding:0 17px 17px;
+  }
+  .link-btn{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:10px 14px;border-radius:11px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.05);
     color:var(--text);font-size:12.5px;font-weight:550;font-family:inherit;
-    cursor:pointer;transition:.25s;
+    cursor:pointer;transition:.22s;
+    text-align:left;
   }
-  .act:hover{background:rgba(255,255,255,.11)}
-  .act:disabled{opacity:.4;cursor:not-allowed}
-  .act:disabled:hover{background:rgba(255,255,255,.04)}
-  .act.primary{
-    background:linear-gradient(135deg,rgba(124,92,255,.92),rgba(74,139,255,.92));
-    border-color:transparent;color:#fff;
-    box-shadow:0 10px 24px -12px rgba(124,92,255,.95);
+  .link-btn:hover{background:rgba(255,255,255,.11);border-color:var(--line2)}
+  .link-btn:active{transform:scale(.985)}
+  .link-btn .lname{
+    flex:1;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
-  .act.primary:hover{filter:brightness(1.13)}
-  .act.pan{
-    background:linear-gradient(135deg,rgba(224,169,74,.94),rgba(214,132,45,.94));
-    border-color:transparent;color:#2a1e05;
-    box-shadow:0 10px 24px -12px rgba(224,169,74,.95);
+  .link-btn .code{
+    font-size:10.5px;color:var(--muted);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    letter-spacing:.5px;flex:none;
   }
-  .act.pan:hover{filter:brightness(1.1)}
+  .link-btn.pan{
+    background:linear-gradient(135deg,rgba(224,169,74,.2),rgba(214,132,45,.13));
+    border-color:rgba(224,169,74,.5);
+    color:#f0c078;
+  }
+  .link-btn.pan:hover{
+    background:linear-gradient(135deg,rgba(224,169,74,.3),rgba(214,132,45,.22));
+    border-color:rgba(224,169,74,.72);
+  }
+  .link-btn.pan .code{color:rgba(240,192,120,.75)}
 
   .skel{background:linear-gradient(90deg,#12141a 25%,#1c1f27 37%,#12141a 63%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite}
   @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -360,9 +341,150 @@
     color:var(--muted);font-size:14px;
   }
 
+  /* ---------- 弹窗 ---------- */
+  .modal{
+    position:fixed;inset:0;z-index:250;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    background:rgba(3,4,8,.82);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    opacity:0;pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .modal.on{opacity:1;pointer-events:auto}
+
+  .modal-card{
+    width:100%;max-width:700px;
+    max-height:88vh;
+    display:flex;flex-direction:column;
+    border-radius:20px;
+    border:1px solid var(--border);
+    background:linear-gradient(170deg,#14161d,#0e1015);
+    box-shadow:0 40px 110px -30px #000;
+    transform:scale(.96) translateY(14px);
+    transition:transform .35s cubic-bezier(.2,.8,.3,1);
+    overflow:hidden;
+  }
+  .modal.on .modal-card{transform:none}
+
+  .modal-head{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:20px 24px 16px;
+    border-bottom:1px solid var(--border);
+    flex:none;
+  }
+  .modal-head h3{margin:0;font-size:15.5px;font-weight:650}
+  .modal-head p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+  .modal-x{
+    width:34px;height:34px;flex:none;border-radius:10px;
+    display:grid;place-items:center;
+    border:1px solid var(--border);background:rgba(255,255,255,.05);
+    color:var(--text);cursor:pointer;font-size:16px;line-height:1;
+    transition:.22s;
+  }
+  .modal-x:hover{background:rgba(255,255,255,.13);transform:rotate(90deg)}
+
+  .modal-body{
+    padding:22px 24px 8px;
+    overflow-y:auto;
+    flex:1;
+  }
+
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+  .field label{font-size:12px;color:var(--muted);letter-spacing:.4px}
+  .field label .hint{color:#5c6272;font-size:11px;margin-left:6px}
+  .field input,.field textarea{
+    width:100%;
+    padding:11px 14px;border-radius:11px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:var(--text);font-size:13.5px;font-family:inherit;
+    outline:none;
+    transition:border-color .2s,background .2s,box-shadow .2s;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:#565b6a}
+  .field input:focus,.field textarea:focus{
+    border-color:rgba(124,92,255,.6);
+    background:rgba(124,92,255,.07);
+    box-shadow:0 0 0 4px rgba(124,92,255,.14);
+  }
+  .field textarea{resize:vertical;min-height:72px;line-height:1.65}
+
+  .section-label{
+    font-size:12px;color:var(--muted);letter-spacing:.4px;
+    margin:4px 0 10px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+
+  .link-row{
+    display:grid;
+    grid-template-columns:118px 1fr 92px 36px;
+    gap:8px;margin-bottom:8px;align-items:center;
+  }
+  .link-row input{
+    width:100%;padding:10px 12px;
+    border-radius:10px;border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:var(--text);font-size:13px;font-family:inherit;
+    outline:none;transition:border-color .2s,background .2s;
+  }
+  .link-row input::placeholder{color:#565b6a}
+  .link-row input:focus{border-color:rgba(124,92,255,.55);background:rgba(124,92,255,.06)}
+  .link-remove{
+    width:36px;height:36px;border-radius:10px;
+    display:grid;place-items:center;
+    border:1px solid rgba(255,95,109,.3);
+    background:rgba(255,95,109,.08);
+    color:#ff8b93;font-size:17px;line-height:1;
+    cursor:pointer;transition:.2s;
+  }
+  .link-remove:hover{background:rgba(255,95,109,.2);border-color:rgba(255,95,109,.5)}
+
+  .add-link{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 14px;border-radius:10px;
+    border:1px dashed rgba(124,92,255,.4);
+    background:rgba(124,92,255,.07);
+    color:#b8a9ff;font-size:12.5px;font-weight:550;font-family:inherit;
+    cursor:pointer;transition:.22s;
+    margin-bottom:8px;
+  }
+  .add-link:hover{background:rgba(124,92,255,.15);border-color:rgba(124,92,255,.65)}
+  .add-link:active{transform:scale(.98)}
+
+  .modal-foot{
+    display:flex;gap:10px;justify-content:flex-end;
+    padding:16px 24px 20px;
+    border-top:1px solid var(--border);
+    flex:none;
+  }
+
+  .result-ta{
+    width:100%;
+    min-height:280px;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:rgba(0,0,0,.42);
+    color:#b8c4dd;
+    font:12.5px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    resize:vertical;outline:none;
+  }
+  .result-ta:focus{border-color:rgba(124,92,255,.5)}
+
+  .result-tip{
+    margin:0 0 14px;
+    padding:12px 14px;
+    border-radius:11px;
+    border:1px solid rgba(224,169,74,.35);
+    background:rgba(224,169,74,.08);
+    font-size:12.5px;line-height:1.7;color:#d8bd82;
+  }
+  .result-tip b{color:var(--gold);font-weight:600}
+
   /* 灯箱 */
   .lightbox{
-    position:fixed;inset:0;z-index:200;
+    position:fixed;inset:0;z-index:220;
     display:grid;place-items:center;padding:40px;
     background:rgba(3,4,8,.9);
     backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
@@ -388,8 +510,7 @@
     display:grid;place-items:center;
     border:1px solid var(--border);background:rgba(255,255,255,.07);
     color:var(--text);cursor:pointer;font-size:18px;line-height:1;
-    backdrop-filter:blur(10px);
-    transition:.25s;
+    backdrop-filter:blur(10px);transition:.25s;
   }
   .lb-close:hover{background:rgba(255,255,255,.16);transform:rotate(90deg)}
 
@@ -427,11 +548,25 @@
     .hero-center{padding:0 18px 60px}
     .hero-desc{margin-bottom:52px}
     .list-inner{padding:36px 18px 80px}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(162px,1fr));gap:14px}
     .search{width:100%}
     .toolbar{align-items:stretch}
     .toolbar-right{width:100%}
     .toasts{right:14px;left:14px;bottom:14px;align-items:stretch}
+    .modal{padding:12px}
+    .modal-card{max-height:94vh}
+    .modal-head,.modal-body,.modal-foot{padding-left:18px;padding-right:18px}
+    .link-row{
+      grid-template-columns:1fr 1fr 36px;
+      grid-template-areas:
+        "name name del"
+        "url  url  url"
+        "code .    .";
+    }
+    .link-row .lr-name{grid-area:name}
+    .link-row .lr-url{grid-area:url}
+    .link-row .lr-code{grid-area:code}
+    .link-remove{grid-area:del}
   }
 </style>
 </head>
@@ -491,7 +626,11 @@
           <div class="pill" id="count">共 <b>—</b> 项</div>
         </div>
         <div class="toolbar-right">
-          <input class="search" id="search" placeholder="搜索名称或目录" autocomplete="off" disabled>
+          <input class="search" id="search" placeholder="搜索名称、描述或目录" autocomplete="off" disabled>
+          <button class="btn" id="addBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            新增
+          </button>
           <button class="btn primary" id="allBtn" disabled>全部下载</button>
         </div>
       </div>
@@ -501,6 +640,86 @@
     </div>
   </section>
 
+</div>
+
+<!-- ============================================
+     新增条目弹窗
+     ============================================ -->
+<div class="modal" id="editModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h3>新增资源</h3>
+        <p>填写完成后生成 JSON，粘贴到 assets.json 提交即可</p>
+      </div>
+      <button class="modal-x" id="editClose">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="field">
+        <label>名称 <span class="hint">必填</span></label>
+        <input id="fName" placeholder="例如：T_Rock_Cliff_01.png">
+      </div>
+
+      <div class="field">
+        <label>描述 <span class="hint">可选，显示在名称下方</span></label>
+        <textarea id="fDesc" placeholder="例如：岩石悬崖漫反射贴图，2K 分辨率，含法线"></textarea>
+      </div>
+
+      <div class="field">
+        <label>保存目录 <span class="hint">可选</span></label>
+        <input id="fDir" placeholder="例如：/Game/Textures/Terrain">
+      </div>
+
+      <div class="field">
+        <label>预览媒体 <span class="hint">可选，图片或视频地址</span></label>
+        <input id="fPreview" placeholder="https://... 或 data:image/...">
+      </div>
+
+      <div class="section-label">
+        <span>下载链接 <span class="hint">可添加多个</span></span>
+      </div>
+
+      <div id="linkBox"></div>
+
+      <button type="button" class="add-link" id="addLinkBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        添加链接
+      </button>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn" id="editCancel">取消</button>
+      <button class="btn primary" id="genBtn">生成 JSON</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     JSON 结果弹窗
+     ============================================ -->
+<div class="modal" id="resultModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h3>复制以下内容</h3>
+        <p>粘贴到 assets.json 的数组中，然后提交到 GitHub</p>
+      </div>
+      <button class="modal-x" id="resultClose">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="result-tip">
+        打开 <b>assets.json</b>，把下面这段粘贴到 <b>[</b> 和 <b>]</b> 之间（多个条目用逗号隔开），保存后提交即可。
+      </div>
+      <textarea class="result-ta" id="resultBox" readonly spellcheck="false"></textarea>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn" id="resultDone">关闭</button>
+      <button class="btn primary" id="copyBtn">复制 JSON</button>
+    </div>
+  </div>
 </div>
 
 <div class="lightbox" id="lightbox">
@@ -518,8 +737,9 @@
   /* ============ 配置 ============ */
   var JSON_URL = './assets.json';
   var BATCH = 12;
-  var ANIM_MS = 700;   /* 与 CSS 里 --anim 对齐 */
+  var ANIM_MS = 700;
 
+  /* 网盘域名 → 名称 */
   var PAN_LIST = [
     { host: 'pan.baidu.com',      name: '百度网盘' },
     { host: 'yun.baidu.com',      name: '百度网盘' },
@@ -560,11 +780,21 @@
   ];
 
   var NAME_KEYS = ['name','title','filename','fileName','assetName','名称','文件名','资源名'];
+  var DESC_KEYS = ['desc','description','intro','summary','note','remark','描述','简介','说明','备注'];
   var DIR_KEYS  = ['downloadDir','download_dir','downloadPath','dir','directory','folder','path','savePath','outDir','outputDir','目录','下载目录','保存目录','路径'];
+  var PREVIEW_KEYS = ['preview','previewUrl','cover','poster','thumbnail','thumb','封面','预览','预览图','缩略图'];
   var URL_KEYS  = ['url','downloadUrl','download_url','src','source','href','link','image','img','picture','pic','video','videoUrl','file','地址','下载地址','链接','图片','视频'];
+  var MIRROR_KEYS = ['url2','link2','download2','mirror','backup','备用地址','下载地址二','链接二','备用链接'];
 
   var IMG_EXT = { png:1, jpg:1, jpeg:1, gif:1, webp:1, bmp:1, svg:1, avif:1, tga:1, exr:1, hdr:1, psd:1, ico:1 };
   var VID_EXT = { mp4:1, webm:1, mov:1, m4v:1, avi:1, mkv:1, ogv:1, wmv:1, flv:1 };
+  var DL_EXT = {
+    zip:1,rar:1,'7z':1,tar:1,gz:1,bz2:1,xz:1,
+    png:1,jpg:1,jpeg:1,gif:1,webp:1,bmp:1,svg:1,psd:1,
+    mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,
+    pdf:1,txt:1,json:1,fbx:1,obj:1,blend:1,max:1,
+    uasset:1,umap:1,upk:1,exe:1,dmg:1,apk:1,iso:1,bin:1
+  };
 
   /* ============ 状态 ============ */
   var items = [];
@@ -573,8 +803,7 @@
   var io = null;
   var sentinel = null;
 
-  /* 页面状态机 */
-  var pageState = 'hero';   /* 'hero' | 'list' */
+  var pageState = 'hero';
   var animating = false;
 
   /* ============ DOM ============ */
@@ -586,13 +815,27 @@
   var countEl   = $('count');
   var searchEl  = $('search');
   var allBtn    = $('allBtn');
+  var addBtn    = $('addBtn');
   var lightbox  = $('lightbox');
   var lbBody    = $('lbBody');
   var lbCap     = $('lbCaption');
   var toastBox  = $('toasts');
 
-  /* ============ 页面切换 ============ */
+  var editModal   = $('editModal');
+  var resultModal = $('resultModal');
+  var linkBox     = $('linkBox');
+  var fName       = $('fName');
+  var fDesc       = $('fDesc');
+  var fDir        = $('fDir');
+  var fPreview    = $('fPreview');
+  var resultBox   = $('resultBox');
 
+  /* ============ 弹窗拦截层 ============ */
+  function modalOpen() {
+    return editModal.classList.contains('on') || resultModal.classList.contains('on');
+  }
+
+  /* ============ 页面切换 ============ */
   function goToList() {
     if (animating || pageState !== 'hero') return;
     animating = true;
@@ -612,22 +855,24 @@
     setTimeout(function () { animating = false; }, ANIM_MS);
   }
 
-  /* 桌面滚轮 */
+  /* 滚轮 */
   window.addEventListener('wheel', function (e) {
-    if (animating) return;
-
+    if (animating || modalOpen()) return;
     if (pageState === 'hero') {
-      /* 主界面：向下滚一点点，立即上移消失 */
       if (e.deltaY > 0) goToList();
     } else {
-      /* 列表页：滚到顶再往上滚，立即把主界面滑下来 */
       if (e.deltaY < 0 && listEl.scrollTop <= 0) goToHero();
     }
   }, { passive: true });
 
-  /* 键盘（PageUp/Down、方向键、空格） */
+  /* 键盘 */
   window.addEventListener('keydown', function (e) {
-    if (animating) return;
+    if (e.key === 'Escape') {
+      if (resultModal.classList.contains('on')) { resultModal.classList.remove('on'); return; }
+      if (editModal.classList.contains('on')) { editModal.classList.remove('on'); return; }
+      if (lightbox.classList.contains('on')) { closeLightbox(); return; }
+    }
+    if (animating || modalOpen()) return;
     var k = e.key;
 
     if (pageState === 'hero') {
@@ -639,11 +884,9 @@
       if ((k === 'ArrowUp' || k === 'PageUp') && listEl.scrollTop <= 0) {
         e.preventDefault();
         goToHero();
-      } else if (k === ' ') {
-        if (listEl.scrollTop + listEl.clientHeight >= listEl.scrollHeight - 2) {
-          e.preventDefault();
-          goToHero();
-        }
+      } else if (k === ' ' && listEl.scrollTop + listEl.clientHeight >= listEl.scrollHeight - 2) {
+        e.preventDefault();
+        goToHero();
       }
     }
   });
@@ -653,26 +896,19 @@
   var touchMoved = false;
 
   window.addEventListener('touchstart', function (e) {
+    if (modalOpen()) return;
     touchStartY = e.touches[0].clientY;
     touchMoved = false;
   }, { passive: true });
 
   window.addEventListener('touchmove', function (e) {
-    if (animating) return;
+    if (animating || modalOpen()) return;
     var dy = e.touches[0].clientY - touchStartY;
 
     if (pageState === 'hero') {
-      /* 手指往上滑（dy < 0）= 内容往上走 → 进入列表 */
-      if (dy < -28 && !touchMoved) {
-        touchMoved = true;
-        goToList();
-      }
+      if (dy < -28 && !touchMoved) { touchMoved = true; goToList(); }
     } else {
-      /* 手指往下滑（dy > 0）且列表已经在顶部 → 回主界面 */
-      if (dy > 28 && listEl.scrollTop <= 0 && !touchMoved) {
-        touchMoved = true;
-        goToHero();
-      }
+      if (dy > 28 && listEl.scrollTop <= 0 && !touchMoved) { touchMoved = true; goToHero(); }
     }
   }, { passive: true });
 
@@ -684,6 +920,8 @@
     });
   }
 
+  function escAttr(s) { return esc(s); }
+
   function extOf(str) {
     if (!str) return '';
     var clean = String(str).split('#')[0].split('?')[0];
@@ -693,30 +931,39 @@
     return clean.slice(dot + 1).toLowerCase();
   }
 
-  function guessType(url, field) {
+  function isDataUrl(u) { return u && u.indexOf('data:') === 0; }
+
+  function guessMediaType(url) {
+    if (!url) return 'none';
+    if (/^data:image\//i.test(url)) return 'image';
+    if (/^data:video\//i.test(url)) return 'video';
     var e = extOf(url);
     if (IMG_EXT[e]) return 'image';
     if (VID_EXT[e]) return 'video';
-    if (/^data:image\//i.test(url)) return 'image';
-    if (/^data:video\//i.test(url)) return 'video';
-    if (field === 'video' || /video/i.test(field)) return 'video';
-    if (field === 'image' || field === 'img' || field === 'picture' || field === 'pic') return 'image';
-    return 'file';
+    return 'none';
   }
 
   function detectPan(url) {
-    if (!url || url.indexOf('data:') === 0) return null;
+    if (!url || isDataUrl(url)) return null;
     var host;
     try {
       host = new URL(url, location.href).hostname.toLowerCase().replace(/^www\./, '');
     } catch (e) { return null; }
     for (var i = 0; i < PAN_LIST.length; i++) {
       var h = PAN_LIST[i].host;
-      if (host === h || host.slice(-(h.length + 1)) === '.' + h) {
-        return PAN_LIST[i].name;
-      }
+      if (host === h || host.slice(-(h.length + 1)) === '.' + h) return PAN_LIST[i].name;
     }
     return null;
+  }
+
+  /* 判断链接应该直接下载还是打开页面 */
+  function shouldDownload(url) {
+    if (!url) return false;
+    if (isDataUrl(url)) return true;
+    if (detectPan(url)) return false;
+    var path = url.split('#')[0].split('?')[0];
+    var e = extOf(path);
+    return !!DL_EXT[e];
   }
 
   function pick(obj, keys) {
@@ -727,7 +974,7 @@
     return null;
   }
 
-  function pickUrl(obj) {
+  function pickFirstUrl(obj) {
     for (var i = 0; i < URL_KEYS.length; i++) {
       var key = URL_KEYS[i];
       var v = obj[key];
@@ -741,76 +988,114 @@
     return null;
   }
 
+  /* 统一数据格式 */
   function normalize(raw) {
     if (typeof raw === 'string') {
       var t = raw.trim();
-      return { name: '', dir: '', url: t, type: guessType(t, ''), pan: detectPan(t) };
+      return {
+        name: '',
+        desc: '',
+        dir: '',
+        preview: '',
+        previewType: 'none',
+        links: [{ name: detectPan(t) || '下载', url: t, code: '' }]
+      };
     }
     if (!raw || typeof raw !== 'object') return null;
 
     var name = pick(raw, NAME_KEYS);
+    var desc = pick(raw, DESC_KEYS);
     var dir  = pick(raw, DIR_KEYS);
-    var found = pickUrl(raw);
 
-    if (!found || !found.value) {
-      return { name: name ? String(name) : '', dir: dir ? String(dir) : '', url: '', type: 'file', pan: null };
+    /* 预览媒体：先看 preview 字段，再兼容 image / video */
+    var previewUrl = pick(raw, PREVIEW_KEYS) || '';
+    if (!previewUrl) {
+      var legacyVideo = raw.video || raw.videoUrl || '';
+      var legacyImage = raw.image || raw.img || raw.picture || raw.pic || '';
+      if (legacyVideo) previewUrl = String(legacyVideo);
+      else if (legacyImage) previewUrl = String(legacyImage);
+    }
+    previewUrl = String(previewUrl || '').trim();
+
+    /* 链接集合 */
+    var links = [];
+
+    if (Array.isArray(raw.links)) {
+      for (var i = 0; i < raw.links.length; i++) {
+        var L = raw.links[i];
+        if (!L) continue;
+        if (typeof L === 'string') {
+          var lu0 = L.trim();
+          if (!lu0) continue;
+          links.push({ name: detectPan(lu0) || '下载', url: lu0, code: '' });
+        } else if (typeof L === 'object') {
+          var lu = L.url || L.href || L.link || L.address || L.src || '';
+          if (!lu) continue;
+          lu = String(lu).trim();
+          links.push({
+            name: String(L.name || L.label || detectPan(lu) || '下载'),
+            url: lu,
+            code: String(L.code || L.password || L.pwd || L.extract || '')
+          });
+        }
+      }
     }
 
-    var url = found.value;
+    /* 兼容单 url / image / video 字段 */
+    if (!links.length) {
+      var single = pickFirstUrl(raw);
+      if (single && single.value) {
+        links.push({
+          name: detectPan(single.value) || (single.field === 'video' || single.field === 'videoUrl' ? '视频' : '下载'),
+          url: single.value,
+          code: ''
+        });
+      }
+    }
+
+    /* 兼容 url2 / link2 / mirror 等备用字段 */
+    for (var m = 0; m < MIRROR_KEYS.length; m++) {
+      var mv = raw[MIRROR_KEYS[m]];
+      if (typeof mv === 'string' && mv.trim()) {
+        var murl = mv.trim();
+        links.push({ name: detectPan(murl) || '备用', url: murl, code: '' });
+      }
+    }
+
+    /* 去重 */
+    var seen = {};
+    var finalLinks = [];
+    for (var k = 0; k < links.length; k++) {
+      if (seen[links[k].url]) continue;
+      seen[links[k].url] = 1;
+      finalLinks.push(links[k]);
+    }
+
     return {
       name: name ? String(name) : '',
+      desc: desc ? String(desc) : '',
       dir: dir ? String(dir) : '',
-      url: url,
-      type: guessType(url, found.field),
-      pan: detectPan(url)
+      preview: previewUrl,
+      previewType: guessMediaType(previewUrl),
+      links: finalLinks
     };
   }
 
-  function isDataUrl(u) { return u.indexOf('data:') === 0; }
-
-  function extFromMime(mime) {
-    var map = {
-      'image/png':'png','image/jpeg':'jpg','image/jpg':'jpg','image/gif':'gif',
-      'image/webp':'webp','image/bmp':'bmp','image/svg+xml':'svg','image/avif':'avif',
-      'video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov','video/x-msvideo':'avi'
-    };
-    return map[mime] || '';
+  function itemMainType(item) {
+    if (item.previewType === 'image' || item.previewType === 'video') return item.previewType;
+    for (var i = 0; i < item.links.length; i++) {
+      var t = guessMediaType(item.links[i].url);
+      if (t !== 'none') return t;
+    }
+    return 'file';
   }
 
-  function dataUrlToBlob(dataUrl) {
-    var comma = dataUrl.indexOf(',');
-    var head = dataUrl.slice(5, comma);
-    var body = dataUrl.slice(comma + 1);
-    var isB64 = /;base64/i.test(head);
-    var mime = head.split(';')[0] || 'application/octet-stream';
-    var bytes;
-    if (isB64) {
-      var bin = atob(body);
-      bytes = new Uint8Array(bin.length);
-      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    } else {
-      bytes = new TextEncoder().encode(decodeURIComponent(body));
+  function itemPanName(item) {
+    for (var i = 0; i < item.links.length; i++) {
+      var p = detectPan(item.links[i].url);
+      if (p) return p;
     }
-    return new Blob([bytes], { type: mime });
-  }
-
-  function filenameFor(item, mime) {
-    var base = (item.name || '').trim();
-    if (!base) {
-      if (item.url) {
-        var clean = item.url.split('#')[0].split('?')[0];
-        var idx = clean.lastIndexOf('/');
-        base = idx >= 0 ? clean.slice(idx + 1) : clean;
-        try { base = decodeURIComponent(base); } catch (e) {}
-      }
-      if (!base) base = 'file';
-    }
-    base = base.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_');
-    if (/\.[A-Za-z0-9]{1,6}$/.test(base)) return base;
-
-    var ext = extFromMime(mime) || extOf(item.url) || extOf(item.name) ||
-              (item.type === 'video' ? 'mp4' : item.type === 'image' ? 'png' : 'bin');
-    return base + '.' + ext;
+    return null;
   }
 
   function toast(msg, type, ms) {
@@ -834,7 +1119,8 @@
           '<div class="skel skel-thumb"></div>' +
           '<div class="skel-body">' +
             '<div class="skel skel-line" style="width:72%"></div>' +
-            '<div class="skel skel-line" style="width:46%"></div>' +
+            '<div class="skel skel-line" style="width:88%"></div>' +
+            '<div class="skel skel-line" style="width:52%"></div>' +
           '</div>' +
         '</div>';
     }
@@ -845,29 +1131,38 @@
 
   function makePreviewItems() {
     var specs = [
-      ['T_Rock_Cliff_01.png',    '/Game/Textures/Terrain',  ['#7c5cff','#4a8bff']],
-      ['T_Grass_Diffuse_A.png',  '/Game/Textures/Terrain',  ['#22d3a5','#3d7dd8']],
-      ['T_Metal_Rough_02.png',   '/Game/Textures/Metal',    ['#f0a97a','#c0504d']],
-      ['T_Wood_Base_Planks.png', '/Game/Textures/Wood',     ['#e0a94a','#8a5a20']],
-      ['T_Concrete_Aged.png',    '/Game/Textures/Concrete', ['#8b90a4','#4a5058']],
-      ['T_Fabric_Weave_02.png',  '/Game/Textures/Fabric',   ['#f857a6','#7c5cff']],
-      ['T_Sky_HDRI_Dusk.png',    '/Game/Textures/Sky',      ['#ff7a59','#7c2d12']],
-      ['T_Emissive_Glow_A.png',  '/Game/Textures/FX',       ['#00d4ff','#22d3a5']],
-      ['T_Sand_Dunes_01.png',    '/Game/Textures/Desert',   ['#f59e0b','#b45309']],
-      ['T_Ice_Crystal_A.png',    '/Game/Textures/Ice',      ['#7dd3fc','#0369a1']],
-      ['T_Lava_Crack_02.png',    '/Game/Textures/Lava',     ['#ef4444','#7c2d12']],
-      ['T_Moss_Ground_01.png',   '/Game/Textures/Moss',     ['#65a30d','#14532d']]
+      ['T_Rock_Cliff_01.png',   '岩石悬崖漫反射贴图，2K，含法线',      '/Game/Textures/Terrain',  ['#7c5cff','#4a8bff']],
+      ['T_Grass_Diffuse_A.png', '草地漫反射，4K，UE 标准 PBR',         '/Game/Textures/Terrain',  ['#22d3a5','#3d7dd8']],
+      ['T_Metal_Rough_02.png',  '金属粗糙度贴图，PBR 通道打包',         '/Game/Textures/Metal',    ['#f0a97a','#c0504d']],
+      ['T_Wood_Base_Planks.png','木地板基础色，含 AO',                  '/Game/Textures/Wood',     ['#e0a94a','#8a5a20']],
+      ['T_Concrete_Aged.png',   '老化混凝土，2K 无缝',                  '/Game/Textures/Concrete', ['#8b90a4','#4a5058']],
+      ['T_Fabric_Weave_02.png', '织物编织纹理，含法线',                 '/Game/Textures/Fabric',   ['#f857a6','#7c5cff']],
+      ['T_Sky_HDRI_Dusk.png',   '黄昏 HDRI 环境球，8K',                 '/Game/Textures/Sky',      ['#ff7a59','#7c2d12']],
+      ['T_Emissive_Glow_A.png', '自发光遮罩，适合霓虹效果',             '/Game/Textures/FX',       ['#00d4ff','#22d3a5']],
+      ['T_Sand_Dunes_01.png',   '沙丘高度图，4K',                       '/Game/Textures/Desert',   ['#f59e0b','#b45309']],
+      ['T_Ice_Crystal_A.png',   '冰晶表面，含次表面散射参数',           '/Game/Textures/Ice',      ['#7dd3fc','#0369a1']],
+      ['T_Lava_Crack_02.png',   '熔岩裂纹自发光，动画可用',             '/Game/Textures/Lava',     ['#ef4444','#7c2d12']],
+      ['T_Moss_Ground_01.png',  '苔藓地面混合材质',                     '/Game/Textures/Moss',     ['#65a30d','#14532d']]
     ];
 
     return specs.map(function (spec, i) {
-      return makePreviewCard(spec[0], spec[1], spec[2], i + 1);
+      var card = makePreviewCard(spec[0], spec[2], spec[3], i + 1);
+      return {
+        name: card.name,
+        desc: spec[1],
+        downloadDir: card.downloadDir,
+        preview: card.url,
+        links: [
+          { name: '百度网盘', url: 'https://pan.baidu.com/s/1demo' + (i + 1), code: 'ue' + (i + 1) },
+          { name: '夸克网盘', url: 'https://pan.quark.cn/s/demo' + (i + 1) }
+        ]
+      };
     });
   }
 
   function makePreviewCard(name, dir, colors, num) {
     var cv = document.createElement('canvas');
-    cv.width = 800;
-    cv.height = 600;
+    cv.width = 800; cv.height = 600;
     var ctx = cv.getContext('2d');
 
     var g = ctx.createLinearGradient(0, 0, 800, 600);
@@ -892,12 +1187,8 @@
     ctx.globalAlpha = 0.08;
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1;
-    for (var x = 40; x < 800; x += 80) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke();
-    }
-    for (var y = 40; y < 600; y += 80) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(800, y); ctx.stroke();
-    }
+    for (var x = 40; x < 800; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
+    for (var y = 40; y < 600; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(800, y); ctx.stroke(); }
 
     ctx.globalAlpha = 1;
     ctx.fillStyle = 'rgba(255,255,255,.94)';
@@ -906,11 +1197,7 @@
     ctx.textBaseline = 'middle';
     ctx.fillText(String(num).padStart(2, '0'), 400, 300);
 
-    return {
-      name: name,
-      downloadDir: dir,
-      url: cv.toDataURL('image/jpeg', 0.85)
-    };
+    return { name: name, downloadDir: dir, url: cv.toDataURL('image/jpeg', 0.85) };
   }
 
   /* ============ 加载 ============ */
@@ -979,7 +1266,8 @@
     filtered = [];
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
-      var hay = (it.name + ' ' + it.dir + ' ' + it.url).toLowerCase();
+      var hay = (it.name + ' ' + it.desc + ' ' + it.dir).toLowerCase();
+      for (var j = 0; j < it.links.length; j++) hay += ' ' + it.links[j].url.toLowerCase();
       if (!q || hay.indexOf(q) !== -1) filtered.push(i);
     }
 
@@ -1038,19 +1326,19 @@
     card.dataset.i = idx;
     card.style.animationDelay = Math.min(order * 40, 320) + 'ms';
 
-    var hasUrl = !!item.url;
-    var isPan = !!item.pan;
-    var canPreview = hasUrl && !isPan && (item.type === 'image' || item.type === 'video');
+    var mainType = itemMainType(item);
+    var panName = itemPanName(item);
 
+    /* --- 缩略图 --- */
     var thumb = document.createElement('div');
     thumb.className = 'thumb';
 
-    if (canPreview && item.type === 'image') {
+    if (item.previewType === 'image') {
       var img = document.createElement('img');
       img.alt = '';
       img.loading = 'lazy';
       img.decoding = 'async';
-      img.src = item.url;
+      img.src = item.preview;
       img.addEventListener('error', function () {
         img.remove();
         var ph = document.createElement('span');
@@ -1062,15 +1350,12 @@
       });
       thumb.appendChild(img);
       thumb.classList.add('previewable');
-
-      var veil = document.createElement('div');
-      veil.className = 'thumb-veil';
-      thumb.appendChild(veil);
-    } else if (canPreview && item.type === 'video') {
+      thumb.appendChild(makeVeil());
+    } else if (item.previewType === 'video') {
       var v = document.createElement('video');
       v.muted = true;
       v.preload = 'metadata';
-      v.src = item.url;
+      v.src = item.preview;
       v.addEventListener('error', function () {
         v.remove();
         var ph2 = document.createElement('span');
@@ -1082,64 +1367,90 @@
       });
       thumb.appendChild(v);
       thumb.classList.add('previewable');
-
-      var veil2 = document.createElement('div');
-      veil2.className = 'thumb-veil';
-      thumb.appendChild(veil2);
+      thumb.appendChild(makeVeil());
     } else {
       var ph3 = document.createElement('span');
       ph3.className = 'ph';
-      ph3.textContent = isPan ? item.pan + ' 分享' : (hasUrl ? '暂无预览' : '暂无内容');
+      ph3.textContent = panName ? panName + ' 分享' : '暂无预览';
       thumb.appendChild(ph3);
     }
 
     var badge = document.createElement('span');
-    badge.className = 'badge ' + item.type;
-    badge.textContent = item.type;
+    badge.className = 'badge ' + mainType;
+    badge.textContent = mainType;
     thumb.appendChild(badge);
 
-    if (isPan) {
+    if (panName) {
       var tag = document.createElement('span');
       tag.className = 'pan-tag';
-      tag.textContent = item.pan;
+      tag.textContent = panName;
       thumb.appendChild(tag);
     }
 
+    /* --- 信息 --- */
     var meta = document.createElement('div');
     meta.className = 'meta';
 
     var displayName = item.name || '未命名';
-    var dirText = item.dir || '默认下载目录';
+    var html = '<div class="name" title="' + esc(displayName) + '">' + esc(displayName) + '</div>';
 
-    meta.innerHTML =
-      '<div class="name" title="' + esc(displayName) + '">' + esc(displayName) + '</div>' +
-      '<div class="dir">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-          '<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/>' +
-        '</svg>' +
-        '<span title="' + esc(dirText) + '">' + esc(dirText) + '</span>' +
-      '</div>';
+    if (item.desc) {
+      html += '<div class="desc" title="' + esc(item.desc) + '">' + esc(item.desc) + '</div>';
+    }
 
-    var ops = document.createElement('div');
-    ops.className = 'ops';
+    if (item.dir) {
+      html +=
+        '<div class="dir">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/>' +
+          '</svg>' +
+          '<span title="' + esc(item.dir) + '">' + esc(item.dir) + '</span>' +
+        '</div>';
+    }
 
-    var btnView = '<button class="act" data-act="view" data-i="' + idx + '"' +
-      (canPreview ? '' : ' disabled') + '>预览</button>';
+    meta.innerHTML = html;
 
-    var btnMain = isPan
-      ? '<button class="act pan" data-act="pan" data-i="' + idx + '">打开网盘</button>'
-      : '<button class="act primary" data-act="dl" data-i="' + idx + '"' +
-          (hasUrl ? '' : ' disabled') + '>下载</button>';
+    /* --- 链接按钮 --- */
+    var linksEl = document.createElement('div');
+    linksEl.className = 'links';
 
-    ops.innerHTML = btnView + btnMain;
+    if (item.links.length) {
+      for (var j = 0; j < item.links.length; j++) {
+        var link = item.links[j];
+        var btn = document.createElement('button');
+        btn.className = 'link-btn' + (detectPan(link.url) ? ' pan' : '');
+        btn.dataset.act = 'link';
+        btn.dataset.i = idx;
+        btn.dataset.j = j;
+
+        var lname = link.name || detectPan(link.url) || '下载';
+        btn.innerHTML =
+          '<span class="lname" title="' + esc(lname) + '">' + esc(lname) + '</span>' +
+          (link.code ? '<span class="code">' + esc(link.code) + '</span>' : '');
+
+        linksEl.appendChild(btn);
+      }
+    } else {
+      var noLink = document.createElement('button');
+      noLink.className = 'link-btn';
+      noLink.disabled = true;
+      noLink.innerHTML = '<span class="lname">暂无下载链接</span>';
+      linksEl.appendChild(noLink);
+    }
 
     card.appendChild(thumb);
     card.appendChild(meta);
-    card.appendChild(ops);
+    card.appendChild(linksEl);
     return card;
   }
 
-  /* ============ 下载 ============ */
+  function makeVeil() {
+    var d = document.createElement('div');
+    d.className = 'thumb-veil';
+    return d;
+  }
+
+  /* ============ 下载 / 打开 ============ */
 
   function browserDownload(blob, filename) {
     var url = URL.createObjectURL(blob);
@@ -1163,37 +1474,81 @@
     a.remove();
   }
 
-  function openPan(item) {
-    if (!item || !item.url) return;
-    var w = window.open(item.url, '_blank', 'noopener');
-    if (!w) {
-      toast('浏览器拦截了新窗口，请允许弹出窗口', 'error', 4200);
+  function dataUrlToBlob(dataUrl) {
+    var comma = dataUrl.indexOf(',');
+    var head = dataUrl.slice(5, comma);
+    var body = dataUrl.slice(comma + 1);
+    var isB64 = /;base64/i.test(head);
+    var mime = head.split(';')[0] || 'application/octet-stream';
+    var bytes;
+    if (isB64) {
+      var bin = atob(body);
+      bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     } else {
-      toast('已打开 ' + item.pan, 'success');
+      bytes = new TextEncoder().encode(decodeURIComponent(body));
     }
+    return new Blob([bytes], { type: mime });
   }
 
-  async function downloadItem(item) {
-    if (!item || !item.url) { toast('该项没有可下载的内容', 'error'); return 'fail'; }
-    if (item.pan) { openPan(item); return 'pan'; }
+  function extFromMime(mime) {
+    var map = {
+      'image/png':'png','image/jpeg':'jpg','image/jpg':'jpg','image/gif':'gif',
+      'image/webp':'webp','image/bmp':'bmp','image/svg+xml':'svg','image/avif':'avif',
+      'video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov','video/x-msvideo':'avi'
+    };
+    return map[mime] || '';
+  }
 
-    var url = item.url;
+  function filenameFor(item, mime, fallbackUrl) {
+    var base = (item.name || '').trim();
+    if (!base && fallbackUrl) {
+      var clean = fallbackUrl.split('#')[0].split('?')[0];
+      var idx = clean.lastIndexOf('/');
+      base = idx >= 0 ? clean.slice(idx + 1) : clean;
+      try { base = decodeURIComponent(base); } catch (e) {}
+    }
+    if (!base) base = 'file';
+    base = base.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_');
+    if (/\.[A-Za-z0-9]{1,6}$/.test(base)) return base;
 
+    var ext = extFromMime(mime) || extOf(fallbackUrl) ||
+              (guessMediaType(fallbackUrl) === 'video' ? 'mp4' :
+               guessMediaType(fallbackUrl) === 'image' ? 'png' : 'bin');
+    return base + '.' + ext;
+  }
+
+  function handleLink(item, link) {
+    if (!link || !link.url) { toast('链接无效', 'error'); return; }
+
+    var url = link.url;
+
+    /* 内嵌数据 → 直接下载 */
     if (isDataUrl(url)) {
       var blob;
       try { blob = dataUrlToBlob(url); }
-      catch (e) { toast('内容无法读取', 'error'); return 'fail'; }
-
-      var fname = filenameFor(item, blob.type);
-      browserDownload(blob, fname);
-      toast('已开始下载 ' + fname, 'success');
-      return 'ok';
+      catch (e) { toast('内容无法读取', 'error'); return; }
+      var fn = filenameFor(item, blob.type, '');
+      browserDownload(blob, fn);
+      toast('已开始下载 ' + fn, 'success');
+      return;
     }
 
-    var fname2 = filenameFor(item, '');
-    browserDownloadUrl(url, fname2);
-    toast('已开始下载 ' + fname2, 'success');
-    return 'ok';
+    /* 网盘或页面链接 → 新窗口打开 */
+    if (!shouldDownload(url)) {
+      var w = window.open(url, '_blank', 'noopener');
+      if (!w) {
+        toast('浏览器拦截了新窗口，请允许弹出窗口', 'error', 4200);
+      } else {
+        toast('已打开 ' + (link.name || '链接'), 'success');
+      }
+      return;
+    }
+
+    /* 直链 → 下载 */
+    var fname = filenameFor(item, '', url);
+    browserDownloadUrl(url, fname);
+    toast('已开始下载 ' + fname, 'success');
   }
 
   async function downloadAll() {
@@ -1201,13 +1556,20 @@
     var panCount = 0;
 
     for (var i = 0; i < items.length; i++) {
-      if (!items[i].url) continue;
-      if (items[i].pan) panCount++;
-      else direct.push(items[i]);
+      var it = items[i];
+      for (var j = 0; j < it.links.length; j++) {
+        var l = it.links[j];
+        if (!l.url) continue;
+        if (!isDataUrl(l.url) && shouldDownload(l.url)) {
+          direct.push({ item: it, link: l });
+        } else {
+          panCount++;
+        }
+      }
     }
 
     if (!direct.length) {
-      if (panCount) toast('当前列表都是网盘链接，请逐个打开', 'error', 4200);
+      if (panCount) toast('当前列表没有可直链下载的内容，请逐个点击', 'error', 4200);
       else toast('没有可下载的内容', 'error');
       return;
     }
@@ -1219,10 +1581,13 @@
 
     for (var n = 0; n < direct.length; n++) {
       allBtn.textContent = '下载中 ' + (n + 1) + '/' + direct.length;
-      var r = await downloadItem(direct[n]);
-      if (r === 'ok') done++;
-      else fail++;
-      await new Promise(function (resolve) { setTimeout(resolve, 180); });
+      try {
+        handleLink(direct[n].item, direct[n].link);
+        done++;
+      } catch (e) {
+        fail++;
+      }
+      await new Promise(function (resolve) { setTimeout(resolve, 200); });
     }
 
     allBtn.disabled = false;
@@ -1230,37 +1595,33 @@
 
     var msg = '完成：成功 ' + done + ' 项';
     if (fail) msg += '，失败 ' + fail + ' 项';
-    if (panCount) msg += '；' + panCount + ' 个网盘链接需手动打开';
+    if (panCount) msg += '；另有 ' + panCount + ' 个链接需手动打开';
     toast(msg, fail ? 'error' : 'success', 5000);
   }
 
   /* ============ 预览 ============ */
 
   function openLightbox(item) {
-    if (!item || !item.url) return;
-    if (item.pan) { openPan(item); return; }
-    if (item.type !== 'image' && item.type !== 'video') {
-      toast('该项暂不支持预览', 'error');
-      return;
-    }
+    if (!item || !item.preview) return;
+    if (item.previewType !== 'image' && item.previewType !== 'video') return;
 
     lbBody.innerHTML = '';
 
-    if (item.type === 'video') {
+    if (item.previewType === 'video') {
       var v = document.createElement('video');
-      v.src = item.url;
+      v.src = item.preview;
       v.controls = true;
       v.autoplay = true;
       lbBody.appendChild(v);
     } else {
       var img = document.createElement('img');
-      img.src = item.url;
+      img.src = item.preview;
       img.alt = '';
       lbBody.appendChild(img);
     }
 
     var nm = item.name || '预览';
-    lbCap.innerHTML = '<b>' + esc(nm) + '</b>' + esc(item.dir || '默认下载目录');
+    lbCap.innerHTML = '<b>' + esc(nm) + '</b>' + esc(item.desc || item.dir || '');
     lightbox.classList.add('on');
   }
 
@@ -1269,9 +1630,141 @@
     setTimeout(function () { lbBody.innerHTML = ''; }, 300);
   }
 
+  /* ============ 新增表单 ============ */
+
+  var MAX_LINKS = 8;
+
+  function addLinkRow(name, url, code) {
+    if (linkBox.querySelectorAll('.link-row').length >= MAX_LINKS) {
+      toast('最多 ' + MAX_LINKS + ' 个链接', 'error');
+      return;
+    }
+
+    var row = document.createElement('div');
+    row.className = 'link-row';
+    row.innerHTML =
+      '<input class="lr-name" placeholder="名称，留空自动识别" value="' + escAttr(name || '') + '">' +
+      '<input class="lr-url" placeholder="https://..." value="' + escAttr(url || '') + '">' +
+      '<input class="lr-code" placeholder="提取码" value="' + escAttr(code || '') + '">' +
+      '<button type="button" class="link-remove" title="删除该行">×</button>';
+
+    row.querySelector('.link-remove').addEventListener('click', function () {
+      var rows = linkBox.querySelectorAll('.link-row');
+      if (rows.length <= 1) { toast('至少保留一个链接', 'error'); return; }
+      row.remove();
+    });
+
+    linkBox.appendChild(row);
+  }
+
+  function resetForm() {
+    fName.value = '';
+    fDesc.value = '';
+    fDir.value = '';
+    fPreview.value = '';
+    linkBox.innerHTML = '';
+    addLinkRow('', '', '');
+    addLinkRow('', '', '');
+  }
+
+  function openEditModal() {
+    resetForm();
+    editModal.classList.add('on');
+    setTimeout(function () { fName.focus(); }, 220);
+  }
+
+  function generateJSON() {
+    var name = fName.value.trim();
+    if (!name) { toast('请填写名称', 'error'); fName.focus(); return; }
+
+    var rows = linkBox.querySelectorAll('.link-row');
+    var links = [];
+
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      var u = r.querySelector('.lr-url').value.trim();
+      if (!u) continue;
+
+      var n = r.querySelector('.lr-name').value.trim() || detectPan(u) || '下载';
+      var c = r.querySelector('.lr-code').value.trim();
+
+      var obj = { name: n, url: u };
+      if (c) obj.code = c;
+      links.push(obj);
+    }
+
+    if (!links.length) { toast('至少填写一个下载链接', 'error'); return; }
+
+    var out = { name: name };
+
+    var desc = fDesc.value.trim();
+    if (desc) out.desc = desc;
+
+    var dir = fDir.value.trim();
+    if (dir) out.downloadDir = dir;
+
+    var prev = fPreview.value.trim();
+    if (prev) out.preview = prev;
+
+    out.links = links;
+
+    resultBox.value = JSON.stringify(out, null, 2);
+    editModal.classList.remove('on');
+    setTimeout(function () {
+      resultModal.classList.add('on');
+      resultBox.scrollTop = 0;
+    }, 180);
+  }
+
+  function copyResult() {
+    var txt = resultBox.value;
+    if (!txt) return;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () {
+        toast('已复制到剪贴板', 'success');
+      }).catch(function () {
+        fallbackCopy(txt);
+      });
+    } else {
+      fallbackCopy(txt);
+    }
+  }
+
+  function fallbackCopy(txt) {
+    resultBox.focus();
+    resultBox.select();
+    try {
+      var ok = document.execCommand('copy');
+      if (ok) toast('已复制到剪贴板', 'success');
+      else toast('复制失败，请手动选择复制', 'error', 4200);
+    } catch (e) {
+      toast('复制失败，请手动选择复制', 'error', 4200);
+    }
+    window.getSelection().removeAllRanges();
+  }
+
   /* ============ 事件 ============ */
 
   $('reloadBtn').addEventListener('click', boot);
+
+  addBtn.addEventListener('click', openEditModal);
+  $('editClose').addEventListener('click', function () { editModal.classList.remove('on'); });
+  $('editCancel').addEventListener('click', function () { editModal.classList.remove('on'); });
+  $('genBtn').addEventListener('click', generateJSON);
+
+  $('addLinkBtn').addEventListener('click', function () { addLinkRow('', '', ''); });
+
+  $('resultClose').addEventListener('click', function () { resultModal.classList.remove('on'); });
+  $('resultDone').addEventListener('click', function () { resultModal.classList.remove('on'); });
+  $('copyBtn').addEventListener('click', copyResult);
+
+  editModal.addEventListener('click', function (e) {
+    if (e.target === editModal) editModal.classList.remove('on');
+  });
+  resultModal.addEventListener('click', function (e) {
+    if (e.target === resultModal) resultModal.classList.remove('on');
+  });
 
   var searchTimer;
   searchEl.addEventListener('input', function () {
@@ -1280,13 +1773,11 @@
   });
 
   gridEl.addEventListener('click', function (e) {
-    var btn = e.target.closest('button[data-act]');
+    var btn = e.target.closest('button[data-act="link"]');
     if (btn) {
-      var act = btn.dataset.act;
       var item = items[+btn.dataset.i];
-      if (act === 'dl') downloadItem(item);
-      else if (act === 'pan') openPan(item);
-      else if (act === 'view') openLightbox(item);
+      var link = item && item.links[+btn.dataset.j];
+      if (item && link) handleLink(item, link);
       return;
     }
     var thumb = e.target.closest('.thumb.previewable');
@@ -1305,11 +1796,6 @@
     if (e.target === lightbox) closeLightbox();
   });
 
-  window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && lightbox.classList.contains('on')) closeLightbox();
-  });
-
-  /* 开屏加载 */
   boot();
 })();
 </script>
