@@ -12,11 +12,6 @@
     ]
   },
   {
-    "name": "T_Grass_Diffuse.png",
-    "downloadDir": "/Game/Textures/Terrain",
-    "url": "https://cdn.example.com/tex/grass02.png"
-  },
-  {
     "name": "SK_Intro.mp4",
     "downloadDir": "/Game/Movies",
     "url": "https://cdn.example.com/video/intro.mp4"
