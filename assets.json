@@ -1,0 +1,21 @@
+[
+  {
+    "name": "T_Rock_01.png",
+    "downloadDir": "/Game/Textures/Terrain",
+    "url": "https://cdn.example.com/tex/rock01.png"
+  },
+  {
+    "name": "T_Grass_Diffuse.png",
+    "downloadDir": "/Game/Textures/Terrain",
+    "url": "https://cdn.example.com/tex/grass02.png"
+  },
+  {
+    "name": "SK_Intro.mp4",
+    "downloadDir": "/Game/Movies",
+    "url": "https://cdn.example.com/video/intro.mp4"
+  },
+  {
+    "name": "T_Metal_Rough.png",
+    "url": "https://cdn.example.com/tex/metal03.png"
+  }
+]
