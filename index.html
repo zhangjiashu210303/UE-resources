@@ -34,10 +34,7 @@
 
   /* ---------- 背景极光 ---------- */
   .aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-  .aurora i{
-    position:absolute;border-radius:50%;filter:blur(110px);
-    opacity:.30;will-change:transform;
-  }
+  .aurora i{position:absolute;border-radius:50%;filter:blur(110px);opacity:.30;will-change:transform}
   .aurora i:nth-child(1){width:52vw;height:52vw;left:-12vw;top:-18vw;background:#7c5cff;animation:float1 22s ease-in-out infinite}
   .aurora i:nth-child(2){width:44vw;height:44vw;right:-10vw;top:-6vw;background:#00b3ff;opacity:.22;animation:float2 26s ease-in-out infinite}
   .aurora i:nth-child(3){width:48vw;height:48vw;left:22vw;bottom:-26vw;background:#f857a6;opacity:.18;animation:float3 30s ease-in-out infinite}
@@ -98,26 +95,6 @@
   .btn.primary:hover{box-shadow:0 16px 38px -12px rgba(124,92,255,1)}
   .btn svg{width:15px;height:15px;flex:none}
 
-  /* ---------- 状态条 ---------- */
-  .status{
-    display:flex;align-items:center;gap:12px;
-    padding:16px 20px;margin-bottom:22px;
-    border-radius:16px;
-    border:1px solid var(--border);
-    background:var(--panel);
-    font-size:13.5px;color:var(--muted);
-  }
-  .status.err{border-color:rgba(255,95,109,.3);background:rgba(255,95,109,.07);color:#ffb3b8}
-  .spinner{
-    width:16px;height:16px;flex:none;
-    border:2px solid rgba(255,255,255,.15);
-    border-top-color:var(--accent);
-    border-radius:50%;
-    animation:spin .75s linear infinite;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .status .retry{margin-left:auto}
-
   /* ---------- 工具栏 ---------- */
   .toolbar{
     display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -133,7 +110,7 @@
     font-size:12.5px;color:var(--muted);
   }
   .pill b{color:var(--text);font-weight:650}
-  .pill.root{max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pill.root{max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .pill.root b{color:#a99bff}
 
   .search{
@@ -145,6 +122,7 @@
   }
   .search::placeholder{color:#666b7e}
   .search:focus{border-color:rgba(124,92,255,.6);background:rgba(124,92,255,.07);box-shadow:0 0 0 3.5px rgba(124,92,255,.14)}
+  .search:disabled{opacity:.4;cursor:not-allowed}
 
   /* ---------- 卡片网格 ---------- */
   .grid{
@@ -179,7 +157,7 @@
   .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.2,.8,.3,1)}
   .card:hover .thumb img{transform:scale(1.065)}
   .thumb.previewable{cursor:zoom-in}
-  .thumb .ph{font-size:12.5px;color:#5b6178;letter-spacing:.5px}
+  .thumb .ph{font-size:12.5px;color:#5b6178;letter-spacing:.5px;padding:0 12px;text-align:center}
   .thumb-veil{
     position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(180deg,transparent 45%,rgba(7,8,12,.72));
@@ -221,7 +199,6 @@
   }
   .dir svg{width:12px;height:12px;flex:none;opacity:.75}
   .dir span{overflow:hidden;text-overflow:ellipsis}
-  .dir.src{color:#70768a;margin-top:4px}
 
   .ops{display:flex;gap:8px;padding:0 16px 16px}
   .act{
@@ -240,29 +217,47 @@
   }
   .act.primary:hover{filter:brightness(1.12)}
   .act.pan{
-    background:linear-gradient(135deg,rgba(224,169,74,.9),rgba(214,132,45,.9));
+    background:linear-gradient(135deg,rgba(224,169,74,.92),rgba(214,132,45,.92));
     border-color:transparent;color:#2a1e05;
     box-shadow:0 8px 20px -10px rgba(224,169,74,.9);
   }
-  .act.pan:hover{filter:brightness(1.1)}
+  .act.pan:hover{filter:brightness(1.08)}
 
   /* ---------- 骨架屏 ---------- */
-  .skel{
-    background:linear-gradient(90deg,#161a20 25%,#1f242b 37%,#161a20 63%);
-    background-size:200% 100%;
-    animation:shimmer 1.4s ease-in-out infinite;
-  }
+  .skel{background:linear-gradient(90deg,#12141a 25%,#1c1f27 37%,#12141a 63%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite}
   @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-  .skel-card{animation:none;border-color:rgba(255,255,255,.05)}
+  .skel-card{border-color:rgba(255,255,255,.05);animation:none}
   .skel-thumb{aspect-ratio:4/3;border-bottom:1px solid var(--border)}
   .skel-body{padding:15px 16px 16px}
   .skel-line{height:11px;border-radius:5px;margin-bottom:10px}
   .skel-line:last-child{margin-bottom:0}
 
+  .sentinel{grid-column:1/-1;height:1px}
+
   .noresult{
     grid-column:1/-1;text-align:center;padding:70px 20px;
     color:var(--muted);font-size:14px;
   }
+
+  /* ---------- 空状态 / 错误 ---------- */
+  .statebox{
+    grid-column:1/-1;
+    text-align:center;
+    padding:60px 24px 66px;
+  }
+  .statebox .icon{
+    width:72px;height:72px;margin:0 auto 22px;border-radius:22px;
+    display:grid;place-items:center;
+    background:linear-gradient(140deg,rgba(124,92,255,.24),rgba(74,139,255,.14));
+    border:1px solid rgba(124,92,255,.3);
+    font-size:30px;
+  }
+  .statebox .icon.warn{
+    background:linear-gradient(140deg,rgba(255,95,109,.2),rgba(255,95,109,.08));
+    border-color:rgba(255,95,109,.35);
+  }
+  .statebox h3{margin:0 0 8px;font-size:17px;font-weight:650}
+  .statebox p{margin:0 0 22px;font-size:13.5px;color:var(--muted)}
 
   /* ---------- 灯箱 ---------- */
   .lightbox{
@@ -348,43 +343,33 @@
       <div class="logo">◈</div>
       <div>
         <h1>资源下载列表</h1>
-        <p>自动读取同目录下的 assets.json</p>
+        <p>选择需要的内容下载</p>
       </div>
     </div>
     <div class="top-actions">
       <button class="btn" id="reloadBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
-        重新加载
+        刷新
       </button>
     </div>
   </header>
 
-  <!-- 状态条 -->
-  <div class="status" id="status">
-    <span class="spinner" id="spin"></span>
-    <span id="statusText">正在读取 assets.json …</span>
-    <button class="btn retry" id="retryBtn" hidden>重试</button>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="pill" id="count">共 <b>—</b> 项</div>
+      <div class="pill root" id="rootPill">保存到：浏览器下载目录</div>
+    </div>
+    <div class="toolbar-right">
+      <input class="search" id="search" placeholder="搜索名称或目录" autocomplete="off" disabled>
+      <button class="btn" id="rootBtn">选择保存位置</button>
+      <button class="btn primary" id="allBtn" disabled>全部下载</button>
+    </div>
   </div>
 
-  <!-- 工作区 -->
-  <section id="workspace" hidden>
-    <div class="toolbar">
-      <div class="toolbar-left">
-        <div class="pill" id="count">共 <b>0</b> 项</div>
-        <div class="pill root" id="rootPill">保存到：浏览器下载目录</div>
-      </div>
-      <div class="toolbar-right">
-        <input class="search" id="search" placeholder="搜索名称或目录" autocomplete="off">
-        <button class="btn" id="rootBtn">选择保存位置</button>
-        <button class="btn primary" id="allBtn">全部下载</button>
-      </div>
-    </div>
-    <div class="grid" id="grid"></div>
-  </section>
+  <div class="grid" id="grid"></div>
 
 </div>
 
-<!-- 灯箱 -->
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">✕</button>
   <div id="lbBody"></div>
@@ -399,6 +384,7 @@
 
   /* ============ 配置 ============ */
   var JSON_URL = './assets.json';
+  var BATCH = 12;
 
   /* 网盘域名 → 名称 */
   var PAN_LIST = [
@@ -451,25 +437,24 @@
   var items = [];
   var rootHandle = null;
   var supportsFS = typeof window.showDirectoryPicker === 'function';
-  var renderToken = 0;
+  var filtered = [];
+  var loadedPos = 0;
+  var io = null;
+  var sentinel = null;
 
   /* ============ DOM ============ */
   var $ = function (id) { return document.getElementById(id); };
 
-  var statusEl   = $('status');
-  var statusText = $('statusText');
-  var spinEl     = $('spin');
-  var retryBtn   = $('retryBtn');
-  var workEl     = $('workspace');
-  var gridEl     = $('grid');
-  var countEl    = $('count');
-  var rootPill   = $('rootPill');
-  var searchEl   = $('search');
-  var allBtn     = $('allBtn');
-  var lightbox   = $('lightbox');
-  var lbBody     = $('lbBody');
-  var lbCap      = $('lbCaption');
-  var toastBox   = $('toasts');
+  var gridEl    = $('grid');
+  var countEl   = $('count');
+  var rootPill  = $('rootPill');
+  var searchEl  = $('search');
+  var allBtn    = $('allBtn');
+  var rootBtn   = $('rootBtn');
+  var lightbox  = $('lightbox');
+  var lbBody    = $('lbBody');
+  var lbCap     = $('lbCaption');
+  var toastBox  = $('toasts');
 
   /* ============ 工具 ============ */
 
@@ -499,7 +484,6 @@
     return 'file';
   }
 
-  /* 判断是否网盘链接，返回网盘名或 null */
   function detectPan(url) {
     if (!url || url.indexOf('data:') === 0) return null;
     var host;
@@ -541,8 +525,7 @@
   function normalize(raw) {
     if (typeof raw === 'string') {
       var t = raw.trim();
-      var p0 = detectPan(t);
-      return { name: '', dir: '', url: t, type: guessType(t, ''), pan: p0 };
+      return { name: '', dir: '', url: t, type: guessType(t, ''), pan: detectPan(t) };
     }
     if (!raw || typeof raw !== 'object') return null;
 
@@ -618,12 +601,6 @@
       .trim();
   }
 
-  function shortUrl(u) {
-    if (isDataUrl(u)) return 'data:…（' + u.length + ' 字符）';
-    var s = u.replace(/^https?:\/\//i, '');
-    return s.length > 60 ? s.slice(0, 57) + '…' : s;
-  }
-
   function toast(msg, type, ms) {
     var el = document.createElement('div');
     el.className = 'toast' + (type ? ' ' + type : '');
@@ -633,28 +610,6 @@
       el.classList.add('out');
       el.addEventListener('animationend', function () { el.remove(); }, { once: true });
     }, ms || 3400);
-  }
-
-  /* ============ 状态条 ============ */
-
-  function statusLoading(msg) {
-    statusEl.hidden = false;
-    statusEl.className = 'status';
-    spinEl.hidden = false;
-    retryBtn.hidden = true;
-    statusText.textContent = msg;
-  }
-
-  function statusError(msg) {
-    statusEl.hidden = false;
-    statusEl.className = 'status err';
-    spinEl.hidden = true;
-    retryBtn.hidden = false;
-    statusText.textContent = msg;
-  }
-
-  function statusHide() {
-    statusEl.hidden = true;
   }
 
   /* ============ 骨架屏 ============ */
@@ -674,111 +629,152 @@
     gridEl.innerHTML = html;
   }
 
-  /* ============ 自动加载 ============ */
+  /* ============ 加载 ============ */
 
-  async function boot() {
-    renderToken++;
+  function boot() {
+    if (io) { io.disconnect(); io = null; }
     items = [];
-    workEl.hidden = false;
-    countEl.innerHTML = '共 <b>0</b> 项';
+    filtered = [];
+    loadedPos = 0;
+
+    countEl.innerHTML = '共 <b>—</b> 项';
+    searchEl.disabled = true;
+    allBtn.disabled = true;
+    searchEl.value = '';
     showSkeleton(8);
-    statusLoading('正在读取 ' + JSON_URL + ' …');
 
-    try {
-      var res = await fetch(JSON_URL, { cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText);
-      var text = await res.text();
-      if (!text.trim()) throw new Error('文件内容为空');
+    var res, text;
 
-      statusLoading('正在解析 …');
-      var ok = parseAndFill(text);
-      if (!ok) throw new Error('JSON 结构无法识别，请检查字段写法');
+    fetch(JSON_URL, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('bad status');
+        res = r;
+        return r.text();
+      })
+      .then(function (t) {
+        text = t;
+        if (!text.trim()) throw new Error('empty');
+        var data = JSON.parse(text);
+        var list;
+        if (Array.isArray(data))                     list = data;
+        else if (data && Array.isArray(data.items))  list = data.items;
+        else if (data && Array.isArray(data.list))   list = data.list;
+        else if (data && Array.isArray(data.assets)) list = data.assets;
+        else if (data && Array.isArray(data.files))  list = data.files;
+        else if (data && Array.isArray(data.images)) list = data.images;
+        else if (data && Array.isArray(data.data))   list = data.data;
+        else if (data && typeof data === 'object')   list = [data];
+        else throw new Error('bad shape');
 
-      statusHide();
-      render();
-    } catch (e) {
-      gridEl.innerHTML = '';
-      statusError(
-        '读取 ' + JSON_URL + ' 失败：' + (e.message || e) +
-        '　·　GitHub Pages 可直接读取；本地请用 http 服务器打开，不要 file:// 双击'
-      );
-    }
+        var parsed = [];
+        for (var i = 0; i < list.length; i++) {
+          var n = normalize(list[i]);
+          if (n) parsed.push(n);
+        }
+        if (!parsed.length) throw new Error('empty list');
+
+        items = parsed;
+        onLoaded();
+      })
+      .catch(function () {
+        showError();
+      });
   }
 
-  function parseAndFill(text) {
-    var data;
-    try { data = JSON.parse(text); }
-    catch (e) { throw new Error('JSON 解析失败：' + e.message); }
-
-    var list;
-    if (Array.isArray(data))                     list = data;
-    else if (data && Array.isArray(data.items))  list = data.items;
-    else if (data && Array.isArray(data.list))   list = data.list;
-    else if (data && Array.isArray(data.assets)) list = data.assets;
-    else if (data && Array.isArray(data.files))  list = data.files;
-    else if (data && Array.isArray(data.images)) list = data.images;
-    else if (data && Array.isArray(data.data))   list = data.data;
-    else if (data && typeof data === 'object')   list = [data];
-    else return false;
-
-    var parsed = [];
-    for (var i = 0; i < list.length; i++) {
-      var n = normalize(list[i]);
-      if (n) parsed.push(n);
-    }
-    if (!parsed.length) return false;
-
-    items = parsed;
-    return true;
+  function onLoaded() {
+    searchEl.disabled = false;
+    allBtn.disabled = false;
+    resetAndRender();
   }
 
-  /* ============ 渲染（分批动态出现） ============ */
+  function showError() {
+    countEl.innerHTML = '共 <b>—</b> 项';
+    searchEl.disabled = true;
+    allBtn.disabled = true;
+    gridEl.innerHTML =
+      '<div class="statebox">' +
+        '<div class="icon warn">!</div>' +
+        '<h3>资源列表加载失败</h3>' +
+        '<p>请检查网络连接后重新加载</p>' +
+        '<button class="btn primary" id="retryBtn">重新加载</button>' +
+      '</div>';
+    var rb = $('retryBtn');
+    if (rb) rb.addEventListener('click', boot);
+  }
 
-  function render() {
-    var token = ++renderToken;
+  function showEmpty() {
+    gridEl.innerHTML =
+      '<div class="statebox">' +
+        '<div class="icon">◈</div>' +
+        '<h3>暂无资源</h3>' +
+        '<p>资源列表更新后会显示在这里</p>' +
+      '</div>';
+  }
+
+  /* ============ 渲染（滚动懒加载） ============ */
+
+  function resetAndRender() {
+    if (io) { io.disconnect(); io = null; }
+    if (sentinel && sentinel.parentNode) sentinel.remove();
+
     var q = searchEl.value.trim().toLowerCase();
-    var shown = [];
-
+    filtered = [];
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
       var hay = (it.name + ' ' + it.dir + ' ' + it.url).toLowerCase();
-      if (!q || hay.indexOf(q) !== -1) shown.push(i);
+      if (!q || hay.indexOf(q) !== -1) filtered.push(i);
     }
 
     gridEl.innerHTML = '';
+    loadedPos = 0;
 
-    if (!shown.length) {
-      gridEl.innerHTML = '<div class="noresult">没有匹配的条目</div>';
-      updateCount(0, items.length, q, true);
+    if (!filtered.length) {
+      if (items.length) {
+        gridEl.innerHTML = '<div class="noresult">没有匹配的条目</div>';
+      } else {
+        showEmpty();
+      }
+      updateCount(q);
       return;
     }
 
-    var pos = 0;
-    var BATCH = 8;
+    sentinel = document.createElement('div');
+    sentinel.className = 'sentinel';
 
-    function step() {
-      if (token !== renderToken) return;
-
-      var end = Math.min(pos + BATCH, shown.length);
-      var frag = document.createDocumentFragment();
-
-      for (var k = pos; k < end; k++) {
-        frag.appendChild(buildCard(items[shown[k]], shown[k], k - pos));
-      }
-      pos = end;
-      gridEl.appendChild(frag);
-      updateCount(pos, items.length, q, pos >= shown.length);
-
-      if (pos < shown.length) requestAnimationFrame(step);
-    }
-
-    step();
+    loadMore(q);
   }
 
-  function updateCount(shownCount, total, hasQuery, done) {
-    var txt = '共 <b>' + total + '</b> 项';
-    if (hasQuery) txt += '　匹配 <b>' + (done ? shownCount : '…') + '</b>';
-    if (!done && hasQuery) txt = '共 <b>' + total + '</b> 项　筛选中 <b>' + shownCount + '</b>…';
+  function loadMore(q) {
+    if (loadedPos >= filtered.length) return;
+
+    var end = Math.min(loadedPos + BATCH, filtered.length);
+    var frag = document.createDocumentFragment();
+
+    for (var k = loadedPos; k < end; k++) {
+      frag.appendChild(buildCard(items[filtered[k]], filtered[k], k - loadedPos));
+    }
+    loadedPos = end;
+    gridEl.appendChild(frag);
+
+    if (loadedPos < filtered.length) {
+      if (!io) {
+        io = new IntersectionObserver(function (entries) {
+          if (entries[0].isIntersecting) loadMore(searchEl.value.trim().toLowerCase());
+        }, { rootMargin: '500px 0px' });
+      }
+      gridEl.appendChild(sentinel);
+      io.observe(sentinel);
+    } else {
+      if (io) { io.disconnect(); io = null; }
+      if (sentinel && sentinel.parentNode) sentinel.remove();
+    }
+
+    updateCount(q);
+  }
+
+  function updateCount(q) {
+    var txt = '共 <b>' + items.length + '</b> 项';
+    if (q) txt += '　匹配 <b>' + filtered.length + '</b> 项';
     countEl.innerHTML = txt;
   }
 
@@ -786,7 +782,7 @@
     var card = document.createElement('article');
     card.className = 'card';
     card.dataset.i = idx;
-    card.style.animationDelay = Math.min(order * 45, 360) + 'ms';
+    card.style.animationDelay = Math.min(order * 45, 400) + 'ms';
 
     var hasUrl = !!item.url;
     var isPan = !!item.pan;
@@ -796,7 +792,7 @@
     var thumb = document.createElement('div');
     thumb.className = 'thumb';
 
-    if (hasUrl && !isPan && item.type === 'image') {
+    if (canPreview && item.type === 'image') {
       var img = document.createElement('img');
       img.alt = '';
       img.loading = 'lazy';
@@ -817,7 +813,7 @@
       var veil = document.createElement('div');
       veil.className = 'thumb-veil';
       thumb.appendChild(veil);
-    } else if (hasUrl && !isPan && item.type === 'video') {
+    } else if (canPreview && item.type === 'video') {
       var v = document.createElement('video');
       v.muted = true;
       v.preload = 'metadata';
@@ -840,17 +836,15 @@
     } else {
       var ph3 = document.createElement('span');
       ph3.className = 'ph';
-      ph3.textContent = isPan ? item.pan + ' 分享' : (hasUrl ? '无预览' : '无地址');
+      ph3.textContent = isPan ? item.pan + ' 分享' : (hasUrl ? '暂无预览' : '暂无内容');
       thumb.appendChild(ph3);
     }
 
-    /* 类型角标 */
     var badge = document.createElement('span');
     badge.className = 'badge ' + item.type;
     badge.textContent = item.type;
     thumb.appendChild(badge);
 
-    /* 网盘角标 */
     if (isPan) {
       var tag = document.createElement('span');
       tag.className = 'pan-tag';
@@ -862,12 +856,10 @@
     var meta = document.createElement('div');
     meta.className = 'meta';
 
-    var displayName = item.name || (item.url ? shortUrl(item.url) : '未命名');
+    var displayName = item.name || (item.url && !isDataUrl(item.url)
+      ? decodeURIComponent((item.url.split('#')[0].split('?')[0].split('/').pop() || '未命名'))
+      : '未命名');
     var dirText = item.dir || '浏览器下载目录';
-
-    var srcLine = item.url && !isDataUrl(item.url)
-      ? '<div class="dir src"><span title="' + esc(item.url) + '">' + esc(shortUrl(item.url)) + '</span></div>'
-      : '';
 
     meta.innerHTML =
       '<div class="name" title="' + esc(displayName) + '">' + esc(displayName) + '</div>' +
@@ -876,8 +868,7 @@
           '<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/>' +
         '</svg>' +
         '<span title="' + esc(dirText) + '">' + esc(dirText) + '</span>' +
-      '</div>' +
-      srcLine;
+      '</div>';
 
     /* --- 按钮 --- */
     var ops = document.createElement('div');
@@ -972,22 +963,18 @@
     return await res.blob();
   }
 
-  /* 网盘：直接新标签打开 */
   function openPan(item) {
     if (!item || !item.url) return;
     var w = window.open(item.url, '_blank', 'noopener');
     if (!w) {
-      toast('浏览器拦截了新标签，请允许弹出窗口', 'error', 4200);
+      toast('浏览器拦截了新窗口，请允许弹出窗口', 'error', 4200);
     } else {
       toast('已打开 ' + item.pan, 'success');
     }
   }
 
-  /* 普通下载 */
   async function downloadItem(item) {
-    if (!item || !item.url) { toast('该项没有下载地址', 'error'); return 'fail'; }
-
-    /* 网盘走打开逻辑 */
+    if (!item || !item.url) { toast('该项没有可下载的内容', 'error'); return 'fail'; }
     if (item.pan) { openPan(item); return 'pan'; }
 
     var url = item.url;
@@ -995,12 +982,12 @@
     if (isDataUrl(url)) {
       var blob;
       try { blob = dataUrlToBlob(url); }
-      catch (e) { toast('数据无效：' + e.message, 'error'); return 'fail'; }
+      catch (e) { toast('内容无法读取', 'error'); return 'fail'; }
 
       var fname = filenameFor(item, blob.type);
       if (rootHandle) {
         try { await writeToDir(item.dir, fname, blob); toast('已保存 ' + fname, 'success'); return 'ok'; }
-        catch (e) { toast('写入失败：' + (e.message || e), 'error'); return 'fail'; }
+        catch (e) { toast('保存失败，请重试', 'error'); return 'fail'; }
       } else {
         browserDownload(blob, fname);
         toast('已开始下载 ' + fname, 'success');
@@ -1018,7 +1005,7 @@
       } catch (e) {
         var fallbackName = filenameFor(item, '');
         browserDownloadUrl(url, fallbackName);
-        toast('跨域受限，已交给浏览器下载：' + fallbackName, 'success', 4200);
+        toast('已开始下载 ' + fallbackName, 'success', 4200);
         return 'fallback';
       }
     }
@@ -1040,8 +1027,8 @@
     }
 
     if (!direct.length) {
-      if (panCount) toast('全部是网盘链接，请逐个点击“打开网盘”', 'error', 4200);
-      else toast('没有可下载的条目', 'error');
+      if (panCount) toast('当前列表都是网盘链接，请逐个打开', 'error', 4200);
+      else toast('没有可下载的内容', 'error');
       return;
     }
 
@@ -1053,13 +1040,12 @@
     var label = allBtn.textContent;
     allBtn.disabled = true;
 
-    var done = 0, fail = 0, fallback = 0;
+    var done = 0, fail = 0;
 
     for (var n = 0; n < direct.length; n++) {
       allBtn.textContent = '下载中 ' + (n + 1) + '/' + direct.length;
       var r = await downloadItem(direct[n]);
-      if (r === 'ok') done++;
-      else if (r === 'fallback') { done++; fallback++; }
+      if (r === 'ok' || r === 'fallback') done++;
       else fail++;
       await new Promise(function (resolve) { setTimeout(resolve, rootHandle ? 0 : 180); });
     }
@@ -1068,9 +1054,8 @@
     allBtn.textContent = label;
 
     var msg = '完成：成功 ' + done + ' 项';
-    if (fallback) msg += '（' + fallback + ' 项走浏览器下载）';
     if (fail) msg += '，失败 ' + fail + ' 项';
-    if (panCount) msg += '；另有 ' + panCount + ' 个网盘链接需手动打开';
+    if (panCount) msg += '；' + panCount + ' 个网盘链接需手动打开';
     toast(msg, fail ? 'error' : 'success', 5000);
   }
 
@@ -1080,7 +1065,7 @@
     if (!item || !item.url) return;
     if (item.pan) { openPan(item); return; }
     if (item.type !== 'image' && item.type !== 'video') {
-      toast('该项不支持预览', 'error');
+      toast('该项暂不支持预览', 'error');
       return;
     }
 
@@ -1099,7 +1084,7 @@
       lbBody.appendChild(img);
     }
 
-    var nm = item.name || (item.url ? shortUrl(item.url) : '未命名');
+    var nm = item.name || '预览';
     lbCap.innerHTML = '<b>' + esc(nm) + '</b>' + esc(item.dir || '浏览器下载目录');
     lightbox.classList.add('on');
   }
@@ -1112,12 +1097,11 @@
   /* ============ 事件 ============ */
 
   $('reloadBtn').addEventListener('click', boot);
-  retryBtn.addEventListener('click', boot);
 
   var searchTimer;
   searchEl.addEventListener('input', function () {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(render, 140);
+    searchTimer = setTimeout(resetAndRender, 160);
   });
 
   gridEl.addEventListener('click', function (e) {
@@ -1139,14 +1123,15 @@
     }
   });
 
-  $('rootBtn').addEventListener('click', async function () {
-    if (!supportsFS) {
-      toast('当前浏览器不支持选择目录，将使用默认下载目录', 'error', 4200);
-      return;
-    }
-    var ok = await ensureRoot();
-    if (ok) toast('保存位置已设置：' + rootHandle.name, 'success');
-  });
+  if (supportsFS) {
+    rootBtn.addEventListener('click', async function () {
+      var ok = await ensureRoot();
+      if (ok) toast('保存位置已设置：' + rootHandle.name, 'success');
+    });
+  } else {
+    rootBtn.hidden = true;
+    rootPill.textContent = '保存到：浏览器下载目录';
+  }
 
   allBtn.addEventListener('click', downloadAll);
 
@@ -1159,11 +1144,7 @@
     if (e.key === 'Escape' && lightbox.classList.contains('on')) closeLightbox();
   });
 
-  if (!supportsFS) {
-    rootPill.textContent = '保存到：浏览器下载目录（浏览器不支持目录选择）';
-  }
-
-  /* 立即开屏加载 */
+  /* 开屏自动加载 */
   boot();
 })();
 </script>
