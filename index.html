@@ -17,9 +17,13 @@
   html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     -webkit-font-smoothing:antialiased;overscroll-behavior:none}
+
   .stage{position:fixed;inset:0;overflow:hidden}
 
-  .hero{position:absolute;inset:0;z-index:2;overflow:hidden;display:flex;flex-direction:column;
+  /* ============ 主界面 ============ */
+  .hero{
+    position:absolute;inset:0;z-index:2;overflow:hidden;
+    display:flex;flex-direction:column;
     background:
       radial-gradient(ellipse 80% 60% at 18% 10%, rgba(124,92,255,.30), transparent 62%),
       radial-gradient(ellipse 70% 55% at 85% 12%, rgba(0,179,255,.24), transparent 60%),
@@ -28,7 +32,8 @@
       linear-gradient(165deg, #0a0b14 0%, #0e0a1c 38%, #0a0e18 72%, #06070a 100%);
     transform:translateY(0);
     transition:transform var(--anim) var(--ease), opacity .45s ease;
-    will-change:transform}
+    will-change:transform;
+  }
   .hero.up{transform:translateY(-100%);opacity:.25}
 
   .aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none}
@@ -42,13 +47,15 @@
   @keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,-7vw) scale(1.16)}}
   @keyframes drift4{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-6vw,-5vw) scale(1.12)}}
 
-  .mesh{position:absolute;inset:0;pointer-events:none;opacity:.55;
+  .mesh{
+    position:absolute;inset:0;pointer-events:none;opacity:.55;
     background-image:
       linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
       linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
     background-size:72px 72px;
     -webkit-mask-image:radial-gradient(ellipse 78% 62% at 50% 40%,#000 15%,transparent 78%);
-    mask-image:radial-gradient(ellipse 78% 62% at 50% 40%,#000 15%,transparent 78%)}
+    mask-image:radial-gradient(ellipse 78% 62% at 50% 40%,#000 15%,transparent 78%);
+  }
 
   .topbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:20px;
     padding:20px 30px;max-width:1400px;width:100%;margin:0 auto}
@@ -101,6 +108,7 @@
   .hero-scroll svg{width:17px;height:17px;opacity:.8}
   @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 
+  /* ============ 列表页 ============ */
   .list-section{position:absolute;inset:0;z-index:1;overflow-y:auto;overflow-x:hidden;
     background:var(--bg);transform:translateY(100%);
     transition:transform var(--anim) var(--ease);will-change:transform;
@@ -145,27 +153,11 @@
     display:grid;place-items:center;border-bottom:1px solid var(--border)}
   .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block;
     transition:transform .65s cubic-bezier(.2,.8,.3,1)}
-  .card:hover .thumb img,.card:hover .thumb video{transform:scale(1.07)}
+  .card:hover .thumb img{transform:scale(1.07)}
   .thumb.previewable{cursor:zoom-in}
-  .thumb .ph{font-size:12.5px;color:#5b6178;letter-spacing:.5px;padding:0 12px;text-align:center;line-height:1.6}
+  .thumb .ph{font-size:12.5px;color:#5b6178;letter-spacing:.5px;padding:0 12px;text-align:center}
   .thumb-veil{position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(180deg,transparent 48%,rgba(6,7,10,.75))}
-
-  .play-overlay{position:absolute;top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    width:54px;height:54px;border-radius:50%;
-    display:grid;place-items:center;
-    background:rgba(0,0,0,.55);
-    border:1.5px solid rgba(255,255,255,.32);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    color:#fff;pointer-events:none;
-    transition:transform .3s cubic-bezier(.2,.8,.3,1),background .3s,border-color .3s;
-    box-shadow:0 12px 30px -10px rgba(0,0,0,.9)}
-  .play-overlay svg{width:22px;height:22px;margin-left:3px}
-  .card:hover .play-overlay{
-    transform:translate(-50%,-50%) scale(1.12);
-    background:rgba(124,92,255,.85);
-    border-color:rgba(255,255,255,.55)}
 
   .badge{position:absolute;top:11px;left:11px;font-size:10.5px;font-weight:700;letter-spacing:.7px;
     padding:4px 9px;border-radius:7px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.15);
@@ -215,6 +207,7 @@
   .sentinel{grid-column:1/-1;height:1px}
   .noresult{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--muted);font-size:14px}
 
+  /* ============ 弹窗 ============ */
   .modal{position:fixed;inset:0;z-index:250;display:flex;align-items:center;justify-content:center;
     padding:24px;background:rgba(3,4,8,.82);
     backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
@@ -399,6 +392,7 @@
 
   <section class="list-section" id="listEl">
     <div class="list-inner">
+
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="pill" id="count">共 <b>—</b> 项</div>
@@ -412,12 +406,15 @@
           <button class="btn primary" id="allBtn" disabled>全部下载</button>
         </div>
       </div>
+
       <div class="grid" id="grid"></div>
+
     </div>
   </section>
 
 </div>
 
+<!-- 新增条目 -->
 <div class="modal" id="editModal">
   <div class="modal-card">
     <div class="modal-head">
@@ -427,46 +424,40 @@
       </div>
       <button class="modal-x" id="editClose">✕</button>
     </div>
+
     <div class="modal-body">
       <div class="field">
         <label>名称 <span class="hint">必填</span></label>
         <input id="fName" placeholder="例如：T_Rock_Cliff_01.png">
       </div>
+
       <div class="field">
         <label>描述 <span class="hint">可选，显示在名称下方</span></label>
         <textarea id="fDesc" placeholder="例如：岩石悬崖漫反射贴图，2K 分辨率，含法线"></textarea>
       </div>
+
       <div class="field">
         <label>保存目录 <span class="hint">可选</span></label>
         <input id="fDir" placeholder="例如：/Game/Textures/Terrain">
       </div>
+
       <div class="field">
         <label>预览媒体 <span class="hint">可选，图片或视频地址</span></label>
         <input id="fPreview" placeholder="https://... 或 data:image/...">
       </div>
-      <div class="field">
-        <label>预览类型 <span class="hint">可选，链接没有扩展名时手动指定</span></label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text)">
-            <input type="radio" name="fPreviewType" value="auto" checked style="accent-color:#7c5cff"> 自动
-          </label>
-          <label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text)">
-            <input type="radio" name="fPreviewType" value="image" style="accent-color:#7c5cff"> 图片
-          </label>
-          <label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text)">
-            <input type="radio" name="fPreviewType" value="video" style="accent-color:#7c5cff"> 视频
-          </label>
-        </div>
-      </div>
+
       <div class="section-label">
         <span>下载链接 <span class="hint">可添加多个</span></span>
       </div>
+
       <div id="linkBox"></div>
+
       <button type="button" class="add-link" id="addLinkBtn">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         添加链接
       </button>
     </div>
+
     <div class="modal-foot">
       <button class="btn" id="editCancel">取消</button>
       <button class="btn primary" id="genBtn">生成 JSON</button>
@@ -474,6 +465,7 @@
   </div>
 </div>
 
+<!-- 结果 -->
 <div class="modal" id="resultModal">
   <div class="modal-card">
     <div class="modal-head">
@@ -483,12 +475,14 @@
       </div>
       <button class="modal-x" id="resultClose">✕</button>
     </div>
+
     <div class="modal-body">
       <div class="result-tip">
         打开 <b>assets.json</b>，把下面这段粘贴到 <b>[</b> 和 <b>]</b> 之间（多个条目用逗号隔开），保存后提交即可。
       </div>
       <textarea class="result-ta" id="resultBox" readonly spellcheck="false"></textarea>
     </div>
+
     <div class="modal-foot">
       <button class="btn" id="resultDone">关闭</button>
       <button class="btn primary" id="copyBtn">复制 JSON</button>
@@ -496,6 +490,7 @@
   </div>
 </div>
 
+<!-- 诊断 -->
 <div class="modal" id="diagModal">
   <div class="modal-card" style="max-width:640px">
     <div class="modal-head">
@@ -531,69 +526,77 @@
 (function () {
   'use strict';
 
+  /* ============ 配置 ============ */
+  /* 会依次尝试这些文件名，找到第一个可用的就用 */
   var JSON_CANDIDATES = [
-    './assets.json', './Assets.json', './ASSETS.json', './asset.json',
-    './data.json', './list.json', './resources.json', './info.json'
+    './assets.json',
+    './Assets.json',
+    './ASSETS.json',
+    './asset.json',
+    './data.json',
+    './list.json',
+    './resources.json',
+    './info.json'
   ];
 
   var BATCH = 12;
   var ANIM_MS = 700;
 
   var PAN_LIST = [
-    { host: 'pan.baidu.com', name: '百度网盘' },
-    { host: 'yun.baidu.com', name: '百度网盘' },
-    { host: 'eyun.baidu.com', name: '百度网盘' },
-    { host: 'aliyundrive.com', name: '阿里云盘' },
-    { host: 'alipan.com', name: '阿里云盘' },
-    { host: 'pan.quark.cn', name: '夸克网盘' },
-    { host: 'weiyun.com', name: '腾讯微云' },
-    { host: 'lanzou.com', name: '蓝奏云' },
-    { host: 'lanzoui.com', name: '蓝奏云' },
-    { host: 'lanzoux.com', name: '蓝奏云' },
-    { host: 'lanzouw.com', name: '蓝奏云' },
-    { host: 'lanzoup.com', name: '蓝奏云' },
-    { host: 'lanzoub.com', name: '蓝奏云' },
-    { host: 'lanzoue.com', name: '蓝奏云' },
-    { host: 'lanzouf.com', name: '蓝奏云' },
-    { host: 'lanzoug.com', name: '蓝奏云' },
-    { host: 'lanzouh.com', name: '蓝奏云' },
-    { host: 'lanzouj.com', name: '蓝奏云' },
-    { host: 'lanzouk.com', name: '蓝奏云' },
-    { host: 'lanzoul.com', name: '蓝奏云' },
-    { host: 'cloud.189.cn', name: '天翼云盘' },
-    { host: '115.com', name: '115网盘' },
-    { host: 'anxia.com', name: '115网盘' },
-    { host: 'pan.xunlei.com', name: '迅雷云盘' },
-    { host: '123pan.com', name: '123云盘' },
-    { host: '123684.com', name: '123云盘' },
-    { host: '123865.com', name: '123云盘' },
-    { host: '123912.com', name: '123云盘' },
-    { host: 'cowtransfer.com', name: '奶牛快传' },
-    { host: 'wetransfer.com', name: 'WeTransfer' },
-    { host: 'drive.google.com', name: 'Google Drive' },
-    { host: 'mega.nz', name: 'MEGA' },
-    { host: 'mediafire.com', name: 'MediaFire' },
-    { host: 'dropbox.com', name: 'Dropbox' },
-    { host: '1drv.ms', name: 'OneDrive' },
-    { host: 'onedrive.live.com', name: 'OneDrive' }
+    { host: 'pan.baidu.com',      name: '百度网盘' },
+    { host: 'yun.baidu.com',      name: '百度网盘' },
+    { host: 'eyun.baidu.com',     name: '百度网盘' },
+    { host: 'aliyundrive.com',    name: '阿里云盘' },
+    { host: 'alipan.com',         name: '阿里云盘' },
+    { host: 'pan.quark.cn',       name: '夸克网盘' },
+    { host: 'weiyun.com',         name: '腾讯微云' },
+    { host: 'lanzou.com',         name: '蓝奏云' },
+    { host: 'lanzoui.com',        name: '蓝奏云' },
+    { host: 'lanzoux.com',        name: '蓝奏云' },
+    { host: 'lanzouw.com',        name: '蓝奏云' },
+    { host: 'lanzoup.com',        name: '蓝奏云' },
+    { host: 'lanzoub.com',        name: '蓝奏云' },
+    { host: 'lanzoue.com',        name: '蓝奏云' },
+    { host: 'lanzouf.com',        name: '蓝奏云' },
+    { host: 'lanzoug.com',        name: '蓝奏云' },
+    { host: 'lanzouh.com',        name: '蓝奏云' },
+    { host: 'lanzouj.com',        name: '蓝奏云' },
+    { host: 'lanzouk.com',        name: '蓝奏云' },
+    { host: 'lanzoul.com',        name: '蓝奏云' },
+    { host: 'cloud.189.cn',       name: '天翼云盘' },
+    { host: '115.com',            name: '115网盘' },
+    { host: 'anxia.com',          name: '115网盘' },
+    { host: 'pan.xunlei.com',     name: '迅雷云盘' },
+    { host: '123pan.com',         name: '123云盘' },
+    { host: '123684.com',         name: '123云盘' },
+    { host: '123865.com',         name: '123云盘' },
+    { host: '123912.com',         name: '123云盘' },
+    { host: 'cowtransfer.com',    name: '奶牛快传' },
+    { host: 'wetransfer.com',     name: 'WeTransfer' },
+    { host: 'drive.google.com',   name: 'Google Drive' },
+    { host: 'mega.nz',            name: 'MEGA' },
+    { host: 'mediafire.com',      name: 'MediaFire' },
+    { host: 'dropbox.com',        name: 'Dropbox' },
+    { host: '1drv.ms',            name: 'OneDrive' },
+    { host: 'onedrive.live.com',  name: 'OneDrive' }
   ];
 
   var NAME_KEYS = ['name','title','filename','fileName','assetName','名称','文件名','资源名'];
   var DESC_KEYS = ['desc','description','intro','summary','note','remark','描述','简介','说明','备注'];
   var DIR_KEYS  = ['downloadDir','download_dir','downloadPath','dir','directory','folder','path','savePath','outDir','outputDir','目录','下载目录','保存目录','路径'];
   var PREVIEW_KEYS = ['preview','previewUrl','cover','poster','thumbnail','thumb','封面','预览','预览图','缩略图'];
-  var PREVIEW_TYPE_KEYS = ['previewType','mediaType','type','预览类型'];
   var URL_KEYS  = ['url','downloadUrl','download_url','src','source','href','link','image','img','picture','pic','video','videoUrl','file','地址','下载地址','链接','图片','视频'];
   var MIRROR_KEYS = ['url2','link2','download2','mirror','backup','备用地址','下载地址二','链接二','备用链接'];
 
   var IMG_EXT = { png:1,jpg:1,jpeg:1,gif:1,webp:1,bmp:1,svg:1,avif:1,tga:1,exr:1,hdr:1,psd:1,ico:1 };
-  var VID_EXT = { mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,ogv:1,wmv:1,flv:1,m3u8:1 };
+  var VID_EXT = { mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,ogv:1,wmv:1,flv:1 };
   var DL_EXT = { zip:1,rar:1,'7z':1,tar:1,gz:1,bz2:1,xz:1,
     png:1,jpg:1,jpeg:1,gif:1,webp:1,bmp:1,svg:1,psd:1,
     mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,
     pdf:1,txt:1,json:1,fbx:1,obj:1,blend:1,max:1,
     uasset:1,umap:1,upk:1,exe:1,dmg:1,apk:1,iso:1,bin:1 };
 
+  /* ============ 状态 ============ */
   var items = [];
   var filtered = [];
   var loadedPos = 0;
@@ -603,9 +606,11 @@
   var animating = false;
   var lastDiag = [];
 
+  /* ============ DOM ============ */
   var $ = function (id) { return document.getElementById(id); };
 
   var heroEl   = $('heroEl');
+  var heroBadge= $('heroBadge');
   var listEl   = $('listEl');
   var gridEl   = $('grid');
   var countEl  = $('count');
@@ -634,6 +639,7 @@
            diagModal.classList.contains('on');
   }
 
+  /* ============ 页面切换 ============ */
   function goToList() {
     if (animating || pageState !== 'hero') return;
     animating = true; pageState = 'list';
@@ -689,49 +695,12 @@
   }, { passive: true });
 
   /* ============ 工具 ============ */
-
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
     });
   }
   function escAttr(s) { return esc(s); }
-
-  /* ============ CDN 域名替换表 ============
-     小红书等平台的视频 CDN 有多个镜像域名，
-     部分域名（如 -qc）会做 Referer 防盗链，
-     换成 -bd 镜像后可以直接跨域播放 / 下载。
-     想加新规则，按 { from: '旧域名', to: '新域名' } 追加即可。
-     ============================================ */
-  var CDN_HOST_REPLACE = [
-    { from: 'sns-video-qc.xhscdn.com', to: 'sns-video-bd.xhscdn.com' },
-    { from: 'sns-video-hw.xhscdn.com', to: 'sns-video-bd.xhscdn.com' },
-    { from: 'sns-video-al.xhscdn.com', to: 'sns-video-bd.xhscdn.com' },
-    { from: 'sns-video-ws.xhscdn.com', to: 'sns-video-bd.xhscdn.com' },
-    { from: 'sns-video-qn.xhscdn.com', to: 'sns-video-bd.xhscdn.com' }
-  ];
-
-  function replaceCdnHost(url) {
-    if (!url) return url;
-    var s = String(url);
-    for (var i = 0; i < CDN_HOST_REPLACE.length; i++) {
-      var r = CDN_HOST_REPLACE[i];
-      var needle = '://' + r.from;
-      if (s.indexOf(needle) !== -1) {
-        s = s.split(needle).join('://' + r.to);
-      }
-    }
-    return s;
-  }
-
-  /* 链接归一化：先替换 CDN 域名，再把 http 升级为 https */
-  function upgradeUrl(url) {
-    if (!url) return url;
-    var s = String(url).trim();
-    s = replaceCdnHost(s);
-    if (/^http:\/\//i.test(s)) s = 'https://' + s.slice(7);
-    return s;
-  }
 
   function extOf(str) {
     if (!str) return '';
@@ -744,31 +713,13 @@
 
   function isDataUrl(u) { return u && u.indexOf('data:') === 0; }
 
-  /* ============ 媒体类型识别 ============ */
   function guessMediaType(url) {
     if (!url) return 'none';
     if (/^data:image\//i.test(url)) return 'image';
     if (/^data:video\//i.test(url)) return 'video';
-
     var e = extOf(url);
     if (IMG_EXT[e]) return 'image';
     if (VID_EXT[e]) return 'video';
-
-    var s = String(url);
-
-    var m = s.match(/[?&](?:format|fmt|fm|f|type)=([^&#]*)/i);
-    if (m && m[1]) {
-      var fmt = m[1].toLowerCase();
-      if (/^(jpe?g|png|gif|webp|bmp|svg|avif|ico)$/.test(fmt)) return 'image';
-      if (/^(mp4|webm|mov|m4v|avi|mkv|flv)$/.test(fmt)) return 'video';
-    }
-
-    if (/imageview|imageslim|imagemogr2|x-oss-process=image|image\/(?:resize|crop|watermark)/i.test(s)) return 'image';
-    if (/videoprocess|x-oss-process=video|vframe|vod\//i.test(s)) return 'video';
-
-    if (/\/photo[s]?\//i.test(s) || /\/image[s]?\//i.test(s) || /\/pic[s]?\//i.test(s) || /\/spectrum\//i.test(s)) return 'image';
-    if (/\/stream\//i.test(s) || /\/video[s]?\//i.test(s) || /\/movie[s]?\//i.test(s)) return 'video';
-
     return 'none';
   }
 
@@ -816,7 +767,7 @@
 
   function normalize(raw) {
     if (typeof raw === 'string') {
-      var t = upgradeUrl(raw.trim());
+      var t = raw.trim();
       return {
         name: '', desc: '', dir: '', preview: '', previewType: 'none',
         links: [{ name: detectPan(t) || '下载', url: t, code: '' }]
@@ -835,29 +786,22 @@
       if (lv) previewUrl = String(lv);
       else if (li) previewUrl = String(li);
     }
-    previewUrl = upgradeUrl(String(previewUrl || '').trim());
-
-    var explicitType = pick(raw, PREVIEW_TYPE_KEYS);
-    var previewType;
-    if (explicitType === 'video' || explicitType === 'image') {
-      previewType = explicitType;
-    } else {
-      previewType = guessMediaType(previewUrl);
-    }
+    previewUrl = String(previewUrl || '').trim();
 
     var links = [];
+
     if (Array.isArray(raw.links)) {
       for (var i = 0; i < raw.links.length; i++) {
         var L = raw.links[i];
         if (!L) continue;
         if (typeof L === 'string') {
-          var lu0 = upgradeUrl(L.trim());
+          var lu0 = L.trim();
           if (!lu0) continue;
           links.push({ name: detectPan(lu0) || '下载', url: lu0, code: '' });
         } else if (typeof L === 'object') {
           var lu = L.url || L.href || L.link || L.address || L.src || '';
           if (!lu) continue;
-          lu = upgradeUrl(String(lu).trim());
+          lu = String(lu).trim();
           links.push({
             name: String(L.name || L.label || detectPan(lu) || '下载'),
             url: lu,
@@ -870,10 +814,9 @@
     if (!links.length) {
       var single = pickFirstUrl(raw);
       if (single && single.value) {
-        var su = upgradeUrl(single.value);
         links.push({
-          name: detectPan(su) || (single.field === 'video' || single.field === 'videoUrl' ? '视频' : '下载'),
-          url: su, code: ''
+          name: detectPan(single.value) || (single.field === 'video' || single.field === 'videoUrl' ? '视频' : '下载'),
+          url: single.value, code: ''
         });
       }
     }
@@ -881,7 +824,7 @@
     for (var m = 0; m < MIRROR_KEYS.length; m++) {
       var mv = raw[MIRROR_KEYS[m]];
       if (typeof mv === 'string' && mv.trim()) {
-        var murl = upgradeUrl(mv.trim());
+        var murl = mv.trim();
         links.push({ name: detectPan(murl) || '备用', url: murl, code: '' });
       }
     }
@@ -898,7 +841,7 @@
       desc: desc ? String(desc) : '',
       dir: dir ? String(dir) : '',
       preview: previewUrl,
-      previewType: previewType,
+      previewType: guessMediaType(previewUrl),
       links: finalLinks
     };
   }
@@ -944,6 +887,7 @@
     gridEl.innerHTML = html;
   }
 
+  /* ============ 预览数据 ============ */
   function makePreviewItems() {
     var specs = [
       ['T_Rock_Cliff_01.png',   '岩石悬崖漫反射贴图，2K，含法线',      '/Game/Textures/Terrain',  ['#7c5cff','#4a8bff']],
@@ -976,9 +920,11 @@
     var cv = document.createElement('canvas');
     cv.width = 800; cv.height = 600;
     var ctx = cv.getContext('2d');
+
     var g = ctx.createLinearGradient(0, 0, 800, 600);
     g.addColorStop(0, colors[0]); g.addColorStop(1, colors[1]);
     ctx.fillStyle = g; ctx.fillRect(0, 0, 800, 600);
+
     ctx.globalAlpha = 0.14; ctx.fillStyle = '#ffffff';
     for (var k = 0; k < 6; k++) {
       ctx.beginPath();
@@ -988,14 +934,19 @@
     ctx.globalAlpha = 0.08; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
     for (var x = 40; x < 800; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
     for (var y = 40; y < 600; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(800, y); ctx.stroke(); }
+
     ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(255,255,255,.94)';
     ctx.font = '700 128px -apple-system, "PingFang SC", sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(String(num).padStart(2, '0'), 400, 300);
+
     return { name: name, downloadDir: dir, url: cv.toDataURL('image/jpeg', 0.85) };
   }
 
+  /* ============ 加载 JSON：多候选 + 详细诊断 ============ */
+
   function tryFetchOne(url) {
+    /* 加时间戳参数绕过 CDN 缓存 */
     var bust = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now();
     return fetch(bust, { cache: 'no-store', credentials: 'same-origin' })
       .then(function (res) {
@@ -1004,15 +955,23 @@
         return res.text();
       })
       .then(function (text) {
+        /* 去掉 UTF-8 BOM */
         text = text.replace(/^\uFEFF/, '').replace(/^\s+/, '');
         if (!text) throw new Error('内容为空');
-        if (text.charAt(0) === '<') throw new Error('返回的是 HTML 页面，不是 JSON');
+
+        /* GitHub Pages 404 页面会返回 HTML */
+        if (text.charAt(0) === '<') {
+          throw new Error('返回的是 HTML 页面，不是 JSON');
+        }
+
         var data;
         try { data = JSON.parse(text); }
         catch (e) { throw new Error('JSON 语法错误：' + e.message); }
+
         var list = extractList(data);
         if (!list) throw new Error('JSON 结构无法识别，需要数组或含 items / list / assets 字段');
         if (!list.length) throw new Error('数组内容为空');
+
         return list;
       });
   }
@@ -1026,6 +985,7 @@
       if (Array.isArray(data.files)) return data.files;
       if (Array.isArray(data.images)) return data.images;
       if (Array.isArray(data.data)) return data.data;
+      /* 单个对象也当一条 */
       if (data.name || data.url || data.links) return [data];
     }
     return null;
@@ -1034,8 +994,11 @@
   function loadJSON() {
     var diag = [];
     var i = 0;
+
     function next() {
-      if (i >= JSON_CANDIDATES.length) return Promise.resolve({ ok: false, diag: diag });
+      if (i >= JSON_CANDIDATES.length) {
+        return Promise.resolve({ ok: false, diag: diag });
+      }
       var url = JSON_CANDIDATES[i++];
       return tryFetchOne(url).then(function (list) {
         diag.push({ url: url, status: 'ok', msg: '成功，共 ' + list.length + ' 条' });
@@ -1052,6 +1015,7 @@
     if (io) { io.disconnect(); io = null; }
     items = []; filtered = []; loadedPos = 0;
     lastDiag = [];
+
     countEl.className = 'pill';
     countEl.innerHTML = '共 <b>—</b> 项';
     searchEl.disabled = true;
@@ -1077,8 +1041,10 @@
           onLoaded(false, r.url);
           return;
         }
+        lastDiag = r.diag;
       }
       lastDiag = r.diag;
+      /* 全都失败 → 预览模式 */
       items = makePreviewItems().map(normalize);
       onLoaded(true, null);
     }).catch(function (e) {
@@ -1091,8 +1057,10 @@
   function onLoaded(isPreview, sourceUrl) {
     searchEl.disabled = false;
     allBtn.disabled = false;
+
     var badge = $('heroBadge');
     var badgeTxt = $('heroBadgeText');
+
     if (isPreview) {
       badgeTxt.textContent = '预览模式 · 点击查看原因';
       badge.setAttribute('data-warn', '1');
@@ -1107,12 +1075,15 @@
       countEl.className = 'pill';
       countEl.onclick = null;
     }
+
     resetAndRender();
+
     if (!isPreview && sourceUrl) {
       console.log('[资源下载中心] 已从 ' + sourceUrl + ' 加载 ' + items.length + ' 条');
     }
   }
 
+  /* ============ 诊断弹窗 ============ */
   function showDiag() {
     var html = '';
     for (var i = 0; i < lastDiag.length; i++) {
@@ -1129,9 +1100,11 @@
     diagModal.classList.add('on');
   }
 
+  /* ============ 渲染 ============ */
   function resetAndRender() {
     if (io) { io.disconnect(); io = null; }
     if (sentinel && sentinel.parentNode) sentinel.remove();
+
     var q = searchEl.value.trim().toLowerCase();
     filtered = [];
     for (var i = 0; i < items.length; i++) {
@@ -1140,13 +1113,16 @@
       for (var j = 0; j < it.links.length; j++) hay += ' ' + it.links[j].url.toLowerCase();
       if (!q || hay.indexOf(q) !== -1) filtered.push(i);
     }
+
     gridEl.innerHTML = '';
     loadedPos = 0;
+
     if (!filtered.length) {
       gridEl.innerHTML = '<div class="noresult">没有匹配的条目</div>';
       updateCount(q);
       return;
     }
+
     sentinel = document.createElement('div');
     sentinel.className = 'sentinel';
     loadMore(q);
@@ -1154,6 +1130,7 @@
 
   function loadMore(q) {
     if (loadedPos >= filtered.length) return;
+
     var end = Math.min(loadedPos + BATCH, filtered.length);
     var frag = document.createDocumentFragment();
     for (var k = loadedPos; k < end; k++) {
@@ -1161,6 +1138,7 @@
     }
     loadedPos = end;
     gridEl.appendChild(frag);
+
     if (loadedPos < filtered.length) {
       if (!io) {
         io = new IntersectionObserver(function (entries) {
@@ -1182,110 +1160,6 @@
     countEl.innerHTML = txt;
   }
 
-  function buildVideoThumb(thumb, url) {
-    var v = document.createElement('video');
-    v.muted = true;
-    v.playsInline = true;
-    v.preload = 'auto';
-    v.controls = false;
-    v.loop = false;
-    v.setAttribute('playsinline', '');
-    v.setAttribute('webkit-playsinline', '');
-    v.setAttribute('muted', '');
-    v.setAttribute('crossorigin', 'anonymous');
-    v.setAttribute('disablepictureinpicture', '');
-
-    var firstFrameDone = false;
-    var failed = false;
-    var timer = null;
-
-    function seekFirst() {
-      if (firstFrameDone || failed) return;
-      firstFrameDone = true;
-      try { v.currentTime = 0.05; }
-      catch (e) {}
-    }
-
-    v.addEventListener('loadedmetadata', function () {
-      var dur = v.duration;
-      if (isFinite(dur) && dur > 0 && dur < 0.1) {
-        try { v.currentTime = 0; } catch (e) {}
-        firstFrameDone = true;
-      } else {
-        seekFirst();
-      }
-    });
-    v.addEventListener('loadeddata', function () {
-      if (v.readyState >= 2 && !firstFrameDone) seekFirst();
-    });
-    v.addEventListener('canplay', function () {
-      if (!firstFrameDone) seekFirst();
-    });
-
-    timer = setTimeout(function () {
-      if (failed) return;
-      if (v.readyState < 2) {
-        failed = true;
-        try { v.remove(); } catch (e) {}
-        showThumbError(thumb, '视频加载超时');
-      }
-    }, 6000);
-
-    v.addEventListener('error', function () {
-      if (failed) return;
-      failed = true;
-      clearTimeout(timer);
-      try { v.remove(); } catch (e) {}
-      var code = v.error ? v.error.code : 0;
-      var msg = '视频加载失败';
-      if (code === 1) msg = '视频加载被中止';
-      else if (code === 2) msg = '网络错误，视频无法加载';
-      else if (code === 3) msg = '视频解码失败，格式可能不支持';
-      else if (code === 4) msg = '视频格式不受支持';
-      showThumbError(thumb, msg);
-    });
-
-    v.src = url;
-    thumb.appendChild(v);
-    thumb.classList.add('previewable');
-
-    var playIcon = document.createElement('div');
-    playIcon.className = 'play-overlay';
-    playIcon.innerHTML =
-      '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
-        '<path d="M8 5v14l11-7z"/>' +
-      '</svg>';
-    thumb.appendChild(playIcon);
-    thumb.appendChild(makeVeil());
-  }
-
-  function showThumbError(thumb, msg) {
-    var ph = document.createElement('span');
-    ph.className = 'ph';
-    ph.textContent = msg;
-    thumb.appendChild(ph);
-    thumb.classList.remove('previewable');
-    thumb.style.cursor = 'default';
-    var ov = thumb.querySelector('.play-overlay');
-    if (ov) ov.remove();
-  }
-
-  function buildImageThumb(thumb, url) {
-    var img = document.createElement('img');
-    img.alt = '';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    img.setAttribute('crossorigin', 'anonymous');
-    img.addEventListener('error', function () {
-      img.remove();
-      showThumbError(thumb, '图片加载失败');
-    });
-    img.src = url;
-    thumb.appendChild(img);
-    thumb.classList.add('previewable');
-    thumb.appendChild(makeVeil());
-  }
-
   function buildCard(item, idx, order) {
     var card = document.createElement('article');
     card.className = 'card';
@@ -1298,15 +1172,38 @@
     var thumb = document.createElement('div');
     thumb.className = 'thumb';
 
-    if (item.previewType === 'video' && item.preview) {
-      buildVideoThumb(thumb, item.preview);
-    } else if (item.previewType === 'image' && item.preview) {
-      buildImageThumb(thumb, item.preview);
+    if (item.previewType === 'image') {
+      var img = document.createElement('img');
+      img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+      img.src = item.preview;
+      img.addEventListener('error', function () {
+        img.remove();
+        var ph = document.createElement('span');
+        ph.className = 'ph'; ph.textContent = '预览不可用';
+        thumb.appendChild(ph);
+        thumb.classList.remove('previewable'); thumb.style.cursor = 'default';
+      });
+      thumb.appendChild(img);
+      thumb.classList.add('previewable');
+      thumb.appendChild(makeVeil());
+    } else if (item.previewType === 'video') {
+      var v = document.createElement('video');
+      v.muted = true; v.preload = 'metadata'; v.src = item.preview;
+      v.addEventListener('error', function () {
+        v.remove();
+        var ph2 = document.createElement('span');
+        ph2.className = 'ph'; ph2.textContent = '预览不可用';
+        thumb.appendChild(ph2);
+        thumb.classList.remove('previewable'); thumb.style.cursor = 'default';
+      });
+      thumb.appendChild(v);
+      thumb.classList.add('previewable');
+      thumb.appendChild(makeVeil());
     } else {
-      var ph = document.createElement('span');
-      ph.className = 'ph';
-      ph.textContent = panName ? panName + ' 分享' : '暂无预览';
-      thumb.appendChild(ph);
+      var ph3 = document.createElement('span');
+      ph3.className = 'ph';
+      ph3.textContent = panName ? panName + ' 分享' : '暂无预览';
+      thumb.appendChild(ph3);
     }
 
     var badge = document.createElement('span');
@@ -1371,6 +1268,7 @@
     return d;
   }
 
+  /* ============ 下载 / 打开 ============ */
   function browserDownload(blob, filename) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -1420,7 +1318,7 @@
     if (/\.[A-Za-z0-9]{1,6}$/.test(base)) return base;
     var ext = extFromMime(mime) || extOf(fallbackUrl) ||
       (guessMediaType(fallbackUrl) === 'video' ? 'mp4' :
-       guessMediaType(fallbackUrl) === 'image' ? 'jpg' : 'bin');
+       guessMediaType(fallbackUrl) === 'image' ? 'png' : 'bin');
     return base + '.' + ext;
   }
   function handleLink(item, link) {
@@ -1482,69 +1380,30 @@
     toast(msg, fail ? 'error' : 'success', 5000);
   }
 
+  /* ============ 预览 ============ */
   function openLightbox(item) {
     if (!item || !item.preview) return;
     if (item.previewType !== 'image' && item.previewType !== 'video') return;
-
     lbBody.innerHTML = '';
-
     if (item.previewType === 'video') {
       var v = document.createElement('video');
-      v.src = item.preview;
-      v.controls = true;
-      v.autoplay = true;
-      v.playsInline = true;
-      v.setAttribute('playsinline', '');
-      v.setAttribute('webkit-playsinline', '');
-      v.setAttribute('crossorigin', 'anonymous');
-      v.style.maxWidth = '88vw';
-      v.style.maxHeight = '76vh';
-      v.addEventListener('error', function () {
-        var code = v.error ? v.error.code : 0;
-        var reason = '';
-        if (code === 1) reason = '加载被中止';
-        else if (code === 2) reason = '网络错误';
-        else if (code === 3) reason = '解码失败';
-        else if (code === 4) reason = '格式不受支持，或链接需要登录 / 防盗链';
-        lbBody.innerHTML = '';
-        var err = document.createElement('div');
-        err.style.cssText = 'padding:40px;color:#8b90a4;font-size:14px;text-align:center;line-height:1.8';
-        err.innerHTML = '视频无法播放' + (reason ? '（' + reason + '）' : '') +
-          '<br><span style="font-size:12px;color:#5b6178">按 F12 打开控制台可以看到具体错误</span>';
-        lbBody.appendChild(err);
-      });
+      v.src = item.preview; v.controls = true; v.autoplay = true;
       lbBody.appendChild(v);
     } else {
       var img = document.createElement('img');
-      img.src = item.preview;
-      img.alt = '';
-      img.setAttribute('crossorigin', 'anonymous');
-      img.addEventListener('error', function () {
-        lbBody.innerHTML = '';
-        var err = document.createElement('div');
-        err.style.cssText = 'padding:40px;color:#8b90a4;font-size:14px;text-align:center;line-height:1.8';
-        err.innerHTML = '图片无法加载' +
-          '<br><span style="font-size:12px;color:#5b6178">可能是链接失效或被防盗链拦截</span>';
-        lbBody.appendChild(err);
-      });
+      img.src = item.preview; img.alt = '';
       lbBody.appendChild(img);
     }
-
     var nm = item.name || '预览';
     lbCap.innerHTML = '<b>' + esc(nm) + '</b>' + esc(item.desc || item.dir || '');
     lightbox.classList.add('on');
   }
   function closeLightbox() {
     lightbox.classList.remove('on');
-    setTimeout(function () {
-      var vids = lbBody.querySelectorAll('video');
-      for (var i = 0; i < vids.length; i++) {
-        try { vids[i].pause(); vids[i].src = ''; } catch (e) {}
-      }
-      lbBody.innerHTML = '';
-    }, 300);
+    setTimeout(function () { lbBody.innerHTML = ''; }, 300);
   }
 
+  /* ============ 表单 ============ */
   var MAX_LINKS = 8;
   function addLinkRow(name, url, code) {
     if (linkBox.querySelectorAll('.link-row').length >= MAX_LINKS) {
@@ -1566,8 +1425,6 @@
   }
   function resetForm() {
     fName.value = ''; fDesc.value = ''; fDir.value = ''; fPreview.value = '';
-    var radios = document.getElementsByName('fPreviewType');
-    for (var i = 0; i < radios.length; i++) radios[i].checked = (radios[i].value === 'auto');
     linkBox.innerHTML = '';
     addLinkRow('', '', '');
     addLinkRow('', '', '');
@@ -1576,11 +1433,6 @@
     resetForm();
     editModal.classList.add('on');
     setTimeout(function () { fName.focus(); }, 220);
-  }
-  function getPreviewTypeChoice() {
-    var radios = document.getElementsByName('fPreviewType');
-    for (var i = 0; i < radios.length; i++) if (radios[i].checked) return radios[i].value;
-    return 'auto';
   }
   function generateJSON() {
     var name = fName.value.trim();
@@ -1603,18 +1455,7 @@
     var out = { name: name };
     var desc = fDesc.value.trim(); if (desc) out.desc = desc;
     var dir = fDir.value.trim(); if (dir) out.downloadDir = dir;
-    var prev = fPreview.value.trim();
-    if (prev) {
-      out.preview = prev;
-      var choice = getPreviewTypeChoice();
-      if (choice === 'image' || choice === 'video') {
-        out.previewType = choice;
-      } else {
-        var t = guessMediaType(prev);
-        if (t === 'video') out.previewType = 'video';
-        else if (t === 'image') out.previewType = 'image';
-      }
-    }
+    var prev = fPreview.value.trim(); if (prev) out.preview = prev;
     out.links = links;
 
     resultBox.value = JSON.stringify(out, null, 2);
@@ -1645,6 +1486,7 @@
     window.getSelection().removeAllRanges();
   }
 
+  /* ============ 事件 ============ */
   $('reloadBtn').addEventListener('click', boot);
   addBtn.addEventListener('click', openEditModal);
   $('editClose').addEventListener('click', function () { editModal.classList.remove('on'); });
