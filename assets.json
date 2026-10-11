@@ -12,11 +12,6 @@
     ]
   },
   {
-    "name": "SK_Intro.mp4",
-    "downloadDir": "/Game/Movies",
-    "url": "https://cdn.example.com/video/intro.mp4"
-  },
-  {
     "name": "T_Metal_Rough.png",
     "url": "https://cdn.example.com/tex/metal03.png"
   },
