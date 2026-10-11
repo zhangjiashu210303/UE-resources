@@ -6,282 +6,374 @@
 <title>资源下载列表</title>
 <style>
   :root{
-    --bg:#15171a;
-    --panel:#1c1f23;
-    --panel2:#22262b;
-    --line:#2e333a;
-    --line2:#3d444d;
-    --text:#dfe2e6;
-    --muted:#8b929c;
-    --accent:#3d7dd8;
-    --ok:#3fa76a;
-    --err:#c0504d;
+    --bg:#07080c;
+    --text:#e9ebf2;
+    --muted:#8b90a4;
+    --border:rgba(255,255,255,.08);
+    --panel:rgba(255,255,255,.035);
+    --accent:#7c5cff;
+    --accent-2:#4a8bff;
+    --gold:#e0a94a;
+    --ok:#22d3a5;
+    --err:#ff5f6d;
+    --radius:18px;
   }
+
   *{box-sizing:border-box}
   [hidden]{display:none !important}
+
+  html,body{height:100%}
   body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
   }
-  header{
-    position:sticky;top:0;z-index:20;
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-    padding:12px 24px;
-    background:var(--bg);
-    border-bottom:1px solid var(--line);
-  }
-  header h1{margin:0;font-size:15px;font-weight:600}
-  header .sub{font-size:12px;color:var(--muted);margin-top:2px}
-  .hbtns{display:flex;gap:8px;flex:none}
 
+  /* ---------- 背景极光 ---------- */
+  .aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .aurora i{
+    position:absolute;border-radius:50%;filter:blur(110px);
+    opacity:.30;will-change:transform;
+  }
+  .aurora i:nth-child(1){width:52vw;height:52vw;left:-12vw;top:-18vw;background:#7c5cff;animation:float1 22s ease-in-out infinite}
+  .aurora i:nth-child(2){width:44vw;height:44vw;right:-10vw;top:-6vw;background:#00b3ff;opacity:.22;animation:float2 26s ease-in-out infinite}
+  .aurora i:nth-child(3){width:48vw;height:48vw;left:22vw;bottom:-26vw;background:#f857a6;opacity:.18;animation:float3 30s ease-in-out infinite}
+  @keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,5vw) scale(1.12)}}
+  @keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vw,7vw) scale(1.1)}}
+  @keyframes float3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(4vw,-6vw) scale(1.15)}}
+
+  .grid-bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 20%,transparent 75%);
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 20%,transparent 75%);
+  }
+
+  .wrap{position:relative;z-index:1;max-width:1360px;margin:0 auto;padding:0 28px 80px}
+
+  /* ---------- 顶栏 ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+    padding:18px 28px;margin:0 -28px 30px;
+    background:linear-gradient(180deg,rgba(7,8,12,.88),rgba(7,8,12,.55) 70%,transparent);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  }
+  .brand{display:flex;align-items:center;gap:14px;min-width:0}
+  .logo{
+    width:44px;height:44px;flex:none;border-radius:14px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:0 10px 30px -10px rgba(124,92,255,.9),inset 0 1px 0 rgba(255,255,255,.35);
+    font-size:20px;color:#fff;
+  }
+  .brand h1{margin:0;font-size:16px;font-weight:650;letter-spacing:.2px}
+  .brand p{margin:2px 0 0;font-size:12px;color:var(--muted);letter-spacing:.3px}
+  .top-actions{display:flex;gap:10px;flex:none}
+
+  /* ---------- 按钮 ---------- */
   .btn{
-    padding:7px 14px;
-    border:1px solid var(--line);
-    border-radius:6px;
-    background:var(--panel2);
-    color:var(--text);
-    font:inherit;font-size:13px;
-    cursor:pointer;
-    transition:background .15s,border-color .15s;
-    white-space:nowrap;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px 18px;border-radius:12px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.045);
+    color:var(--text);font-size:13.5px;font-weight:550;
+    font-family:inherit;cursor:pointer;white-space:nowrap;
+    transition:transform .25s cubic-bezier(.4,0,.2,1),background .25s,box-shadow .25s,border-color .25s;
   }
-  .btn:hover{background:#2a2f36;border-color:var(--line2)}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-  .btn.primary:hover{background:#4a8ae4;border-color:#4a8ae4}
-  .btn:disabled{opacity:.5;cursor:default}
-  .btn:disabled:hover{background:var(--panel2);border-color:var(--line)}
+  .btn:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+  .btn:active{transform:translateY(0) scale(.985)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn.primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    border-color:transparent;color:#fff;
+    box-shadow:0 10px 26px -10px rgba(124,92,255,.85),inset 0 1px 0 rgba(255,255,255,.28);
+  }
+  .btn.primary:hover{box-shadow:0 16px 38px -12px rgba(124,92,255,1)}
+  .btn svg{width:15px;height:15px;flex:none}
 
-  main{max-width:1280px;margin:0 auto;padding:24px}
-
-  .drop{
-    border:1px dashed #3a414a;
-    border-radius:8px;
+  /* ---------- 状态条 ---------- */
+  .status{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 20px;margin-bottom:22px;
+    border-radius:16px;
+    border:1px solid var(--border);
     background:var(--panel);
-    padding:44px 24px 40px;
-    text-align:center;
+    font-size:13.5px;color:var(--muted);
   }
-  .drop h2{margin:0 0 6px;font-size:16px;font-weight:600}
-  .drop p{margin:0 0 18px;font-size:13px;color:var(--muted)}
-  .drop .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-
+  .status.err{border-color:rgba(255,95,109,.3);background:rgba(255,95,109,.07);color:#ffb3b8}
   .spinner{
-    width:26px;height:26px;margin:0 auto 16px;
-    border:2px solid #2e333a;
+    width:16px;height:16px;flex:none;
+    border:2px solid rgba(255,255,255,.15);
     border-top-color:var(--accent);
     border-radius:50%;
-    animation:spin .8s linear infinite;
+    animation:spin .75s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg)}}
+  .status .retry{margin-left:auto}
 
-  .schema{
-    max-width:640px;margin:24px auto 0;text-align:left;
-    background:#131519;border:1px solid var(--line);border-radius:6px;
-    padding:14px 16px;
-  }
-  .schema .lbl{font-size:11px;color:var(--muted);letter-spacing:.6px;margin-bottom:8px}
-  .schema pre{
-    margin:0;overflow:auto;
-    font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    color:#9aa3b0;
-  }
-  .schema .k{color:#7fb2e8}
-  .schema .s{color:#b0a0d8}
-  .schema .c{color:#6a7280}
-
+  /* ---------- 工具栏 ---------- */
   .toolbar{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;flex-wrap:wrap;margin-bottom:16px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;margin-bottom:22px;
   }
-  .toolbar .left,.toolbar .right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .toolbar-left{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .toolbar-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
-  .info{
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:8px 14px;border-radius:11px;
+    border:1px solid var(--border);background:rgba(255,255,255,.035);
     font-size:12.5px;color:var(--muted);
-    padding:6px 10px;border:1px solid var(--line);border-radius:6px;
-    background:var(--panel);
   }
-  .info b{color:var(--text);font-weight:600}
+  .pill b{color:var(--text);font-weight:650}
+  .pill.root{max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pill.root b{color:#a99bff}
 
   .search{
-    width:220px;
-    padding:7px 11px;
-    border:1px solid var(--line);
-    border-radius:6px;
-    background:var(--panel2);
-    color:var(--text);
-    font:inherit;font-size:13px;
-    outline:none;
+    width:230px;padding:10px 14px;
+    border-radius:12px;border:1px solid var(--border);
+    background:rgba(255,255,255,.04);color:var(--text);
+    font-size:13.5px;font-family:inherit;outline:none;
+    transition:border-color .25s,box-shadow .25s,background .25s;
   }
-  .search::placeholder{color:#666d78}
-  .search:focus{border-color:var(--accent)}
+  .search::placeholder{color:#666b7e}
+  .search:focus{border-color:rgba(124,92,255,.6);background:rgba(124,92,255,.07);box-shadow:0 0 0 3.5px rgba(124,92,255,.14)}
 
+  /* ---------- 卡片网格 ---------- */
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-    gap:14px;
+    grid-template-columns:repeat(auto-fill,minmax(248px,1fr));
+    gap:20px;
   }
-
   .card{
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:var(--panel);
-    overflow:hidden;
+    position:relative;
     display:flex;flex-direction:column;
-    transition:border-color .15s;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+    overflow:hidden;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    animation:cardIn .55s cubic-bezier(.2,.8,.3,1) backwards;
+    transition:transform .4s cubic-bezier(.4,0,.2,1),border-color .35s,box-shadow .4s;
   }
-  .card:hover{border-color:var(--line2)}
+  .card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(124,92,255,.5);
+    box-shadow:0 26px 54px -26px rgba(0,0,0,.95),0 0 0 1px rgba(124,92,255,.22),0 0 34px -14px rgba(124,92,255,.55);
+  }
+  @keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.965)}to{opacity:1;transform:none}}
 
   .thumb{
-    position:relative;
-    aspect-ratio:16/10;
-    background:#101215;
-    display:flex;align-items:center;justify-content:center;
-    overflow:hidden;
-    border-bottom:1px solid var(--line);
+    position:relative;aspect-ratio:4/3;overflow:hidden;
+    background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(0,179,255,.08)),#0c0e15;
+    display:grid;place-items:center;
+    border-bottom:1px solid var(--border);
   }
-  .thumb img,.thumb video{
-    width:100%;height:100%;object-fit:cover;display:block;
+  .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.2,.8,.3,1)}
+  .card:hover .thumb img{transform:scale(1.065)}
+  .thumb.previewable{cursor:zoom-in}
+  .thumb .ph{font-size:12.5px;color:#5b6178;letter-spacing:.5px}
+  .thumb-veil{
+    position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,transparent 45%,rgba(7,8,12,.72));
   }
-  .thumb .none{font-size:12px;color:#5a616b}
 
   .badge{
-    position:absolute;top:8px;left:8px;
-    font-size:10.5px;font-weight:600;letter-spacing:.4px;
-    padding:3px 7px;border-radius:4px;
-    background:rgba(0,0,0,.72);
-    border:1px solid rgba(255,255,255,.12);
-    color:#c8ccd2;
-    text-transform:uppercase;
+    position:absolute;top:10px;left:10px;
+    font-size:10.5px;font-weight:700;letter-spacing:.6px;
+    padding:4px 8px;border-radius:6px;
+    background:rgba(0,0,0,.68);
+    border:1px solid rgba(255,255,255,.14);
+    color:#c8ccd2;text-transform:uppercase;
+    backdrop-filter:blur(6px);
   }
-  .badge.video{color:#f0a97a;border-color:rgba(240,169,122,.35)}
-  .badge.image{color:#8ab6f0;border-color:rgba(138,182,240,.35)}
+  .badge.image{color:#8ab6f0;border-color:rgba(138,182,240,.4)}
+  .badge.video{color:#f0a97a;border-color:rgba(240,169,122,.4)}
   .badge.file{color:#a9adb4}
 
-  .meta{padding:11px 12px 10px;flex:1;min-width:0}
-  .meta .name{
-    font-size:13.5px;font-weight:600;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    margin-bottom:4px;
+  .pan-tag{
+    position:absolute;top:10px;right:10px;
+    font-size:10.5px;font-weight:700;letter-spacing:.4px;
+    padding:4px 8px;border-radius:6px;
+    background:rgba(224,169,74,.16);
+    border:1px solid rgba(224,169,74,.5);
+    color:var(--gold);
+    backdrop-filter:blur(6px);
   }
-  .meta .path{
+
+  .meta{padding:15px 16px 13px;flex:1;min-width:0}
+  .name{
+    font-size:14px;font-weight:600;letter-spacing:.2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-bottom:7px;
+  }
+  .dir{
+    display:flex;align-items:center;gap:6px;
     font-size:11.5px;color:var(--muted);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
-  .meta .path.src{color:#7a8089;margin-top:2px}
+  .dir svg{width:12px;height:12px;flex:none;opacity:.75}
+  .dir span{overflow:hidden;text-overflow:ellipsis}
+  .dir.src{color:#70768a;margin-top:4px}
 
-  .ops{display:flex;gap:6px;padding:0 12px 12px}
-  .ops .btn{flex:1;padding:6px 8px;font-size:12.5px;text-align:center}
+  .ops{display:flex;gap:8px;padding:0 16px 16px}
+  .act{
+    flex:1;padding:9px 10px;border-radius:10px;
+    border:1px solid var(--border);background:rgba(255,255,255,.04);
+    color:var(--text);font-size:12.5px;font-weight:550;font-family:inherit;
+    cursor:pointer;transition:.22s;
+  }
+  .act:hover{background:rgba(255,255,255,.1)}
+  .act:disabled{opacity:.4;cursor:not-allowed}
+  .act:disabled:hover{background:rgba(255,255,255,.04)}
+  .act.primary{
+    background:linear-gradient(135deg,rgba(124,92,255,.9),rgba(74,139,255,.9));
+    border-color:transparent;color:#fff;
+    box-shadow:0 8px 20px -10px rgba(124,92,255,.9);
+  }
+  .act.primary:hover{filter:brightness(1.12)}
+  .act.pan{
+    background:linear-gradient(135deg,rgba(224,169,74,.9),rgba(214,132,45,.9));
+    border-color:transparent;color:#2a1e05;
+    box-shadow:0 8px 20px -10px rgba(224,169,74,.9);
+  }
+  .act.pan:hover{filter:brightness(1.1)}
+
+  /* ---------- 骨架屏 ---------- */
+  .skel{
+    background:linear-gradient(90deg,#161a20 25%,#1f242b 37%,#161a20 63%);
+    background-size:200% 100%;
+    animation:shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .skel-card{animation:none;border-color:rgba(255,255,255,.05)}
+  .skel-thumb{aspect-ratio:4/3;border-bottom:1px solid var(--border)}
+  .skel-body{padding:15px 16px 16px}
+  .skel-line{height:11px;border-radius:5px;margin-bottom:10px}
+  .skel-line:last-child{margin-bottom:0}
 
   .noresult{
-    grid-column:1/-1;text-align:center;padding:60px 20px;
-    color:var(--muted);font-size:13.5px;
+    grid-column:1/-1;text-align:center;padding:70px 20px;
+    color:var(--muted);font-size:14px;
   }
 
+  /* ---------- 灯箱 ---------- */
   .lightbox{
-    position:fixed;inset:0;z-index:100;
-    display:flex;align-items:center;justify-content:center;
-    flex-direction:column;gap:14px;
-    background:rgba(0,0,0,.9);
-    opacity:0;pointer-events:none;
-    transition:opacity .2s;
+    position:fixed;inset:0;z-index:200;
+    display:grid;place-items:center;padding:40px;
+    background:rgba(4,5,9,.88);
+    backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+    opacity:0;pointer-events:none;transition:opacity .3s;
   }
   .lightbox.on{opacity:1;pointer-events:auto}
-  .lightbox img,.lightbox video{max-width:86vw;max-height:74vh;border:1px solid #333;border-radius:4px;background:#000}
-  .lightbox .cap{font-size:12.5px;color:#9aa3b0;text-align:center;max-width:80vw}
-  .lightbox .cap b{color:#dfe2e6;display:block;font-weight:600;margin-bottom:3px}
-  .lbclose{
-    position:absolute;top:16px;right:20px;
-    width:34px;height:34px;
-    border:1px solid var(--line2);border-radius:6px;
-    background:#1e2126;color:var(--text);
-    font-size:16px;line-height:1;cursor:pointer;
+  .lightbox img,.lightbox video{
+    max-width:88vw;max-height:76vh;
+    border-radius:16px;display:block;
+    box-shadow:0 40px 100px -30px #000;
+    transform:scale(.94);transition:transform .38s cubic-bezier(.2,.8,.3,1);
+    background:#000;
   }
-  .lbclose:hover{background:#2a2f36}
+  .lightbox.on img,.lightbox.on video{transform:scale(1)}
+  .lb-caption{
+    position:fixed;bottom:36px;left:50%;transform:translateX(-50%);
+    text-align:center;font-size:13px;color:var(--muted);max-width:80vw;
+  }
+  .lb-caption b{color:var(--text);font-weight:600;display:block;margin-bottom:4px;font-size:14px}
+  .lb-close{
+    position:fixed;top:26px;right:28px;
+    width:40px;height:40px;border-radius:12px;
+    display:grid;place-items:center;
+    border:1px solid var(--border);background:rgba(255,255,255,.06);
+    color:var(--text);cursor:pointer;font-size:18px;line-height:1;
+    transition:.22s;
+  }
+  .lb-close:hover{background:rgba(255,255,255,.14);transform:rotate(90deg)}
 
+  /* ---------- Toast ---------- */
   .toasts{
-    position:fixed;right:20px;bottom:20px;z-index:200;
-    display:flex;flex-direction:column;gap:8px;align-items:flex-end;
+    position:fixed;right:24px;bottom:24px;z-index:300;
+    display:flex;flex-direction:column;gap:10px;align-items:flex-end;
   }
   .toast{
-    display:flex;align-items:center;gap:9px;
-    padding:10px 14px;
-    border:1px solid var(--line2);border-radius:6px;
-    background:#1e2126;
-    font-size:13px;
-    max-width:380px;
+    display:flex;align-items:center;gap:10px;
+    padding:13px 18px;border-radius:13px;
+    border:1px solid var(--border);
+    background:rgba(20,22,32,.92);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    font-size:13px;color:var(--text);
+    box-shadow:0 20px 44px -18px rgba(0,0,0,.95);
+    animation:toastIn .38s cubic-bezier(.2,.8,.3,1);
+    max-width:400px;
   }
-  .toast i{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
-  .toast.ok i{background:var(--ok)}
-  .toast.err i{background:var(--err)}
+  .toast.out{animation:toastOut .3s forwards}
+  .toast .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--accent)}
+  .toast.success .dot{background:var(--ok);box-shadow:0 0 12px var(--ok)}
+  .toast.error .dot{background:var(--err);box-shadow:0 0 12px var(--err)}
+  @keyframes toastIn{from{opacity:0;transform:translateX(40px) scale(.94)}to{opacity:1;transform:none}}
+  @keyframes toastOut{to{opacity:0;transform:translateX(40px) scale(.94)}}
 
   ::-webkit-scrollbar{width:10px;height:10px}
   ::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:#333a42;border-radius:6px;border:2px solid var(--bg)}
-  ::-webkit-scrollbar-thumb:hover{background:#414953}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.11);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2);background-clip:padding-box}
 
   @media (max-width:820px){
-    header{padding:10px 16px;flex-wrap:wrap}
-    main{padding:16px}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+    .wrap{padding:0 18px 60px}
+    .topbar{padding:14px 18px;margin:0 -18px 22px;flex-wrap:wrap}
+    .brand p{display:none}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
     .search{width:100%}
-    .toolbar .right{width:100%}
-    .drop{padding:32px 16px 28px}
-    .toasts{left:16px;right:16px;bottom:16px;align-items:stretch}
+    .toolbar{align-items:stretch}
+    .toolbar-right{width:100%}
+    .toasts{right:14px;left:14px;bottom:14px;align-items:stretch}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div>
-    <h1>资源下载列表</h1>
-    <div class="sub">自动读取同目录下的 assets.json</div>
-  </div>
-  <div class="hbtns">
-    <button class="btn primary" id="reloadBtn">重新加载</button>
-  </div>
-</header>
+<div class="aurora"><i></i><i></i><i></i></div>
+<div class="grid-bg"></div>
 
-<main>
+<div class="wrap">
 
-  <section class="drop" id="drop">
-    <div class="spinner" id="spin"></div>
-    <h2 id="dropTitle">正在加载 assets.json</h2>
-    <p id="dropDesc">页面会自动读取同目录下的 JSON 文件</p>
-    <div class="row" id="dropRow" hidden>
-      <button class="btn primary" id="retryBtn">重新加载</button>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <h1>资源下载列表</h1>
+        <p>自动读取同目录下的 assets.json</p>
+      </div>
     </div>
-
-    <div class="schema">
-      <div class="lbl">assets.json 写法</div>
-<pre>[
-  {
-    <span class="k">"name"</span>: <span class="s">"T_Rock_01.png"</span>,
-    <span class="k">"downloadDir"</span>: <span class="s">"/Game/Textures/Terrain"</span>,
-    <span class="k">"url"</span>: <span class="s">"https://cdn.example.com/tex/rock01.png"</span>
-  },
-  {
-    <span class="k">"name"</span>: <span class="s">"SK_Intro.mp4"</span>,
-    <span class="k">"downloadDir"</span>: <span class="s">"/Game/Movies"</span>,
-    <span class="k">"url"</span>: <span class="s">"https://cdn.example.com/video/intro.mp4"</span>
-  }
-]
-
-<span class="c">// 名称字段: name / title / filename / 名称 / 文件名</span>
-<span class="c">// 目录字段: downloadDir / dir / folder / path / 下载目录 / 保存目录</span>
-<span class="c">// 地址字段: url / downloadUrl / src / image / video / 地址 / 下载地址</span>
-<span class="c">// 目录可以省略，省略时写入浏览器下载目录</span></pre>
+    <div class="top-actions">
+      <button class="btn" id="reloadBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        重新加载
+      </button>
     </div>
-  </section>
+  </header>
 
+  <!-- 状态条 -->
+  <div class="status" id="status">
+    <span class="spinner" id="spin"></span>
+    <span id="statusText">正在读取 assets.json …</span>
+    <button class="btn retry" id="retryBtn" hidden>重试</button>
+  </div>
+
+  <!-- 工作区 -->
   <section id="workspace" hidden>
     <div class="toolbar">
-      <div class="left">
-        <span class="info" id="count">0 项</span>
-        <span class="info" id="rootInfo">保存到：浏览器下载目录</span>
+      <div class="toolbar-left">
+        <div class="pill" id="count">共 <b>0</b> 项</div>
+        <div class="pill root" id="rootPill">保存到：浏览器下载目录</div>
       </div>
-      <div class="right">
+      <div class="toolbar-right">
         <input class="search" id="search" placeholder="搜索名称或目录" autocomplete="off">
         <button class="btn" id="rootBtn">选择保存位置</button>
         <button class="btn primary" id="allBtn">全部下载</button>
@@ -290,12 +382,13 @@
     <div class="grid" id="grid"></div>
   </section>
 
-</main>
+</div>
 
+<!-- 灯箱 -->
 <div class="lightbox" id="lightbox">
-  <button class="lbclose" id="lbClose">×</button>
+  <button class="lb-close" id="lbClose">✕</button>
   <div id="lbBody"></div>
-  <div class="cap" id="lbCap"></div>
+  <div class="lb-caption" id="lbCaption"></div>
 </div>
 
 <div class="toasts" id="toasts"></div>
@@ -304,30 +397,48 @@
 (function () {
   'use strict';
 
-  /* 与页面同目录的 JSON 文件名，改这里即可 */
+  /* ============ 配置 ============ */
   var JSON_URL = './assets.json';
 
-  var items = [];
-  var rootHandle = null;
-  var supportsFS = typeof window.showDirectoryPicker === 'function';
-
-  var $ = function (id) { return document.getElementById(id); };
-
-  var dropEl    = $('drop');
-  var dropTitle = $('dropTitle');
-  var dropDesc  = $('dropDesc');
-  var dropRow   = $('dropRow');
-  var spinEl    = $('spin');
-  var workEl    = $('workspace');
-  var gridEl    = $('grid');
-  var countEl   = $('count');
-  var rootInfo  = $('rootInfo');
-  var searchEl  = $('search');
-  var allBtn    = $('allBtn');
-  var lightbox  = $('lightbox');
-  var lbBody    = $('lbBody');
-  var lbCap     = $('lbCap');
-  var toastBox  = $('toasts');
+  /* 网盘域名 → 名称 */
+  var PAN_LIST = [
+    { host: 'pan.baidu.com',      name: '百度网盘' },
+    { host: 'yun.baidu.com',      name: '百度网盘' },
+    { host: 'eyun.baidu.com',     name: '百度网盘' },
+    { host: 'aliyundrive.com',    name: '阿里云盘' },
+    { host: 'alipan.com',         name: '阿里云盘' },
+    { host: 'pan.quark.cn',       name: '夸克网盘' },
+    { host: 'weiyun.com',         name: '腾讯微云' },
+    { host: 'lanzou.com',         name: '蓝奏云' },
+    { host: 'lanzoui.com',        name: '蓝奏云' },
+    { host: 'lanzoux.com',        name: '蓝奏云' },
+    { host: 'lanzouw.com',        name: '蓝奏云' },
+    { host: 'lanzoup.com',        name: '蓝奏云' },
+    { host: 'lanzoub.com',        name: '蓝奏云' },
+    { host: 'lanzoue.com',        name: '蓝奏云' },
+    { host: 'lanzouf.com',        name: '蓝奏云' },
+    { host: 'lanzoug.com',        name: '蓝奏云' },
+    { host: 'lanzouh.com',        name: '蓝奏云' },
+    { host: 'lanzouj.com',        name: '蓝奏云' },
+    { host: 'lanzouk.com',        name: '蓝奏云' },
+    { host: 'lanzoul.com',        name: '蓝奏云' },
+    { host: 'cloud.189.cn',       name: '天翼云盘' },
+    { host: '115.com',            name: '115网盘' },
+    { host: 'anxia.com',          name: '115网盘' },
+    { host: 'pan.xunlei.com',     name: '迅雷云盘' },
+    { host: '123pan.com',         name: '123云盘' },
+    { host: '123684.com',         name: '123云盘' },
+    { host: '123865.com',         name: '123云盘' },
+    { host: '123912.com',         name: '123云盘' },
+    { host: 'cowtransfer.com',    name: '奶牛快传' },
+    { host: 'wetransfer.com',     name: 'WeTransfer' },
+    { host: 'drive.google.com',   name: 'Google Drive' },
+    { host: 'mega.nz',            name: 'MEGA' },
+    { host: 'mediafire.com',      name: 'MediaFire' },
+    { host: 'dropbox.com',        name: 'Dropbox' },
+    { host: '1drv.ms',            name: 'OneDrive' },
+    { host: 'onedrive.live.com',  name: 'OneDrive' }
+  ];
 
   var NAME_KEYS = ['name','title','filename','fileName','assetName','名称','文件名','资源名'];
   var DIR_KEYS  = ['downloadDir','download_dir','downloadPath','dir','directory','folder','path','savePath','outDir','outputDir','目录','下载目录','保存目录','路径'];
@@ -335,6 +446,32 @@
 
   var IMG_EXT = { png:1, jpg:1, jpeg:1, gif:1, webp:1, bmp:1, svg:1, avif:1, tga:1, exr:1, hdr:1, psd:1, ico:1 };
   var VID_EXT = { mp4:1, webm:1, mov:1, m4v:1, avi:1, mkv:1, ogv:1, wmv:1, flv:1 };
+
+  /* ============ 状态 ============ */
+  var items = [];
+  var rootHandle = null;
+  var supportsFS = typeof window.showDirectoryPicker === 'function';
+  var renderToken = 0;
+
+  /* ============ DOM ============ */
+  var $ = function (id) { return document.getElementById(id); };
+
+  var statusEl   = $('status');
+  var statusText = $('statusText');
+  var spinEl     = $('spin');
+  var retryBtn   = $('retryBtn');
+  var workEl     = $('workspace');
+  var gridEl     = $('grid');
+  var countEl    = $('count');
+  var rootPill   = $('rootPill');
+  var searchEl   = $('search');
+  var allBtn     = $('allBtn');
+  var lightbox   = $('lightbox');
+  var lbBody     = $('lbBody');
+  var lbCap      = $('lbCaption');
+  var toastBox   = $('toasts');
+
+  /* ============ 工具 ============ */
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -362,6 +499,23 @@
     return 'file';
   }
 
+  /* 判断是否网盘链接，返回网盘名或 null */
+  function detectPan(url) {
+    if (!url || url.indexOf('data:') === 0) return null;
+    var host;
+    try {
+      host = new URL(url, location.href).hostname.toLowerCase().replace(/^www\./, '');
+    } catch (e) { return null; }
+
+    for (var i = 0; i < PAN_LIST.length; i++) {
+      var h = PAN_LIST[i].host;
+      if (host === h || host.slice(-(h.length + 1)) === '.' + h) {
+        return PAN_LIST[i].name;
+      }
+    }
+    return null;
+  }
+
   function pick(obj, keys) {
     for (var i = 0; i < keys.length; i++) {
       var v = obj[keys[i]];
@@ -387,7 +541,8 @@
   function normalize(raw) {
     if (typeof raw === 'string') {
       var t = raw.trim();
-      return { name: '', dir: '', url: t, type: guessType(t, ''), field: '' };
+      var p0 = detectPan(t);
+      return { name: '', dir: '', url: t, type: guessType(t, ''), pan: p0 };
     }
     if (!raw || typeof raw !== 'object') return null;
 
@@ -396,7 +551,7 @@
     var found = pickUrl(raw);
 
     if (!found || !found.value) {
-      return { name: name ? String(name) : '', dir: dir ? String(dir) : '', url: '', type: 'file', field: '' };
+      return { name: name ? String(name) : '', dir: dir ? String(dir) : '', url: '', type: 'file', pan: null };
     }
 
     var url = found.value;
@@ -405,12 +560,11 @@
       dir: dir ? String(dir) : '',
       url: url,
       type: guessType(url, found.field),
-      field: found.field
+      pan: detectPan(url)
     };
   }
 
   function isDataUrl(u) { return u.indexOf('data:') === 0; }
-  function isHttpUrl(u) { return /^https?:\/\//i.test(u); }
 
   function extFromMime(mime) {
     var map = {
@@ -464,57 +618,97 @@
       .trim();
   }
 
+  function shortUrl(u) {
+    if (isDataUrl(u)) return 'data:…（' + u.length + ' 字符）';
+    var s = u.replace(/^https?:\/\//i, '');
+    return s.length > 60 ? s.slice(0, 57) + '…' : s;
+  }
+
   function toast(msg, type, ms) {
     var el = document.createElement('div');
     el.className = 'toast' + (type ? ' ' + type : '');
-    el.innerHTML = '<i></i><span>' + esc(msg) + '</span>';
+    el.innerHTML = '<span class="dot"></span><span>' + esc(msg) + '</span>';
     toastBox.appendChild(el);
-    setTimeout(function () { el.remove(); }, ms || 3200);
+    setTimeout(function () {
+      el.classList.add('out');
+      el.addEventListener('animationend', function () { el.remove(); }, { once: true });
+    }, ms || 3400);
   }
 
-  /* ---------- 自动加载同目录 JSON ---------- */
+  /* ============ 状态条 ============ */
 
-  function setLoading() {
-    dropEl.hidden = false;
-    workEl.hidden = true;
+  function statusLoading(msg) {
+    statusEl.hidden = false;
+    statusEl.className = 'status';
     spinEl.hidden = false;
-    dropRow.hidden = true;
-    dropTitle.textContent = '正在加载 ' + JSON_URL;
-    dropDesc.textContent = '页面会自动读取同目录下的 JSON 文件';
+    retryBtn.hidden = true;
+    statusText.textContent = msg;
   }
 
-  function setError(msg) {
-    dropEl.hidden = false;
-    workEl.hidden = true;
+  function statusError(msg) {
+    statusEl.hidden = false;
+    statusEl.className = 'status err';
     spinEl.hidden = true;
-    dropRow.hidden = false;
-    dropTitle.textContent = '加载失败';
-    dropDesc.textContent = msg;
+    retryBtn.hidden = false;
+    statusText.textContent = msg;
   }
+
+  function statusHide() {
+    statusEl.hidden = true;
+  }
+
+  /* ============ 骨架屏 ============ */
+
+  function showSkeleton(n) {
+    var html = '';
+    for (var i = 0; i < n; i++) {
+      html +=
+        '<div class="card skel-card">' +
+          '<div class="skel skel-thumb"></div>' +
+          '<div class="skel-body">' +
+            '<div class="skel skel-line" style="width:72%"></div>' +
+            '<div class="skel skel-line" style="width:46%"></div>' +
+          '</div>' +
+        '</div>';
+    }
+    gridEl.innerHTML = html;
+  }
+
+  /* ============ 自动加载 ============ */
 
   async function boot() {
-    setLoading();
+    renderToken++;
+    items = [];
+    workEl.hidden = false;
+    countEl.innerHTML = '共 <b>0</b> 项';
+    showSkeleton(8);
+    statusLoading('正在读取 ' + JSON_URL + ' …');
+
     try {
       var res = await fetch(JSON_URL, { cache: 'no-store' });
       if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText);
       var text = await res.text();
       if (!text.trim()) throw new Error('文件内容为空');
-      var ok = loadText(text, JSON_URL);
-      if (!ok) setError('JSON 内容无法解析，请检查 ' + JSON_URL + ' 的格式');
+
+      statusLoading('正在解析 …');
+      var ok = parseAndFill(text);
+      if (!ok) throw new Error('JSON 结构无法识别，请检查字段写法');
+
+      statusHide();
+      render();
     } catch (e) {
-      setError(
-        '无法读取 ' + JSON_URL + '（' + (e.message || e) + '）。' +
-        'GitHub Pages 上可直接读取；本地请用 http 服务器打开，不要用 file:// 双击。'
+      gridEl.innerHTML = '';
+      statusError(
+        '读取 ' + JSON_URL + ' 失败：' + (e.message || e) +
+        '　·　GitHub Pages 可直接读取；本地请用 http 服务器打开，不要 file:// 双击'
       );
     }
   }
 
-  /* ---------- 解析 ---------- */
-
-  function loadText(text, source) {
+  function parseAndFill(text) {
     var data;
     try { data = JSON.parse(text); }
-    catch (e) { toast('JSON 解析失败：' + e.message, 'err', 5000); return false; }
+    catch (e) { throw new Error('JSON 解析失败：' + e.message); }
 
     var list;
     if (Array.isArray(data))                     list = data;
@@ -525,26 +719,23 @@
     else if (data && Array.isArray(data.images)) list = data.images;
     else if (data && Array.isArray(data.data))   list = data.data;
     else if (data && typeof data === 'object')   list = [data];
-    else { toast('无法识别的 JSON 结构', 'err'); return false; }
+    else return false;
 
     var parsed = [];
     for (var i = 0; i < list.length; i++) {
       var n = normalize(list[i]);
       if (n) parsed.push(n);
     }
-    if (!parsed.length) { toast('没有解析到任何条目', 'err'); return false; }
+    if (!parsed.length) return false;
 
     items = parsed;
-    dropEl.hidden = true;
-    workEl.hidden = false;
-    render();
-    toast('已载入 ' + items.length + ' 项', 'ok');
     return true;
   }
 
-  /* ---------- 渲染 ---------- */
+  /* ============ 渲染（分批动态出现） ============ */
 
   function render() {
+    var token = ++renderToken;
     var q = searchEl.value.trim().toLowerCase();
     var shown = [];
 
@@ -554,81 +745,153 @@
       if (!q || hay.indexOf(q) !== -1) shown.push(i);
     }
 
-    countEl.innerHTML = '共 <b>' + items.length + '</b> 项' +
-      (q ? '，匹配 <b>' + shown.length + '</b> 项' : '');
-
     gridEl.innerHTML = '';
+
     if (!shown.length) {
       gridEl.innerHTML = '<div class="noresult">没有匹配的条目</div>';
+      updateCount(0, items.length, q, true);
       return;
     }
 
-    var frag = document.createDocumentFragment();
-    for (var k = 0; k < shown.length; k++) {
-      frag.appendChild(buildCard(items[shown[k]], shown[k]));
+    var pos = 0;
+    var BATCH = 8;
+
+    function step() {
+      if (token !== renderToken) return;
+
+      var end = Math.min(pos + BATCH, shown.length);
+      var frag = document.createDocumentFragment();
+
+      for (var k = pos; k < end; k++) {
+        frag.appendChild(buildCard(items[shown[k]], shown[k], k - pos));
+      }
+      pos = end;
+      gridEl.appendChild(frag);
+      updateCount(pos, items.length, q, pos >= shown.length);
+
+      if (pos < shown.length) requestAnimationFrame(step);
     }
-    gridEl.appendChild(frag);
+
+    step();
   }
 
-  function buildCard(item, idx) {
+  function updateCount(shownCount, total, hasQuery, done) {
+    var txt = '共 <b>' + total + '</b> 项';
+    if (hasQuery) txt += '　匹配 <b>' + (done ? shownCount : '…') + '</b>';
+    if (!done && hasQuery) txt = '共 <b>' + total + '</b> 项　筛选中 <b>' + shownCount + '</b>…';
+    countEl.innerHTML = txt;
+  }
+
+  function buildCard(item, idx, order) {
     var card = document.createElement('article');
     card.className = 'card';
     card.dataset.i = idx;
+    card.style.animationDelay = Math.min(order * 45, 360) + 'ms';
 
+    var hasUrl = !!item.url;
+    var isPan = !!item.pan;
+    var canPreview = hasUrl && !isPan && (item.type === 'image' || item.type === 'video');
+
+    /* --- 缩略图 --- */
     var thumb = document.createElement('div');
     thumb.className = 'thumb';
 
-    var hasUrl = !!item.url;
-    var canPreview = hasUrl && (item.type === 'image' || item.type === 'video');
-
-    if (hasUrl && item.type === 'image') {
+    if (hasUrl && !isPan && item.type === 'image') {
       var img = document.createElement('img');
       img.alt = '';
       img.loading = 'lazy';
       img.decoding = 'async';
       img.src = item.url;
       img.addEventListener('error', function () {
-        thumb.innerHTML = '<span class="none">预览不可用</span>';
+        img.remove();
+        var ph = document.createElement('span');
+        ph.className = 'ph';
+        ph.textContent = '预览不可用';
+        thumb.appendChild(ph);
+        thumb.classList.remove('previewable');
+        thumb.style.cursor = 'default';
       });
       thumb.appendChild(img);
-      thumb.style.cursor = 'zoom-in';
-    } else if (hasUrl && item.type === 'video') {
+      thumb.classList.add('previewable');
+
+      var veil = document.createElement('div');
+      veil.className = 'thumb-veil';
+      thumb.appendChild(veil);
+    } else if (hasUrl && !isPan && item.type === 'video') {
       var v = document.createElement('video');
       v.muted = true;
       v.preload = 'metadata';
       v.src = item.url;
       v.addEventListener('error', function () {
-        thumb.innerHTML = '<span class="none">预览不可用</span>';
+        v.remove();
+        var ph2 = document.createElement('span');
+        ph2.className = 'ph';
+        ph2.textContent = '预览不可用';
+        thumb.appendChild(ph2);
+        thumb.classList.remove('previewable');
+        thumb.style.cursor = 'default';
       });
       thumb.appendChild(v);
-      thumb.style.cursor = 'zoom-in';
+      thumb.classList.add('previewable');
+
+      var veil2 = document.createElement('div');
+      veil2.className = 'thumb-veil';
+      thumb.appendChild(veil2);
     } else {
-      thumb.innerHTML = '<span class="none">' + (hasUrl ? '无预览' : '无地址') + '</span>';
+      var ph3 = document.createElement('span');
+      ph3.className = 'ph';
+      ph3.textContent = isPan ? item.pan + ' 分享' : (hasUrl ? '无预览' : '无地址');
+      thumb.appendChild(ph3);
     }
 
+    /* 类型角标 */
     var badge = document.createElement('span');
     badge.className = 'badge ' + item.type;
     badge.textContent = item.type;
     thumb.appendChild(badge);
 
+    /* 网盘角标 */
+    if (isPan) {
+      var tag = document.createElement('span');
+      tag.className = 'pan-tag';
+      tag.textContent = item.pan;
+      thumb.appendChild(tag);
+    }
+
+    /* --- 信息 --- */
     var meta = document.createElement('div');
     meta.className = 'meta';
 
     var displayName = item.name || (item.url ? shortUrl(item.url) : '未命名');
     var dirText = item.dir || '浏览器下载目录';
 
+    var srcLine = item.url && !isDataUrl(item.url)
+      ? '<div class="dir src"><span title="' + esc(item.url) + '">' + esc(shortUrl(item.url)) + '</span></div>'
+      : '';
+
     meta.innerHTML =
       '<div class="name" title="' + esc(displayName) + '">' + esc(displayName) + '</div>' +
-      '<div class="path" title="' + esc(dirText) + '">' + esc(dirText) + '</div>' +
-      (item.url ? '<div class="path src" title="' + esc(item.url) + '">' + esc(shortUrl(item.url)) + '</div>' : '');
+      '<div class="dir">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/>' +
+        '</svg>' +
+        '<span title="' + esc(dirText) + '">' + esc(dirText) + '</span>' +
+      '</div>' +
+      srcLine;
 
+    /* --- 按钮 --- */
     var ops = document.createElement('div');
     ops.className = 'ops';
-    ops.innerHTML =
-      '<button class="btn" data-act="view" data-i="' + idx + '"' +
-        (canPreview ? '' : ' disabled') + '>预览</button>' +
-      '<button class="btn primary" data-act="dl" data-i="' + idx + '"' +
-        (hasUrl ? '' : ' disabled') + '>下载</button>';
+
+    var btnView = '<button class="act" data-act="view" data-i="' + idx + '"' +
+      (canPreview ? '' : ' disabled') + '>预览</button>';
+
+    var btnMain = isPan
+      ? '<button class="act pan" data-act="pan" data-i="' + idx + '">打开网盘</button>'
+      : '<button class="act primary" data-act="dl" data-i="' + idx + '"' +
+          (hasUrl ? '' : ' disabled') + '>下载</button>';
+
+    ops.innerHTML = btnView + btnMain;
 
     card.appendChild(thumb);
     card.appendChild(meta);
@@ -636,13 +899,7 @@
     return card;
   }
 
-  function shortUrl(u) {
-    if (isDataUrl(u)) return 'data:...（' + u.length + ' 字符）';
-    var s = u.replace(/^https?:\/\//i, '');
-    return s.length > 60 ? s.slice(0, 57) + '…' : s;
-  }
-
-  /* ---------- 下载 ---------- */
+  /* ============ 下载 ============ */
 
   function browserDownload(blob, filename) {
     var url = URL.createObjectURL(blob);
@@ -687,11 +944,13 @@
     await w.close();
   }
 
-  function updateRootInfo() {
+  function updateRootPill() {
     if (rootHandle) {
-      rootInfo.innerHTML = '保存到：<b>' + esc(rootHandle.name) + '/…</b>';
+      rootPill.innerHTML = '保存到：<b>' + esc(rootHandle.name) + '/…</b>';
+      rootPill.title = '根目录：' + rootHandle.name;
     } else {
-      rootInfo.textContent = '保存到：浏览器下载目录';
+      rootPill.textContent = '保存到：浏览器下载目录';
+      rootPill.title = '';
     }
   }
 
@@ -700,7 +959,7 @@
     if (!supportsFS) return false;
     try {
       rootHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-      updateRootInfo();
+      updateRootPill();
       return true;
     } catch (e) {
       return false;
@@ -713,23 +972,38 @@
     return await res.blob();
   }
 
+  /* 网盘：直接新标签打开 */
+  function openPan(item) {
+    if (!item || !item.url) return;
+    var w = window.open(item.url, '_blank', 'noopener');
+    if (!w) {
+      toast('浏览器拦截了新标签，请允许弹出窗口', 'error', 4200);
+    } else {
+      toast('已打开 ' + item.pan, 'success');
+    }
+  }
+
+  /* 普通下载 */
   async function downloadItem(item) {
-    if (!item || !item.url) { toast('该项没有下载地址', 'err'); return 'fail'; }
+    if (!item || !item.url) { toast('该项没有下载地址', 'error'); return 'fail'; }
+
+    /* 网盘走打开逻辑 */
+    if (item.pan) { openPan(item); return 'pan'; }
 
     var url = item.url;
 
     if (isDataUrl(url)) {
       var blob;
       try { blob = dataUrlToBlob(url); }
-      catch (e) { toast('数据无效：' + e.message, 'err'); return 'fail'; }
+      catch (e) { toast('数据无效：' + e.message, 'error'); return 'fail'; }
 
       var fname = filenameFor(item, blob.type);
       if (rootHandle) {
-        try { await writeToDir(item.dir, fname, blob); toast('已保存 ' + fname, 'ok'); return 'ok'; }
-        catch (e) { toast('写入失败：' + (e.message || e), 'err'); return 'fail'; }
+        try { await writeToDir(item.dir, fname, blob); toast('已保存 ' + fname, 'success'); return 'ok'; }
+        catch (e) { toast('写入失败：' + (e.message || e), 'error'); return 'fail'; }
       } else {
         browserDownload(blob, fname);
-        toast('已开始下载 ' + fname, 'ok');
+        toast('已开始下载 ' + fname, 'success');
         return 'ok';
       }
     }
@@ -739,28 +1013,37 @@
         var remote = await fetchBlob(url);
         var rfname = filenameFor(item, remote.type);
         await writeToDir(item.dir, rfname, remote);
-        toast('已保存 ' + rfname, 'ok');
+        toast('已保存 ' + rfname, 'success');
         return 'ok';
       } catch (e) {
         var fallbackName = filenameFor(item, '');
         browserDownloadUrl(url, fallbackName);
-        toast('跨域受限，已交给浏览器下载：' + fallbackName, 'ok', 4200);
+        toast('跨域受限，已交给浏览器下载：' + fallbackName, 'success', 4200);
         return 'fallback';
       }
     }
 
     var fname2 = filenameFor(item, '');
     browserDownloadUrl(url, fname2);
-    toast('已开始下载 ' + fname2, 'ok');
+    toast('已开始下载 ' + fname2, 'success');
     return 'fallback';
   }
 
   async function downloadAll() {
-    var targets = [];
+    var direct = [];
+    var panCount = 0;
+
     for (var i = 0; i < items.length; i++) {
-      if (items[i].url) targets.push(items[i]);
+      if (!items[i].url) continue;
+      if (items[i].pan) panCount++;
+      else direct.push(items[i]);
     }
-    if (!targets.length) { toast('没有可下载的条目', 'err'); return; }
+
+    if (!direct.length) {
+      if (panCount) toast('全部是网盘链接，请逐个点击“打开网盘”', 'error', 4200);
+      else toast('没有可下载的条目', 'error');
+      return;
+    }
 
     if (supportsFS && !rootHandle) {
       var ok = await ensureRoot();
@@ -772,9 +1055,9 @@
 
     var done = 0, fail = 0, fallback = 0;
 
-    for (var n = 0; n < targets.length; n++) {
-      allBtn.textContent = '下载中 ' + (n + 1) + '/' + targets.length;
-      var r = await downloadItem(targets[n]);
+    for (var n = 0; n < direct.length; n++) {
+      allBtn.textContent = '下载中 ' + (n + 1) + '/' + direct.length;
+      var r = await downloadItem(direct[n]);
       if (r === 'ok') done++;
       else if (r === 'fallback') { done++; fallback++; }
       else fail++;
@@ -785,28 +1068,29 @@
     allBtn.textContent = label;
 
     var msg = '完成：成功 ' + done + ' 项';
-    if (fallback) msg += '（其中 ' + fallback + ' 项走浏览器下载）';
+    if (fallback) msg += '（' + fallback + ' 项走浏览器下载）';
     if (fail) msg += '，失败 ' + fail + ' 项';
-    toast(msg, fail ? 'err' : 'ok', 4600);
+    if (panCount) msg += '；另有 ' + panCount + ' 个网盘链接需手动打开';
+    toast(msg, fail ? 'error' : 'success', 5000);
   }
 
-  /* ---------- 预览 ---------- */
+  /* ============ 预览 ============ */
 
   function openLightbox(item) {
     if (!item || !item.url) return;
+    if (item.pan) { openPan(item); return; }
     if (item.type !== 'image' && item.type !== 'video') {
-      toast('该项不支持预览', 'err');
+      toast('该项不支持预览', 'error');
       return;
     }
 
     lbBody.innerHTML = '';
+
     if (item.type === 'video') {
       var v = document.createElement('video');
       v.src = item.url;
       v.controls = true;
       v.autoplay = true;
-      v.style.maxWidth = '86vw';
-      v.style.maxHeight = '74vh';
       lbBody.appendChild(v);
     } else {
       var img = document.createElement('img');
@@ -822,13 +1106,13 @@
 
   function closeLightbox() {
     lightbox.classList.remove('on');
-    setTimeout(function () { lbBody.innerHTML = ''; }, 220);
+    setTimeout(function () { lbBody.innerHTML = ''; }, 300);
   }
 
-  /* ---------- 事件 ---------- */
+  /* ============ 事件 ============ */
 
   $('reloadBtn').addEventListener('click', boot);
-  $('retryBtn').addEventListener('click', boot);
+  retryBtn.addEventListener('click', boot);
 
   var searchTimer;
   searchEl.addEventListener('input', function () {
@@ -839,27 +1123,29 @@
   gridEl.addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-act]');
     if (btn) {
+      var act = btn.dataset.act;
       var item = items[+btn.dataset.i];
-      if (btn.dataset.act === 'dl') downloadItem(item);
-      else if (btn.dataset.act === 'view') openLightbox(item);
+      if (act === 'dl') downloadItem(item);
+      else if (act === 'pan') openPan(item);
+      else if (act === 'view') openLightbox(item);
       return;
     }
-    var thumb = e.target.closest('.thumb');
+    var thumb = e.target.closest('.thumb.previewable');
     if (thumb) {
       var card = thumb.closest('.card');
       if (!card) return;
       var it = items[+card.dataset.i];
-      if (it && (it.type === 'image' || it.type === 'video')) openLightbox(it);
+      if (it) openLightbox(it);
     }
   });
 
   $('rootBtn').addEventListener('click', async function () {
     if (!supportsFS) {
-      toast('当前浏览器不支持选择目录，将使用默认下载目录', 'err', 4200);
+      toast('当前浏览器不支持选择目录，将使用默认下载目录', 'error', 4200);
       return;
     }
     var ok = await ensureRoot();
-    if (ok) toast('保存位置已设置：' + rootHandle.name, 'ok');
+    if (ok) toast('保存位置已设置：' + rootHandle.name, 'success');
   });
 
   allBtn.addEventListener('click', downloadAll);
@@ -874,10 +1160,10 @@
   });
 
   if (!supportsFS) {
-    rootInfo.textContent = '保存到：浏览器下载目录（当前浏览器不支持目录选择）';
+    rootPill.textContent = '保存到：浏览器下载目录（浏览器不支持目录选择）';
   }
 
-  /* 页面打开即自动加载 */
+  /* 立即开屏加载 */
   boot();
 })();
 </script>
