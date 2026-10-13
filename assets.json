@@ -83,5 +83,16 @@
         "url": "https://pan.baidu.com/wap/init?surl=2O1xmX4Nw1Ge09e2-sbp2w&pwd=zsnr"
       }
     ]
+  },
+  {
+    "name": "轴心点工具-Pivot Tool v1.5.1",
+    "desc": "Pivot Tool 是 Unreal Engine 的枢轴编辑器。\n\n使用枢轴工具，您可以通过应用 27 种枢轴预设之一，手动或自动轻松修改演员枢轴。您可以直接在虚幻编辑器中将枢轴变化烘焙到静态网格物体中，无需打开 3D 建模软件来调整枢轴位置。\n\n技术细节\n功能列表：\n\n• 在虚幻编辑器中修改和烘烤网格枢轴点，对于重用现有资产或测试模块化网格的枢轴位置很有用。\n\n• 烘焙网格枢轴位置和旋转，同时保留物理碰撞和插槽数据\n\n• 将枢轴更改烘焙到当前网格或复制的网格\n\n• 27 个枢轴预设，用于快速轻松地设置枢轴，分为 4 组（中心/面/角/边缘），具有直观的 UI。\n\n• 通过演员边界框或网格顶点应用枢轴预设。\n\n• 临时应用枢轴预设或自动保存更改。\n\n• 能够将枢轴预设作为一组或单独应用于选定的演员\n\n• 在应用枢轴预设时使用顶点模式将枢轴点捕捉到网格顶点\n\n• 一键点击保存临时枢轴位置（Alt + 鼠标中键）\n\n• 快速重置演员枢轴偏移\n\n• 从一个演员复制枢轴并粘贴到选定的多个演员中",
+    "preview": "https://img.cg3da.com/wp-content/uploads/UELTCJ-P90-1.webp",
+    "links": [
+      {
+        "name": "百度网盘",
+        "url": "https://pan.baidu.com/share/init?surl=ULkV8SRj66mf7WlRpdnZVg&pwd=ncb6"
+      }
+    ]
   }
 ]
