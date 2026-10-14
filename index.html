@@ -229,6 +229,7 @@
   /* ============ 状态 ============ */
   var items = [], filtered = [], loadedPos = 0, io = null, sentinel = null;
   var pageState = 'hero', animating = false, lastDiag = [], editingIndex = -1;
+  var loadGen = 0;   // 用于取消被后续刷新取代的旧请求
 
   /* ============ DOM ============ */
   var $ = function (id) { return document.getElementById(id); };
@@ -275,64 +276,114 @@
   }
 
   /* ============================================================
-     数据加载
+     三源竞速加载
+     - 本地 assets.json（最快，优先命中）
+     - raw.githubusercontent.com（次选）
+     - api.github.com 匿名只读（兜底，有 60/小时 限流）
      ============================================================ */
+  function parseText(text) {
+    text = text.replace(/^\uFEFF/, '').replace(/^\s+/, '');
+    if (!text) throw new Error('内容为空');
+    if (text.charAt(0) === '<') throw new Error('返回的是 HTML 页面，不是 JSON');
+    var data;
+    try { data = JSON.parse(text); }
+    catch (e) { throw new Error('JSON 语法错误：' + e.message); }
+    var list = P.extractList(data);
+    if (!list) throw new Error('JSON 结构无法识别');
+    if (!list.length) throw new Error('数组内容为空');
+    return list;
+  }
+
   function buildSources() {
     var g = C.cfgDefaults();
-    return [{
-      label: 'raw.githubusercontent.com',
-      url: 'https://raw.githubusercontent.com/' + g.owner + '/' + g.repo +
-           '/' + g.branch + '/' + g.path
-    }];
+    return [
+      {
+        label: '本地 assets.json',
+        fetch: function () {
+          return fetch('assets.json?_=' + Date.now(), { cache: 'no-store' })
+            .then(function (r) {
+              if (r.status === 404) throw new Error('HTTP 404 未找到');
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              return r.text();
+            })
+            .then(parseText);
+        }
+      },
+      {
+        label: 'raw.githubusercontent.com',
+        fetch: function () {
+          var url = 'https://raw.githubusercontent.com/' + g.owner + '/' + g.repo +
+                    '/' + g.branch + '/' + g.path + '?_=' + Date.now();
+          return fetch(url, { cache: 'no-store' })
+            .then(function (r) {
+              if (r.status === 404) throw new Error('HTTP 404 未找到');
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              return r.text();
+            })
+            .then(parseText);
+        }
+      },
+      {
+        label: 'api.github.com (匿名只读)',
+        fetch: function () { return C.ghFetchPublic(g); }
+      }
+    ];
   }
 
-  function tryFetchOne(src) {
-    var sep = src.url.indexOf('?') >= 0 ? '&' : '?';
-    var url = src.url + sep + '_=' + Date.now();
-
-    return fetch(url, { cache: 'no-store' })
-      .then(function (res) {
-        if (res.status === 404) throw new Error('HTTP 404 未找到');
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.text();
-      })
-      .then(function (text) {
-        text = text.replace(/^\uFEFF/, '').replace(/^\s+/, '');
-        if (!text) throw new Error('内容为空');
-        if (text.charAt(0) === '<') throw new Error('返回的是 HTML 页面，不是 JSON');
-
-        var data;
-        try { data = JSON.parse(text); }
-        catch (e) { throw new Error('JSON 语法错误：' + e.message); }
-
-        var list = P.extractList(data);
-        if (!list) throw new Error('JSON 结构无法识别');
-        if (!list.length) throw new Error('数组内容为空');
-        return list;
-      });
-  }
-
-  function loadJSON() {
+  /**
+   * 三源同时发起，先到先用；后到的若内容不同则自动替换。
+   * onFirst(list, source, diag)   第一个成功返回
+   * onUpdate(list, source)        后续返回且内容不同
+   * onFail(diag)                  全部失败
+   */
+  function loadJSON(cb) {
     var sources = buildSources();
-    var diag = [], i = 0;
-    function next() {
-      if (i >= sources.length) return Promise.resolve({ ok: false, diag: diag });
-      var src = sources[i++];
-      return tryFetchOne(src).then(function (list) {
-        diag.push({ url: src.label, status: 'ok', msg: '成功，共 ' + list.length + ' 条' });
-        return { ok: true, list: list, url: src.label, diag: diag };
-      }).catch(function (e) {
-        diag.push({ url: src.label, status: 'fail', msg: e.message || String(e) });
-        return next();
-      });
+    var diag = [];
+    var settled = false;      // 是否已有数据先到
+    var bestHash = null;      // 当前已展示数据的指纹
+    var failed = 0;
+
+    function record(src, ok, msg) {
+      diag.push({ url: src.label, status: ok ? 'ok' : 'fail', msg: msg });
     }
-    return next();
+
+    sources.forEach(function (src) {
+      src.fetch().then(function (list) {
+        var hash = JSON.stringify(list);
+
+        if (!settled) {
+          settled = true;
+          bestHash = hash;
+          record(src, true, '成功，共 ' + list.length + ' 条');
+          cb.onFirst(list, src.label, diag.slice());
+          return;
+        }
+
+        // 已有数据：只在内容不同时才替换
+        if (hash !== bestHash) {
+          bestHash = hash;
+          record(src, true, '成功，内容有更新，已替换');
+          cb.onUpdate(list, src.label);
+        } else {
+          record(src, true, '成功，内容一致，忽略');
+        }
+      }).catch(function (e) {
+        failed++;
+        record(src, false, e.message || String(e));
+        if (failed === sources.length && !settled) {
+          cb.onFail(diag);
+        }
+      });
+    });
   }
 
   /* ============================================================
      启动 / 重载
      ============================================================ */
   function boot() {
+    loadGen++;
+    var myGen = loadGen;
+
     if (io) { io.disconnect(); io = null; }
     items = []; filtered = []; loadedPos = 0; lastDiag = [];
     countPill.innerHTML = '共 <b>—</b> 项';
@@ -343,23 +394,39 @@
     heroBadgeText.textContent = '加载中…';
     updateGhPill();
 
-    loadJSON().then(function (r) {
-      if (r.ok) {
-        var parsed = [];
-        for (var i = 0; i < r.list.length; i++) {
-          var n = P.normalize(r.list[i]);
-          if (n) parsed.push(n);
-        }
-        if (parsed.length) { items = parsed; lastDiag = r.diag; onLoaded(false, r.url); return; }
+    loadJSON({
+      onFirst: function (list, source, diag) {
+        if (myGen !== loadGen) return;
+        lastDiag = diag;
+        applyList(list, source, false);
+      },
+      onUpdate: function (list, source) {
+        if (myGen !== loadGen) return;
+        applyList(list, source, true);
+        console.log('[资源下载中心] 数据已从 ' + source + ' 更新');
+      },
+      onFail: function (diag) {
+        if (myGen !== loadGen) return;
+        lastDiag = diag;
+        items = P.makePreviewItems().map(P.normalize);
+        onLoaded(true, null);
       }
-      lastDiag = r.diag;
-      items = P.makePreviewItems().map(P.normalize);
-      onLoaded(true, null);
-    }).catch(function (e) {
-      lastDiag = [{ url: '(内部错误)', status: 'fail', msg: e.message || String(e) }];
-      items = P.makePreviewItems().map(P.normalize);
-      onLoaded(true, null);
     });
+  }
+
+  function applyList(rawList, source, isUpdate) {
+    var parsed = [];
+    for (var i = 0; i < rawList.length; i++) {
+      var n = P.normalize(rawList[i]);
+      if (n) parsed.push(n);
+    }
+    if (!parsed.length) return;
+
+    items = parsed;
+    onLoaded(false, source);
+    if (isUpdate) {
+      console.log('[资源下载中心] 已切换到 ' + source + '，共 ' + items.length + ' 条');
+    }
   }
 
   function onLoaded(isPreview, sourceUrl) {
