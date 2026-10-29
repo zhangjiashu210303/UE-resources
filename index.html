@@ -3,274 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UE 资源详情</title>
+<title>UE 资源中心</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{
-    font-family:'Inter',-apple-system,sans-serif;
-    background:#0a0c0f;color:#eef2f6;
-    min-height:100vh;overflow-x:hidden;
-  }
+  body{font-family:'Inter',-apple-system,sans-serif;background:#0a0c0f;color:#eef2f6;overflow-x:hidden}
   ::-webkit-scrollbar{width:8px}
   ::-webkit-scrollbar-track{background:#101418}
   ::-webkit-scrollbar-thumb{background:#2e3a47;border-radius:20px}
   ::-webkit-scrollbar-thumb:hover{background:#3f5062}
 
-  /* 背景层 */
-  .aurora-bg{
-    position:fixed;inset:0;z-index:-2;
-    background:
-      radial-gradient(circle at 20% 20%,rgba(64,180,255,.18),transparent 45%),
-      radial-gradient(circle at 80% 80%,rgba(170,80,255,.2),transparent 50%),
-      radial-gradient(circle at 45% 65%,rgba(0,255,200,.1),transparent 55%),
-      #0a0c0f;
-    filter:blur(40px);
-  }
-  .grid-overlay{
-    position:fixed;inset:0;z-index:-1;pointer-events:none;
-    background-image:
-      linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
-    background-size:40px 40px;
-  }
+  .aurora-bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 20% 30%,rgba(64,180,255,.15),transparent 45%),radial-gradient(circle at 80% 70%,rgba(170,80,255,.18),transparent 50%),radial-gradient(circle at 40% 80%,rgba(0,255,200,.1),transparent 60%),#0a0c0f;filter:blur(40px)}
+  .grid-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:40px 40px}
 
-  /* 顶部返回栏 */
-  .topbar{
-    position:sticky;top:0;z-index:50;
-    display:flex;align-items:center;gap:1rem;
-    padding:1rem 1.5rem;
-    background:rgba(10,12,15,.55);
-    backdrop-filter:blur(18px);
-    border-bottom:1px solid rgba(255,255,255,.06);
-  }
-  .back-btn{
-    display:inline-flex;align-items:center;gap:.5rem;
-    padding:.6rem 1.2rem;border-radius:60px;
-    border:1px solid rgba(255,255,255,.12);
-    background:transparent;color:#eef2f6;
-    font-size:.9rem;font-weight:500;cursor:pointer;
-    text-decoration:none;transition:.2s;
-  }
-  .back-btn:hover{background:rgba(255,255,255,.06);border-color:#40b4ff}
-  .topbar .crumb{
-    color:#6d7f93;font-size:.85rem;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
+  /* ===== 列表视图 ===== */
+  #listView{display:none}
+  #listView.active{display:block}
 
-  /* 主体 */
-  .detail-wrap{
-    max-width:1200px;margin:0 auto;
-    padding:2rem 1.5rem 5rem;
-  }
+  .hero{position:fixed;top:0;left:0;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;z-index:10;transition:transform .75s cubic-bezier(.23,1,.32,1),opacity .5s;background:rgba(10,12,15,.2);backdrop-filter:blur(8px);will-change:transform}
+  .hero.hidden{transform:translateY(-120vh);opacity:0;pointer-events:none}
+  .hero h1{font-size:clamp(2.8rem,10vw,6rem);font-weight:700;letter-spacing:-.03em;background:linear-gradient(135deg,#fff 0%,#b0e0ff 40%,#d0a0ff 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem;text-shadow:0 0 40px rgba(64,180,255,.4)}
+  .hero p{font-size:1.25rem;color:#94a3b8;max-width:600px;line-height:1.6;margin-bottom:2rem}
+  .hero .hint{display:flex;align-items:center;gap:.5rem;color:#5f7d9c;font-size:.9rem;animation:pulse 2s infinite}
+  .hero .hint span{display:inline-block;width:8px;height:8px;border-radius:50%;background:#40b4ff;box-shadow:0 0 12px #40b4ff}
+  @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 
-  /* 加载/错误 */
-  .state{
-    text-align:center;padding:6rem 1rem;color:#6d7f93;
-  }
-  .spinner{
-    display:inline-block;width:38px;height:38px;
-    border:3px solid rgba(64,180,255,.15);
-    border-top-color:#40b4ff;border-radius:50%;
-    animation:spin .8s linear infinite;margin-bottom:1rem;
-  }
+  .list-section{position:relative;min-height:100vh;padding:4rem 1.5rem 6rem;margin-top:100vh;z-index:20;transition:margin-top .75s cubic-bezier(.23,1,.32,1)}
+  .list-section.visible{margin-top:0}
+  .container{max-width:1400px;margin:0 auto}
+
+  .toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:3rem;padding:.5rem 0}
+  .search-box{flex:1;min-width:260px;position:relative}
+  .search-box input{width:100%;padding:.9rem 1.2rem .9rem 3rem;border-radius:60px;border:1px solid rgba(255,255,255,.08);background:rgba(18,24,32,.8);backdrop-filter:blur(10px);color:#eef2f6;font-size:1rem;transition:.3s;outline:none}
+  .search-box input:focus{border-color:#40b4ff;box-shadow:0 0 0 4px rgba(64,180,255,.15)}
+  .search-box::before{content:"🔍";position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);font-size:1.2rem;opacity:.6}
+
+  .btn{padding:.9rem 1.8rem;border-radius:60px;border:none;font-weight:600;font-size:.95rem;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap}
+  .btn-outline{background:transparent;border:1px solid rgba(255,255,255,.12);color:#eef2f6}
+  .btn-outline:hover{background:rgba(255,255,255,.05);border-color:#40b4ff}
+
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.8rem;perspective:1000px}
+  .card{background:rgba(20,26,34,.7);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.06);border-radius:28px;overflow:hidden;transition:.4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;opacity:0;transform:translateY(40px) scale(.96);animation:cardReveal .65s cubic-bezier(.23,1,.32,1) forwards;box-shadow:0 20px 40px -15px rgba(0,0,0,.6)}
+  .card:hover{border-color:rgba(64,180,255,.3);box-shadow:0 30px 60px -15px rgba(64,180,255,.2);transform:translateY(-6px) scale(1.01)}
+  @keyframes cardReveal{to{opacity:1;transform:translateY(0) scale(1)}}
+
+  .card-preview{width:100%;aspect-ratio:16/10;background:#11171f;overflow:hidden;position:relative;cursor:pointer;display:block;text-decoration:none}
+  .card-preview img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+  .card:hover .card-preview img{transform:scale(1.04)}
+  .card-preview .media-badge{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);padding:.25rem .75rem;border-radius:40px;font-size:.75rem;color:#a0c0e0;border:1px solid rgba(255,255,255,.1)}
+  .card-preview .detail-hint{position:absolute;bottom:12px;left:12px;background:rgba(64,180,255,.85);backdrop-filter:blur(8px);padding:.3rem .8rem;border-radius:40px;font-size:.72rem;color:#fff;opacity:0;transition:.3s;font-weight:600}
+  .card:hover .detail-hint{opacity:1}
+
+  .card-content{padding:1.5rem 1.5rem 1.2rem;flex:1;display:flex;flex-direction:column}
+  .card-title{font-size:1.25rem;font-weight:700;margin-bottom:.5rem;line-height:1.3;color:#fff;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-desc{font-size:.85rem;color:#92a8c0;line-height:1.6;margin-bottom:1.2rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+  .card-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-top:auto;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.04)}
+
+  .link-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem 1rem;border-radius:40px;font-size:.8rem;font-weight:500;transition:.2s;text-decoration:none;border:1px solid transparent}
+  .link-badge.baidu{background:rgba(40,100,200,.15);color:#7db8ff;border-color:rgba(40,100,200,.2)}
+  .link-badge.quark{background:rgba(100,200,150,.12);color:#7dffb0;border-color:rgba(100,200,150,.2)}
+  .link-badge.default-link{background:rgba(255,255,255,.05);color:#c0d0e0;border-color:rgba(255,255,255,.08)}
+  .link-badge:hover{transform:translateY(-1px);filter:brightness(1.2)}
+  .code-tag{font-size:.7rem;background:rgba(0,0,0,.4);padding:.15rem .5rem;border-radius:20px;color:#b0c0d0;margin-left:.2rem}
+
+  .detail-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem 1rem;border-radius:40px;font-size:.8rem;font-weight:600;text-decoration:none;background:rgba(64,180,255,.12);color:#7db8ff;border:1px solid rgba(64,180,255,.25);transition:.2s;margin-left:auto}
+  .detail-btn:hover{background:rgba(64,180,255,.22);transform:translateY(-1px)}
+
+  .loading-state{text-align:center;padding:4rem 2rem;color:#6d7f93;grid-column:1/-1}
+  .spinner{display:inline-block;width:36px;height:36px;border:3px solid rgba(64,180,255,.15);border-top-color:#40b4ff;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .state h2{color:#eef2f6;margin-bottom:.5rem;font-weight:600}
-  .state p{margin-bottom:1.2rem;line-height:1.6}
 
-  /* 详情卡片 */
-  .detail-card{
-    background:rgba(20,26,34,.72);
-    backdrop-filter:blur(22px);
-    border:1px solid rgba(255,255,255,.07);
-    border-radius:32px;
-    overflow:hidden;
-    box-shadow:0 40px 80px -20px rgba(0,0,0,.7);
-    animation:reveal .7s cubic-bezier(.23,1,.32,1) both;
-  }
-  @keyframes reveal{
-    from{opacity:0;transform:translateY(40px) scale(.98)}
-    to{opacity:1;transform:translateY(0) scale(1)}
-  }
+  /* ===== 详情视图 ===== */
+  #detailView{display:none}
+  #detailView.active{display:block}
 
-  /* 预览区 */
-  .detail-preview{
-    width:100%;aspect-ratio:21/9;
-    background:#0d1218;position:relative;
-    cursor:zoom-in;overflow:hidden;
-  }
-  .detail-preview img{
-    width:100%;height:100%;object-fit:cover;
-    transition:transform .6s;
-  }
+  .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;background:rgba(10,12,15,.55);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}
+  .back-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border-radius:60px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#eef2f6;font-size:.9rem;font-weight:500;cursor:pointer;text-decoration:none;transition:.2s}
+  .back-btn:hover{background:rgba(255,255,255,.06);border-color:#40b4ff}
+  .topbar .crumb{color:#6d7f93;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .detail-wrap{max-width:1200px;margin:0 auto;padding:2rem 1.5rem 5rem}
+  .detail-wrap .state{text-align:center;padding:6rem 1rem;color:#6d7f93}
+  .detail-wrap .state h2{color:#eef2f6;margin-bottom:.5rem;font-weight:600}
+  .detail-wrap .state p{margin-bottom:1.2rem;line-height:1.6}
+
+  .detail-card{background:rgba(20,26,34,.72);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.07);border-radius:32px;overflow:hidden;box-shadow:0 40px 80px -20px rgba(0,0,0,.7);animation:reveal .7s cubic-bezier(.23,1,.32,1) both}
+  @keyframes reveal{from{opacity:0;transform:translateY(40px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+  .detail-preview{width:100%;aspect-ratio:21/9;background:#0d1218;position:relative;cursor:zoom-in;overflow:hidden}
+  .detail-preview img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
   .detail-preview:hover img{transform:scale(1.03)}
-  .detail-preview .badge{
-    position:absolute;bottom:16px;right:16px;
-    background:rgba(0,0,0,.65);backdrop-filter:blur(8px);
-    padding:.35rem .9rem;border-radius:40px;
-    font-size:.78rem;color:#a0c0e0;
-    border:1px solid rgba(255,255,255,.1);
-  }
-  .detail-preview .zoom-hint{
-    position:absolute;top:16px;right:16px;
-    background:rgba(0,0,0,.5);backdrop-filter:blur(8px);
-    padding:.4rem .8rem;border-radius:40px;
-    font-size:.75rem;color:#c0d0e0;
-    border:1px solid rgba(255,255,255,.1);
-    opacity:0;transition:.3s;
-  }
+  .detail-preview .badge{position:absolute;bottom:16px;right:16px;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);padding:.35rem .9rem;border-radius:40px;font-size:.78rem;color:#a0c0e0;border:1px solid rgba(255,255,255,.1)}
+  .detail-preview .zoom-hint{position:absolute;top:16px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);padding:.4rem .8rem;border-radius:40px;font-size:.75rem;color:#c0d0e0;border:1px solid rgba(255,255,255,.1);opacity:0;transition:.3s}
   .detail-preview:hover .zoom-hint{opacity:1}
 
-  /* 内容区 */
   .detail-body{padding:2rem 2.2rem 2.2rem}
-  .detail-id{
-    display:inline-block;
-    font-size:.75rem;font-weight:600;
-    letter-spacing:.08em;
-    color:#40b4ff;
-    background:rgba(64,180,255,.1);
-    border:1px solid rgba(64,180,255,.25);
-    padding:.3rem .8rem;border-radius:40px;
-    margin-bottom:1rem;
-  }
-  .detail-title{
-    font-size:clamp(1.6rem,4vw,2.4rem);
-    font-weight:700;line-height:1.2;
-    letter-spacing:-.02em;margin-bottom:1rem;
-    background:linear-gradient(135deg,#fff 0%,#b0e0ff 60%,#d0a0ff 100%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    background-clip:text;
-  }
-  .detail-desc{
-    color:#9fb2c8;font-size:1rem;
-    line-height:1.75;white-space:pre-wrap;
-    margin-bottom:1.8rem;
-  }
-  .detail-meta{
-    display:flex;flex-wrap:wrap;gap:.6rem;
-    margin-bottom:2rem;
-  }
-  .meta-chip{
-    display:inline-flex;align-items:center;gap:.4rem;
-    padding:.45rem 1rem;border-radius:40px;
-    font-size:.82rem;
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(255,255,255,.08);
-    color:#b0c4d8;
-  }
-  .meta-chip code{
-    font-family:ui-monospace,monospace;
-    color:#7db8ff;font-size:.8rem;
-  }
+  .detail-id{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.08em;color:#40b4ff;background:rgba(64,180,255,.1);border:1px solid rgba(64,180,255,.25);padding:.3rem .8rem;border-radius:40px;margin-bottom:1rem}
+  .detail-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.2;letter-spacing:-.02em;margin-bottom:1rem;background:linear-gradient(135deg,#fff 0%,#b0e0ff 60%,#d0a0ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .detail-desc{color:#9fb2c8;font-size:1rem;line-height:1.75;white-space:pre-wrap;margin-bottom:1.8rem}
+  .detail-meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2rem}
+  .meta-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;border-radius:40px;font-size:.82rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#b0c4d8}
+  .meta-chip code{font-family:ui-monospace,monospace;color:#7db8ff;font-size:.8rem}
 
-  /* 下载链接区 */
-  .links-section h3{
-    font-size:1.1rem;font-weight:600;
-    margin-bottom:1rem;color:#eef2f6;
-    display:flex;align-items:center;gap:.5rem;
-  }
-  .links-section h3::before{
-    content:"";width:4px;height:18px;border-radius:4px;
-    background:linear-gradient(180deg,#40b4ff,#7b5aff);
-  }
-  .links-list{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-    gap:1rem;
-  }
-  .link-card{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:1rem;padding:1.1rem 1.3rem;
-    border-radius:20px;
-    background:rgba(255,255,255,.035);
-    border:1px solid rgba(255,255,255,.07);
-    text-decoration:none;color:inherit;
-    transition:.25s;
-  }
-  .link-card:hover{
-    background:rgba(64,180,255,.08);
-    border-color:rgba(64,180,255,.3);
-    transform:translateY(-2px);
-  }
-  .link-card .link-left{
-    display:flex;align-items:center;gap:.8rem;min-width:0;
-  }
-  .link-icon{
-    width:40px;height:40px;border-radius:14px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.1rem;flex-shrink:0;
-  }
+  .links-section h3{font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#eef2f6;display:flex;align-items:center;gap:.5rem}
+  .links-section h3::before{content:"";width:4px;height:18px;border-radius:4px;background:linear-gradient(180deg,#40b4ff,#7b5aff)}
+  .links-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .link-card{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.3rem;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);text-decoration:none;color:inherit;transition:.25s}
+  .link-card:hover{background:rgba(64,180,255,.08);border-color:rgba(64,180,255,.3);transform:translateY(-2px)}
+  .link-card .link-left{display:flex;align-items:center;gap:.8rem;min-width:0}
+  .link-icon{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
   .link-icon.baidu{background:rgba(40,100,200,.15);color:#7db8ff}
   .link-icon.quark{background:rgba(100,200,150,.12);color:#7dffb0}
   .link-icon.default-link{background:rgba(255,255,255,.06);color:#c0d0e0}
   .link-text{min-width:0}
-  .link-text .link-name{
-    font-weight:600;font-size:.95rem;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .link-text .link-sub{
-    font-size:.75rem;color:#6d7f93;margin-top:.15rem;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .link-text .code-badge{
-    display:inline-block;
-    font-family:ui-monospace,monospace;
-    font-size:.72rem;
-    background:rgba(64,180,255,.12);
-    color:#7db8ff;
-    padding:.15rem .5rem;border-radius:20px;
-    margin-top:.3rem;
-  }
-  .link-go{
-    font-size:1.2rem;color:#4a5a6a;flex-shrink:0;
-    transition:.25s;
-  }
+  .link-text .link-name{font-weight:600;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .link-text .link-sub{font-size:.75rem;color:#6d7f93;margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .link-text .code-badge{display:inline-block;font-family:ui-monospace,monospace;font-size:.72rem;background:rgba(64,180,255,.12);color:#7db8ff;padding:.15rem .5rem;border-radius:20px;margin-top:.3rem}
+  .link-go{font-size:1.2rem;color:#4a5a6a;flex-shrink:0;transition:.25s}
   .link-card:hover .link-go{color:#40b4ff;transform:translateX(3px)}
 
-  /* 灯箱 */
-  .lightbox{
-    position:fixed;inset:0;z-index:200;
-    background:rgba(0,0,0,.92);backdrop-filter:blur(20px);
-    display:none;align-items:center;justify-content:center;
-    padding:2rem;
-  }
+  /* ===== 公共 ===== */
+  .lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:2rem}
   .lightbox.active{display:flex}
-  .lightbox img{
-    max-width:92vw;max-height:88vh;
-    border-radius:24px;
-    box-shadow:0 40px 100px rgba(0,0,0,.8);
-    animation:zoomIn .35s cubic-bezier(.23,1,.32,1);
-  }
-  @keyframes zoomIn{
-    from{opacity:0;transform:scale(.92)}
-    to{opacity:1;transform:scale(1)}
-  }
-  .lightbox-close{
-    position:absolute;top:1.5rem;right:1.5rem;
-    width:48px;height:48px;border-radius:50%;
-    background:rgba(255,255,255,.1);
-    border:none;color:#fff;font-size:1.6rem;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-    transition:.2s;
-  }
+  .lightbox img{max-width:92vw;max-height:88vh;border-radius:24px;box-shadow:0 40px 100px rgba(0,0,0,.8);animation:zoomIn .35s cubic-bezier(.23,1,.32,1)}
+  @keyframes zoomIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+  .lightbox-close{position:absolute;top:1.5rem;right:1.5rem;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
   .lightbox-close:hover{background:rgba(255,255,255,.25)}
 
-  /* 提示 */
-  .toast{
-    position:fixed;bottom:2rem;left:50%;
-    transform:translateX(-50%) translateY(100px);
-    background:rgba(20,30,40,.95);backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,.1);
-    padding:1rem 2rem;border-radius:60px;
-    font-size:.9rem;z-index:300;opacity:0;
-    transition:.4s cubic-bezier(.23,1,.32,1);
-    pointer-events:none;
-    box-shadow:0 20px 40px rgba(0,0,0,.6);
-  }
+  .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(20,30,40,.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);color:#eef2f6;padding:1rem 2rem;border-radius:60px;font-size:.9rem;z-index:300;opacity:0;transition:.4s cubic-bezier(.23,1,.32,1);box-shadow:0 20px 40px rgba(0,0,0,.6);pointer-events:none}
   .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
   @media(max-width:700px){
+    .toolbar{flex-direction:column;align-items:stretch}
+    .card-grid{grid-template-columns:1fr}
+    .hero h1{font-size:2.5rem}
     .detail-body{padding:1.5rem 1.3rem 1.8rem}
     .detail-preview{aspect-ratio:16/10}
     .links-list{grid-template-columns:1fr}
@@ -282,17 +149,42 @@
 <div class="aurora-bg"></div>
 <div class="grid-overlay"></div>
 
-<!-- 顶部返回栏 -->
-<div class="topbar">
-  <a class="back-btn" id="backBtn" href="./">← 返回列表</a>
-  <span class="crumb" id="crumb">加载中…</span>
+<!-- ===== 列表视图 ===== -->
+<div id="listView">
+  <section class="hero" id="hero">
+    <h1>UE 资源极光站</h1>
+    <p>程序化武器 · 场景资产 · 工具插件 · 一触即达</p>
+    <div class="hint"><span></span>向下滚动，浏览全部资源</div>
+  </section>
+
+  <main class="list-section" id="listSection">
+    <div class="container">
+      <div class="toolbar">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="搜索资源名称、描述或目录…" autocomplete="off">
+        </div>
+        <div style="display:flex;gap:.8rem">
+          <button class="btn btn-outline" id="refreshBtn">⟳ 刷新</button>
+        </div>
+      </div>
+      <div id="cardGrid" class="card-grid">
+        <div class="loading-state"><div class="spinner"></div><p>正在加载资源…</p></div>
+      </div>
+    </div>
+  </main>
 </div>
 
-<!-- 详情主体 -->
-<div class="detail-wrap" id="detailWrap">
-  <div class="state">
-    <div class="spinner"></div>
-    <p>正在加载资源详情…</p>
+<!-- ===== 详情视图 ===== -->
+<div id="detailView">
+  <div class="topbar">
+    <a class="back-btn" href="./">← 返回列表</a>
+    <span class="crumb" id="crumb">加载中…</span>
+  </div>
+  <div class="detail-wrap" id="detailWrap">
+    <div class="state">
+      <div class="spinner"></div>
+      <p>正在加载资源详情…</p>
+    </div>
   </div>
 </div>
 
@@ -302,14 +194,26 @@
   <img src="" alt="预览大图" id="lightboxImg">
 </div>
 
-<!-- 提示 -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== 配置 ==========
+/* ==================== 配置 ==================== */
 const RAW_URL = 'https://raw.githubusercontent.com/zhangjiashu210303/UE-resources/main/assets.json';
 
-// ========== 元素 ==========
+/* ==================== 全局 ==================== */
+let assets = [];
+let currentMode = 'list';        // 'list' | 'detail'
+let searchQuery = '';
+let isListVisible = false;
+
+/* ==================== 元素 ==================== */
+const listView = document.getElementById('listView');
+const detailView = document.getElementById('detailView');
+const hero = document.getElementById('hero');
+const listSection = document.getElementById('listSection');
+const cardGrid = document.getElementById('cardGrid');
+const searchInput = document.getElementById('searchInput');
+const refreshBtn = document.getElementById('refreshBtn');
 const detailWrap = document.getElementById('detailWrap');
 const crumb = document.getElementById('crumb');
 const lightbox = document.getElementById('lightbox');
@@ -317,31 +221,28 @@ const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 const toast = document.getElementById('toast');
 
-// ========== 工具 ==========
+/* ==================== 工具 ==================== */
 function showToast(msg, duration = 2600) {
   toast.textContent = msg;
   toast.classList.add('show');
-  clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => toast.classList.remove('show'), duration);
 }
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 }
-
-// 判断是否直链（用于直接下载）
 function isDirectDownload(url) {
-  return /\.(zip|rar|7z|png|jpe?g|webp|gif|mp4|webm|mov|uasset|umap|fbx|obj|gltf|glb|blend|psd|pdf|txt|json)(\?.*)?$/i.test(url);
+  return /\.(zip|rar|7z|png|jpe?g|webp|gif|mp4|webm|mov|uasset|umap|fbx|obj|gltf|glb|blend|psd|pdf|txt|json)(\?.*)?$/i.test(url || '');
 }
-
-// 链接图标
 function linkIconClass(name) {
+  if (!name) return 'default-link';
   if (name.includes('百度')) return 'baidu';
   if (name.includes('夸克')) return 'quark';
   return 'default-link';
 }
 function linkIconEmoji(name) {
+  if (!name) return '🔗';
   if (name.includes('百度')) return '☁️';
   if (name.includes('夸克')) return '⚡';
   if (name.includes('蓝奏')) return '🔵';
@@ -349,63 +250,142 @@ function linkIconEmoji(name) {
   return '🔗';
 }
 
-// ========== 从 URL 取资源 ID ==========
-// 支持：
-//   /index.html/10305
-//   /index.html?id=10305
-//   /10305
-function getResourceId() {
-  // 1) query 参数优先
-  const params = new URLSearchParams(window.location.search);
-  const qid = params.get('id');
-  if (qid) return qid.trim();
-
-  // 2) path 最后一段
-  let path = window.location.pathname;
-  // 去掉末尾斜杠
-  path = path.replace(/\/+$/, '');
-  if (!path) return null;
-
-  const segs = path.split('/').filter(Boolean);
-  if (!segs.length) return null;
-
-  let last = segs[segs.length - 1];
-  // 去掉 .html 后缀（如果最后一段是 index.html 这种，说明没有 ID）
-  last = last.replace(/\.html?$/i, '');
-  // 如果是 index 说明没有 ID
-  if (!last || /^index$/i.test(last)) return null;
-  return last;
+/* ==================== 数据加载 ==================== */
+async function loadAssets() {
+  try {
+    const res = await fetch(RAW_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('JSON 根节点不是数组');
+    assets = data;
+    return true;
+  } catch (err) {
+    console.error('加载失败:', err);
+    assets = generatePreviewAssets();
+    return false;
+  }
 }
 
-// ========== 渲染详情 ==========
+function generatePreviewAssets() {
+  const names = ['程序化武器生成系统 PWAS','可定制图标包 · 通用','Ultra Dynasty Sky 9.7','废弃地铁站场景包','军事基地场景包','Blockout Tools 关卡原型','BODYCAM FPS KIT V4','专业图标包 Pro Icon Pack','轴心点工具 Pivot Tool','武器定制系统','高级粒子特效包','动态天空系统'];
+  const descs = ['基于蓝图的全程序化武器动画框架，支持后坐力、摇摆、瞄准等实时生成。','包含100个独特图标和32个可自定义按钮，平色或渐变选项。','高品质动态天空，包含云层、体积光和天气系统。','废弃地铁站完整场景，包含道具、材质和蓝图。','军事基地场景包，包含建筑、载具和掩体。','轻量级关卡遮挡工具，快速灰盒设计，支持三平面材质。','第一人称视角拍摄套件，模拟执法记录仪效果。','灵活智能的图标工具，适用于物品栏、界面和主菜单。','在虚幻编辑器中修改和烘烤网格枢轴点，27种预设。','完整的武器定制系统，支持配件、皮肤和模块化。','高级Niagara粒子特效合集，包含爆炸、烟雾、魔法等。','动态天空系统，支持昼夜循环和体积云。'];
+  const links = [
+    [{name:'百度网盘',url:'https://pan.baidu.com/s/1HshiVxHykOd2FINSqknYMw',code:'Bdqn'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/s/1UaT1rzUh8eIPBvhl_3Rqmg',code:'bwoo'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/s/1DzvRBOgeiq8KcoWTeqpBdA',code:'x91e'}],
+    [{name:'夸克网盘',url:'https://pan.quark.cn/s/d50b7e6976af'}],
+    [{name:'夸克网盘',url:'https://pan.quark.cn/s/c920bf0db0e2'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/wap/init?surl=dg4IHvX5WM7QWuprDIFtyg',code:'znuk'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/wap/init?surl=v83osfX5pQYUPZr7iELTJQ',code:'d9hz'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/wap/init?surl=2O1xmX4Nw1Ge09e2-sbp2w',code:'zsnr'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/share/init?surl=ULkV8SRj66mf7WlRpdnZVg',code:'ncb6'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/s/1SJGC8DFTQOBHP7H1xum74A',code:'sqxU'}],
+    [{name:'百度网盘',url:'https://pan.baidu.com/s/1example',code:'exmp'}],
+    [{name:'夸克网盘',url:'https://pan.quark.cn/s/example'}]
+  ];
+  const arr = [];
+  for (let i = 0; i < 12; i++) {
+    const c = document.createElement('canvas');
+    c.width = 640; c.height = 400;
+    const ctx = c.getContext('2d');
+    const g = ctx.createLinearGradient(0,0,640,400);
+    const hue = (i*31)%360;
+    g.addColorStop(0, `hsl(${hue},70%,25%)`);
+    g.addColorStop(.5, `hsl(${(hue+40)%360},80%,35%)`);
+    g.addColorStop(1, `hsl(${(hue+80)%360},75%,20%)`);
+    ctx.fillStyle = g; ctx.fillRect(0,0,640,400);
+    ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1;
+    for (let x=0;x<640;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,400);ctx.stroke();}
+    for (let y=0;y<400;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(640,y);ctx.stroke();}
+    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = 'bold 32px Inter,sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('UE 资源 ' + (i+1), 320, 190);
+    ctx.font = '18px Inter,sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.fillText('预览示例', 320, 240);
+    arr.push({
+      id: 'preview-' + (i+1),
+      name: names[i] || ('资源 ' + (i+1)),
+      desc: descs[i] || '预览示例',
+      preview: c.toDataURL('image/png'),
+      links: links[i] || [{name:'示例网盘',url:'#',code:'demo'}]
+    });
+  }
+  return arr;
+}
+
+/* ==================== 列表渲染 ==================== */
+function renderList() {
+  if (!assets.length) {
+    cardGrid.innerHTML = '<div class="loading-state"><p>暂无资源</p></div>';
+    return;
+  }
+  const q = searchQuery.toLowerCase().trim();
+  const filtered = assets.filter(a => {
+    if (!q) return true;
+    return (a.name||'').toLowerCase().includes(q) ||
+           (a.desc||'').toLowerCase().includes(q) ||
+           (a.downloadDir||'').toLowerCase().includes(q);
+  });
+  if (!filtered.length) {
+    cardGrid.innerHTML = '<div class="loading-state"><p>没有匹配的资源</p></div>';
+    return;
+  }
+  cardGrid.innerHTML = filtered.map((asset, index) => {
+    const previewUrl = asset.preview || '';
+    const isVideo = /\.(mp4|webm|mov|avi)$/i.test(previewUrl);
+    const displayUrl = isVideo ? previewUrl.replace(/\.(mp4|webm|mov|avi)$/i, '.jpg') : previewUrl;
+    const linkButtons = (asset.links || []).map(link => {
+      const cls = linkIconClass(link.name);
+      const code = link.code ? `<span class="code-tag">${escapeHtml(link.code)}</span>` : '';
+      return `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="link-badge ${cls}">${escapeHtml(link.name || '下载')}${code}</a>`;
+    }).join('');
+    const delay = (index % 12) * 0.06;
+    const detailUrl = '?id=' + encodeURIComponent(asset.id);
+    return `
+      <div class="card" style="animation-delay:${delay}s">
+        <a href="${detailUrl}" class="card-preview">
+          ${displayUrl ? `<img src="${escapeHtml(displayUrl)}" alt="${escapeHtml(asset.name)}" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#11171f;color:#4a5a6a;">无预览</div>`}
+          ${isVideo ? '<span class="media-badge">🎬 视频</span>' : ''}
+          <span class="detail-hint">查看详情 →</span>
+        </a>
+        <div class="card-content">
+          <h3 class="card-title">${escapeHtml(asset.name)}</h3>
+          <p class="card-desc">${escapeHtml(asset.desc || '暂无描述')}</p>
+          <div class="card-actions">
+            ${linkButtons || '<span style="color:#4a5a6a;font-size:.8rem;">暂无链接</span>'}
+            <a href="${detailUrl}" class="detail-btn">详情 →</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ==================== 详情渲染 ==================== */
 function renderDetail(asset) {
   crumb.textContent = asset.name || asset.id;
+  document.title = (asset.name || 'UE 资源') + ' · 详情';
 
   const previewUrl = asset.preview || '';
   const isVideo = /\.(mp4|webm|mov|avi)$/i.test(previewUrl);
 
-  // 预览区
-  let previewHtml = '';
-  if (previewUrl) {
-    if (isVideo) {
-      previewHtml = `
-        <div class="detail-preview" style="cursor:pointer" onclick="window.open('${escapeHtml(previewUrl)}','_blank')">
-          <video src="${escapeHtml(previewUrl)}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>
-          <span class="badge">🎬 视频预览</span>
-          <span class="zoom-hint">点击播放 ↗</span>
-        </div>`;
-    } else {
-      previewHtml = `
-        <div class="detail-preview" id="previewBox">
-          <img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(asset.name)}" loading="lazy">
-          <span class="zoom-hint">点击放大 🔍</span>
-        </div>`;
-    }
+  let previewHtml;
+  if (previewUrl && isVideo) {
+    previewHtml = `
+      <div class="detail-preview" style="cursor:pointer" onclick="window.open('${escapeHtml(previewUrl)}','_blank')">
+        <video src="${escapeHtml(previewUrl)}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>
+        <span class="badge">🎬 视频预览</span>
+        <span class="zoom-hint">点击播放 ↗</span>
+      </div>`;
+  } else if (previewUrl) {
+    previewHtml = `
+      <div class="detail-preview" id="previewBox">
+        <img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(asset.name)}" loading="lazy">
+        <span class="zoom-hint">点击放大 🔍</span>
+      </div>`;
   } else {
     previewHtml = `<div class="detail-preview" style="cursor:default;display:flex;align-items:center;justify-content:center;color:#4a5a6a;background:#0d1218;">暂无预览图</div>`;
   }
 
-  // 链接区
   const links = asset.links || [];
   const linksHtml = links.length
     ? links.map(link => {
@@ -415,9 +395,7 @@ function renderDetail(asset) {
         const codeHtml = link.code ? `<span class="code-badge">提取码：${escapeHtml(link.code)}</span>` : '';
         const subText = direct ? '直链下载' : (link.code ? '网盘 · 需要提取码' : '网盘链接');
         return `
-          <a class="link-card" href="${escapeHtml(link.url)}"
-             target="_blank" rel="noopener"
-             ${direct ? 'download' : ''}>
+          <a class="link-card" href="${escapeHtml(link.url)}" target="_blank" rel="noopener" ${direct ? 'download' : ''}>
             <div class="link-left">
               <div class="link-icon ${iconCls}">${iconEmoji}</div>
               <div class="link-text">
@@ -431,7 +409,6 @@ function renderDetail(asset) {
       }).join('')
     : `<div style="color:#6d7f93;font-size:.9rem;padding:1rem 0;">暂无下载链接</div>`;
 
-  // meta chips
   const metaChips = [];
   if (asset.id) metaChips.push(`<span class="meta-chip">ID：<code>${escapeHtml(asset.id)}</code></span>`);
   if (asset.downloadDir) metaChips.push(`<span class="meta-chip">目录：<code>${escapeHtml(asset.downloadDir)}</code></span>`);
@@ -453,87 +430,106 @@ function renderDetail(asset) {
     </article>
   `;
 
-  // 绑定预览点击
   const previewBox = document.getElementById('previewBox');
   if (previewBox) {
-    previewBox.addEventListener('click', () => {
-      lightboxImg.src = previewUrl;
-      lightbox.classList.add('active');
-    });
+    previewBox.addEventListener('click', () => openLightbox(previewUrl));
   }
-
-  document.title = `${asset.name} · UE 资源详情`;
 }
 
-// ========== 渲染错误 / 未找到 ==========
-function renderError(title, message, showBackHint = true) {
+function renderDetailError(title, message) {
   crumb.textContent = title;
-  document.title = `${title} · UE 资源`;
+  document.title = title + ' · UE 资源';
   detailWrap.innerHTML = `
     <div class="state" style="padding-top:4rem">
       <div style="font-size:3rem;margin-bottom:1rem;">🧭</div>
       <h2>${escapeHtml(title)}</h2>
       <p>${escapeHtml(message)}</p>
-      ${showBackHint ? `<a class="back-btn" href="./" style="margin-top:.5rem;">← 返回资源列表</a>` : ''}
+      <a class="back-btn" href="./" style="margin-top:.5rem;">← 返回资源列表</a>
     </div>
   `;
 }
 
-// ========== 主流程 ==========
-async function init() {
-  const id = getResourceId();
+/* ==================== 灯箱 ==================== */
+function openLightbox(url) {
+  if (!url) return;
+  lightboxImg.src = url;
+  lightbox.classList.add('active');
+}
+lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
+lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('active'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lightbox.classList.remove('active'); });
 
-  // 没有 ID → 提示回列表
-  if (!id) {
-    crumb.textContent = '未指定资源';
-    renderError(
-      '未指定资源 ID',
-      '当前页面需要带上资源 ID，例如：index.html/10305 或 index.html?id=10305',
-      true
-    );
-    return;
+/* ==================== 滚动切换（仅列表模式） ==================== */
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (currentMode !== 'list') return;
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      const hh = hero.offsetHeight;
+      if (y > hh * 0.1 && !isListVisible) {
+        hero.classList.add('hidden');
+        listSection.classList.add('visible');
+        isListVisible = true;
+      } else if (y < hh * 0.1 && isListVisible) {
+        hero.classList.remove('hidden');
+        listSection.classList.remove('visible');
+        isListVisible = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      ticking = false;
+    });
+    ticking = true;
   }
+});
 
-  // 拉 JSON
-  try {
-    const res = await fetch(RAW_URL, { cache: 'no-cache' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!Array.isArray(data)) throw new Error('JSON 根节点不是数组');
+/* ==================== 事件 ==================== */
+searchInput.addEventListener('input', e => { searchQuery = e.target.value; renderList(); });
+refreshBtn.addEventListener('click', async () => {
+  cardGrid.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>正在从 GitHub 加载资源…</p></div>';
+  const ok = await loadAssets();
+  renderList();
+  showToast(ok ? `✅ 已加载 ${assets.length} 个资源` : '⚠️ 加载失败，显示预览示例');
+});
 
-    const asset = data.find(item => String(item.id) === String(id));
-
-    if (!asset) {
-      renderError(
-        '资源不存在',
-        `在 assets.json 中找不到 ID 为「${id}」的资源，可能已被删除或 ID 有误。`,
-        true
-      );
-      return;
-    }
-
-    renderDetail(asset);
-  } catch (err) {
-    console.error(err);
-    renderError(
-      '加载失败',
-      `无法从 GitHub 读取 assets.json：${err.message}。请检查网络或仓库文件是否正常。`,
-      true
-    );
-    showToast('⚠️ 加载失败，请稍后重试');
-  }
+/* ==================== 入口 ==================== */
+function getIdFromUrl() {
+  return new URLSearchParams(window.location.search).get('id') || null;
 }
 
-// 灯箱关闭
-lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
-lightbox.addEventListener('click', e => {
-  if (e.target === lightbox) lightbox.classList.remove('active');
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') lightbox.classList.remove('active');
-});
+(async function init() {
+  const id = getIdFromUrl();
+  const ok = await loadAssets();
 
-init();
+  if (id) {
+    /* 详情模式 */
+    currentMode = 'detail';
+    document.body.style.overflow = '';
+    listView.classList.remove('active');
+    detailView.classList.add('active');
+    window.scrollTo(0, 0);
+
+    const asset = assets.find(a => String(a.id) === String(id));
+    if (!asset) {
+      renderDetailError('资源不存在', `在 assets.json 中找不到 ID 为「${id}」的资源，可能已被删除或 ID 有误。`);
+    } else {
+      renderDetail(asset);
+    }
+  } else {
+    /* 列表模式 */
+    currentMode = 'list';
+    detailView.classList.remove('active');
+    listView.classList.add('active');
+    document.title = 'UE 资源中心 · 极光下载站';
+
+    if (!ok) showToast('⚠️ 加载失败，显示预览示例');
+    renderList();
+    window.scrollTo(0, 0);
+    isListVisible = false;
+    hero.classList.remove('hidden');
+    listSection.classList.remove('visible');
+  }
+})();
 </script>
 </body>
 </html>
