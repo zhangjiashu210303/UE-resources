@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>正在跳转…</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Inter',-apple-system,sans-serif;
+    background:#0a0c0f;color:#eef2f6;
+    min-height:100vh;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    padding:2rem;
+  }
+  .aurora-bg{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(circle at 20% 30%,rgba(64,180,255,.15),transparent 45%),
+      radial-gradient(circle at 80% 70%,rgba(170,80,255,.18),transparent 50%),
+      radial-gradient(circle at 40% 80%,rgba(0,255,200,.1),transparent 60%),
+      #0a0c0f;
+    filter:blur(40px);
+  }
+  .grid-overlay{
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+  .state{
+    text-align:center;max-width:480px;
+    animation:fade .5s ease both;
+  }
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  .spinner{
+    display:inline-block;width:42px;height:42px;
+    border:3px solid rgba(64,180,255,.15);
+    border-top-color:#40b4ff;border-radius:50%;
+    animation:spin .8s linear infinite;
+    margin-bottom:1.5rem;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  h1{
+    font-size:clamp(2rem,6vw,3rem);
+    font-weight:700;margin-bottom:.8rem;
+    background:linear-gradient(135deg,#fff 0%,#b0e0ff 60%,#d0a0ff 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  p{color:#9fb2c8;line-height:1.7;margin-bottom:1.5rem;font-size:1rem}
+  .back-btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.8rem 1.6rem;border-radius:60px;
+    border:1px solid rgba(255,255,255,.12);
+    background:transparent;color:#eef2f6;
+    text-decoration:none;font-weight:600;font-size:.9rem;
+    transition:.25s;
+  }
+  .back-btn:hover{background:rgba(255,255,255,.06);border-color:#40b4ff}
+  code{
+    font-family:ui-monospace,monospace;
+    background:rgba(64,180,255,.12);
+    color:#7db8ff;padding:.15rem .5rem;
+    border-radius:8px;font-size:.85em;
+  }
+  .hint-sub{font-size:.8rem;color:#5f7d9c;margin-top:1rem}
+</style>
+</head>
+<body>
+<div class="aurora-bg"></div>
+<div class="grid-overlay"></div>
+
+<div class="state" id="state">
+  <div class="spinner"></div>
+  <h1>正在跳转</h1>
+  <p>正在将路径转换为资源详情页…</p>
+</div>
+
+<script>
+(function () {
+  /* ============================================================
+     配置
+     - REPO_NAME：仓库名。自定义域名根路径部署时改为 ''。
+     ============================================================ */
+  const REPO_NAME = 'UE-resources';
+
+  const stateEl = document.getElementById('state');
+
+  /* ---------- 工具 ---------- */
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  }
+  // 仓库根目录（末尾带斜杠），例如 /UE-resources/
+  function repoBase() {
+    return REPO_NAME ? '/' + REPO_NAME + '/' : '/';
+  }
+  // 显式 index.html 的入口，例如 /UE-resources/index.html
+  function indexEntry() {
+    return repoBase() + 'index.html';
+  }
+
+  function show404(title, message) {
+    document.title = title + ' · UE 资源中心';
+    stateEl.innerHTML = `
+      <h1>${escapeHtml(title)}</h1>
+      <p>${escapeHtml(message)}</p>
+      <a class="back-btn" href="${indexEntry()}">← 返回资源列表</a>
+      <p class="hint-sub">提示：正确格式应为 <code>/10302</code>（纯数字资源 ID）</p>
+    `;
+  }
+
+  /* ---------- 解析当前路径 ---------- */
+  let path;
+  try {
+    path = decodeURIComponent(window.location.pathname);
+  } catch (e) {
+    path = window.location.pathname;
+  }
+
+  // 去掉仓库名前缀
+  if (REPO_NAME) {
+    const prefix = '/' + REPO_NAME;
+    if (path === prefix) {
+      path = '';
+    } else if (path.startsWith(prefix + '/')) {
+      path = path.slice(prefix.length);
+    } else {
+      show404('404 · 页面不存在', '当前路径不属于本资源仓库，请检查链接是否正确。');
+      return;
+    }
+  }
+
+  // 去掉末尾斜杠
+  path = path.replace(/\/+$/, '');
+
+  /* ---------- 情况 1：根路径或 index.html → 回列表 ---------- */
+  if (!path || /^\/index(\.html?)?$/i.test(path)) {
+    window.location.replace(indexEntry());
+    return;
+  }
+
+  /* ---------- 情况 2：纯数字 ID → 跳转 index.html?id=xxx ---------- */
+  const segs = path.split('/').filter(Boolean);
+  const last = segs[segs.length - 1] || '';
+
+  if (/^\d+$/.test(last)) {
+    const params = new URLSearchParams(window.location.search);
+    params.set('id', last);
+    const qs = params.toString();
+    // 目标：/UE-resources/index.html?id=10302
+    const target = indexEntry() + (qs ? '?' + qs : '') + (window.location.hash || '');
+    window.location.replace(target);
+    return;
+  }
+
+  /* ---------- 情况 3：其他路径 → 友好 404 ---------- */
+  show404(
+    '404 · 未找到该资源路径',
+    `路径「${path}」无法识别为资源 ID。资源 ID 为纯数字，例如 10302。`
+  );
+})();
+</script>
+</body>
+</html>
