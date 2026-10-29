@@ -3,6 +3,7 @@
    职责：纯数据解析层
    - 原始 JSON → 内部统一结构
    - 字段名兼容、链接提取、媒体类型判断、网盘识别、文件名生成
+   - id 解析（优先取 JSON 中的 id 字段，否则用 name 的哈希）
    - 内建 12 条预览数据生成
    ===================================================================== */
 (function () {
@@ -16,6 +17,7 @@
   var PREVIEW_KEYS = ['preview','previewUrl','cover','poster','thumbnail','thumb','封面','预览','预览图','缩略图'];
   var URL_KEYS  = ['url','downloadUrl','download_url','src','source','href','link','image','img','picture','pic','video','videoUrl','file','地址','下载地址','链接','图片','视频'];
   var MIRROR_KEYS = ['url2','link2','download2','mirror','backup','备用地址','下载地址二','链接二','备用链接'];
+  var ID_KEYS = ['id','ID','Id','fileId','fileID','file_id','code','key','no','num','编号','序号','文件编号'];
 
   var IMG_EXT = { png:1,jpg:1,jpeg:1,gif:1,webp:1,bmp:1,svg:1,avif:1,tga:1,exr:1,hdr:1,psd:1,ico:1 };
   var VID_EXT = { mp4:1,webm:1,mov:1,m4v:1,avi:1,mkv:1,ogv:1,wmv:1,flv:1 };
@@ -32,6 +34,13 @@
     });
   }
   function escAttr(s) { return esc(s); }
+
+  function hashStr(s) {
+    var h = 0;
+    s = String(s || '');
+    for (var i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    return String(Math.abs(h) % 1000000);
+  }
 
   function extOf(str) {
     if (!str) return '';
@@ -156,8 +165,10 @@
   function normalize(raw) {
     if (typeof raw === 'string') {
       var t = raw.trim();
+      var nm0 = '';
       return {
-        name: '', desc: '', dir: '', preview: '', previewType: 'none',
+        id: hashStr(t),
+        name: nm0, desc: '', dir: '', preview: '', previewType: 'none',
         links: [{ name: detectPan(t) || '下载', url: t, code: '' }]
       };
     }
@@ -224,8 +235,15 @@
       finalLinks.push(links[k]);
     }
 
+    var finalName = name ? String(name) : '';
+    var rawId = pick(raw, ID_KEYS);
+    var id = (rawId !== null && rawId !== undefined && String(rawId).trim())
+           ? String(rawId).trim()
+           : (finalName ? hashStr(finalName) : hashStr(String(Math.random())));
+
     return {
-      name: name ? String(name) : '',
+      id: id,
+      name: finalName,
       desc: desc ? String(desc) : '',
       dir: dir ? String(dir) : '',
       preview: previewUrl,
@@ -261,6 +279,14 @@
       if (Array.isArray(data.images)) return data.images;
       if (Array.isArray(data.data)) return data.data;
       if (data.name || data.url || data.links) return [data];
+    }
+    return null;
+  }
+
+  function findById(list, id) {
+    if (!Array.isArray(list)) return null;
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i].id) === String(id)) return list[i];
     }
     return null;
   }
@@ -329,11 +355,13 @@
     PREVIEW_KEYS: PREVIEW_KEYS,
     URL_KEYS: URL_KEYS,
     MIRROR_KEYS: MIRROR_KEYS,
+    ID_KEYS: ID_KEYS,
     IMG_EXT: IMG_EXT,
     VID_EXT: VID_EXT,
     DL_EXT: DL_EXT,
     esc: esc,
     escAttr: escAttr,
+    hashStr: hashStr,
     extOf: extOf,
     isDataUrl: isDataUrl,
     guessMediaType: guessMediaType,
@@ -350,6 +378,7 @@
     itemMainType: itemMainType,
     itemPanName: itemPanName,
     extractList: extractList,
+    findById: findById,
     makePreviewItems: makePreviewItems
   };
 })();
