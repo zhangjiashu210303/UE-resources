@@ -1,5 +1,6 @@
 [
   {
+    "id": "10301",
     "name": "程序化武器生成系统,pwas",
     "desc": "Procedural Weapon Animation System (PWAS V2) is a complete Blueprint-based procedural weapon animation framework for Unreal Engine.\n\nPWAS generates and layers weapon movement such as recoil, sway, aiming, movement cycles, breathing, running, crouching, jumping, collision, camera kick, pose adjustments, and more in real time.\n\nV2 greatly expands the original system with procedural sight alignment, multiple sights, iron sights, modular weapon parts and attachments, full-body / third-person support, multiplayer examples, an improved procedural editor, and extensive customization.",
     "preview": "https://media.fab.com/image_previews/gallery_images/7d5f2227-4c0f-44b9-807a-f657c978eb84/715f390b-8031-46f7-ada4-1da1027a618d.jpg",
@@ -12,6 +13,7 @@
     ]
   },
   {
+    "id": "10302",
     "name": "可定制图标包：通用 - Customisable Icon Pack Generic",
     "desc": "✔ 包含100个独特图标和32个可自定义按钮，属于通用类别，包括：箭头、电池、铃铛、垃圾桶、刷子、回购、日历、相机、角色、图表、检查、清单、箱子、时钟、关闭、金币、皇冠、杯子、云、下载、眼睛、旗帜、游戏手柄、齿轮、心形、主页、钥匙、灯泡、锁、磁铁、放大镜、最大化、奖牌、媒体、麦克风、最小化、减号、月亮、鼠标、多重符号， 调色板、铅笔、手机、密码、加号、电源、陈述、回放、剪刀、购物篮、购物车、星星、太阳、平板、科技树、上传、体积、扳手。\n\n \n\n✔ 附带完全可定制的材料，特色包括：\n\n \n\n• 平色或渐变选项\n\n• 梯度旋转控制\n\n• 可将自定义形状切割成按钮的选项\n\n• 可调节填充形状和大小\n\n \n\n✔ 所有纹理均导出为三种尺寸：\n\n \n\n• 128×128 px\n\n• 256×256 px\n\n• 512×512 px.",
     "preview": "https://img.cg3da.com/wp-content/uploads/1788242785-%E5%95%86%E5%93%81-Customisable-Icon-Pack-Generic-%E7%9A%84%E5%AA%92%E4%BD%93-1-1.webp",
@@ -23,6 +25,7 @@
     ]
   },
   {
+    "id": "10303",
     "name": "Ultra Dynasty Sky    9.7",
     "preview": "https://img.cg3da.com/wp-content/uploads/UELTCJ-P109-1.webp",
     "links": [
@@ -33,6 +36,7 @@
     ]
   },
   {
+    "id": "10304",
     "name": "废弃地铁站场景包",
     "preview": "https://raw.githubusercontent.com/zhangjiashu210303/UE-resources/690892b9d9cc323a5defa61a3d355c9c92fb549c/Img/UE5%E5%BA%9F%E5%BC%83%E5%9C%B0%E9%93%81%E7%AB%99%E8%B5%84%E6%BA%90%E5%8C%85.png",
     "links": [
@@ -43,6 +47,7 @@
     ]
   },
   {
+    "id": "10305",
     "name": "军事基地场景包",
     "preview": "https://raw.githubusercontent.com/zhangjiashu210303/UE-resources/refs/heads/main/Img/UE5%E5%86%9B%E4%BA%8B%E5%9F%BA%E5%9C%B0%E8%B5%84%E6%BA%90%E5%8C%85.jpeg",
     "links": [
@@ -53,6 +58,7 @@
     ]
   },
   {
+    "id": "10306",
     "name": "关卡原型/UE建模神器 - Blockout Tools Plugin",
     "desc": "Blockout Tools 是一套轻量且极其易于使用的工具，可在虚幻引擎 4 和 5 中快速遮挡/灰盒您的关卡。它由各种原始元素组成，具有方便的缩放和变换控件以及自定义三平面网格材料，可简化关卡设计工作流程。\n\n 如何使用：\n\n在放置模式中选择新的“封锁工具”自定义类别\n只需将遮挡类型拖到您的关卡上即可\n重要提示：这不是一个建模工具，其预期用途是封锁关卡。目前不支持布尔运算。另外，请务必查看“BlockoutToolsPlugin Content/Maps”中的示例地图。\n\n 特征：\n\n使用矢量 3D 小部件或内部详细信息面板轻松扩展元素\n在放置模式下从新的自定义类别超快速访问屏蔽\n不言自明的设置\n可配置的 Blockouts 外观和颜色\n默认遮蔽颜色、网格大小等可以在项目设置中配置\n支持对象旋转的局部对齐三平面网格材料\n世界对齐的三平面网格材料\n支持定制材料\n 轻的\n 15 封锁\n 自定义编辑器图标",
     "preview": "https://img.cg3da.com/wp-content/uploads/UELTCJ-P312-Blockout-Tools-Plugin-1.webp",
@@ -64,6 +70,7 @@
     ]
   },
   {
+    "id": "10307",
     "name": "第一人称视角拍摄套件V4版 BODYCAM FPS KIT V4",
     "preview": "https://img.cg3da.com/wp-content/uploads/1768325810-Media-6-for-listing-BODYCAM-FPS-KIT-V4-1.webp",
     "links": [
@@ -74,6 +81,7 @@
     ]
   },
   {
+    "id": "10308",
     "name": "专业图标包 - Pro Icon Pack",
     "desc": "这个包为你的UI设计提供了一个灵活且智能的工具，将你的图标提升到新的高度。\n\n无论是在物品栏、界面还是主菜单中，都可以为你的游戏配备强力图标\n\n或者以此包为基础添加你自己的图标。",
     "preview": "https://img.cg3da.com/wp-content/uploads/1787203872-%E5%95%86%E5%93%81-Pro-Icon-Pack-%E7%9A%84%E5%AA%92%E4%BD%93-1-1.webp",
@@ -85,6 +93,7 @@
     ]
   },
   {
+    "id": "10309",
     "name": "轴心点工具-Pivot Tool v1.5.1",
     "desc": "Pivot Tool 是 Unreal Engine 的枢轴编辑器。\n\n使用枢轴工具，您可以通过应用 27 种枢轴预设之一，手动或自动轻松修改演员枢轴。您可以直接在虚幻编辑器中将枢轴变化烘焙到静态网格物体中，无需打开 3D 建模软件来调整枢轴位置。\n\n技术细节\n功能列表：\n\n• 在虚幻编辑器中修改和烘烤网格枢轴点，对于重用现有资产或测试模块化网格的枢轴位置很有用。\n\n• 烘焙网格枢轴位置和旋转，同时保留物理碰撞和插槽数据\n\n• 将枢轴更改烘焙到当前网格或复制的网格\n\n• 27 个枢轴预设，用于快速轻松地设置枢轴，分为 4 组（中心/面/角/边缘），具有直观的 UI。\n\n• 通过演员边界框或网格顶点应用枢轴预设。\n\n• 临时应用枢轴预设或自动保存更改。\n\n• 能够将枢轴预设作为一组或单独应用于选定的演员\n\n• 在应用枢轴预设时使用顶点模式将枢轴点捕捉到网格顶点\n\n• 一键点击保存临时枢轴位置（Alt + 鼠标中键）\n\n• 快速重置演员枢轴偏移\n\n• 从一个演员复制枢轴并粘贴到选定的多个演员中",
     "preview": "https://img.cg3da.com/wp-content/uploads/UELTCJ-P90-1.webp",
@@ -96,6 +105,7 @@
     ]
   },
   {
+    "id": "10310",
     "name": "武器定制系统 - Weapon Customization System",
     "preview": "https://img.cg3da.com/wp-content/uploads/1789359473-%E5%95%86%E5%93%81-Weapon-Customization-System-%E7%9A%84%E5%AA%92%E4%BD%93-1-1.webp",
     "links": [
