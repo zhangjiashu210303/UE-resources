@@ -17,9 +17,10 @@
   .aurora-bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 20% 30%,rgba(64,180,255,.15),transparent 45%),radial-gradient(circle at 80% 70%,rgba(170,80,255,.18),transparent 50%),radial-gradient(circle at 40% 80%,rgba(0,255,200,.1),transparent 60%),#0a0c0f;filter:blur(40px)}
   .grid-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:40px 40px}
 
-  /* ===== 列表视图 ===== */
   #listView{display:none}
   #listView.active{display:block}
+  #detailView{display:none}
+  #detailView.active{display:block}
 
   .hero{position:fixed;top:0;left:0;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;z-index:10;transition:transform .75s cubic-bezier(.23,1,.32,1),opacity .5s;background:rgba(10,12,15,.2);backdrop-filter:blur(8px);will-change:transform}
   .hero.hidden{transform:translateY(-120vh);opacity:0;pointer-events:none}
@@ -40,8 +41,13 @@
   .search-box::before{content:"🔍";position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);font-size:1.2rem;opacity:.6}
 
   .btn{padding:.9rem 1.8rem;border-radius:60px;border:none;font-weight:600;font-size:.95rem;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap}
+  .btn-primary{background:linear-gradient(135deg,#40b4ff,#7b5aff);color:#fff;box-shadow:0 8px 24px rgba(64,180,255,.2)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(64,180,255,.3)}
   .btn-outline{background:transparent;border:1px solid rgba(255,255,255,.12);color:#eef2f6}
   .btn-outline:hover{background:rgba(255,255,255,.05);border-color:#40b4ff}
+  .btn-sm{padding:.6rem 1.2rem;font-size:.85rem}
+  .btn-danger{background:rgba(255,80,80,.15);color:#ff8a8a;border:1px solid rgba(255,80,80,.2)}
+  .btn-danger:hover{background:rgba(255,80,80,.25)}
 
   .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.8rem;perspective:1000px}
   .card{background:rgba(20,26,34,.7);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.06);border-radius:28px;overflow:hidden;transition:.4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;opacity:0;transform:translateY(40px) scale(.96);animation:cardReveal .65s cubic-bezier(.23,1,.32,1) forwards;box-shadow:0 20px 40px -15px rgba(0,0,0,.6)}
@@ -70,13 +76,12 @@
   .detail-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.45rem 1rem;border-radius:40px;font-size:.8rem;font-weight:600;text-decoration:none;background:rgba(64,180,255,.12);color:#7db8ff;border:1px solid rgba(64,180,255,.25);transition:.2s;margin-left:auto}
   .detail-btn:hover{background:rgba(64,180,255,.22);transform:translateY(-1px)}
 
+  .icon-btn{background:transparent;border:none;color:#6d7f93;padding:.3rem .5rem;border-radius:8px;cursor:pointer;font-size:.9rem;transition:.2s}
+  .icon-btn:hover{background:rgba(255,255,255,.06);color:#eef2f6}
+
   .loading-state{text-align:center;padding:4rem 2rem;color:#6d7f93;grid-column:1/-1}
   .spinner{display:inline-block;width:36px;height:36px;border:3px solid rgba(64,180,255,.15);border-top-color:#40b4ff;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
   @keyframes spin{to{transform:rotate(360deg)}}
-
-  /* ===== 详情视图 ===== */
-  #detailView{display:none}
-  #detailView.active{display:block}
 
   .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;background:rgba(10,12,15,.55);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}
   .back-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border-radius:60px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#eef2f6;font-size:.9rem;font-weight:500;cursor:pointer;text-decoration:none;transition:.2s}
@@ -123,7 +128,21 @@
   .link-go{font-size:1.2rem;color:#4a5a6a;flex-shrink:0;transition:.25s}
   .link-card:hover .link-go{color:#40b4ff;transform:translateX(3px)}
 
-  /* ===== 公共 ===== */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);z-index:100;display:none;align-items:center;justify-content:center;padding:1.5rem}
+  .modal-overlay.active{display:flex}
+  .modal{background:#141a22;border-radius:32px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;padding:2rem;border:1px solid rgba(255,255,255,.08);box-shadow:0 40px 80px rgba(0,0,0,.8)}
+  .modal h2{font-size:1.6rem;margin-bottom:1.5rem;font-weight:700;background:linear-gradient(135deg,#fff,#b0d0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .form-group{margin-bottom:1.2rem}
+  .form-group label{display:block;font-size:.85rem;font-weight:500;color:#92a8c0;margin-bottom:.4rem}
+  .form-group input,.form-group textarea{width:100%;padding:.8rem 1rem;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(10,14,20,.6);color:#eef2f6;font-family:inherit;font-size:.95rem;transition:.2s;outline:none}
+  .form-group input:focus,.form-group textarea:focus{border-color:#40b4ff;box-shadow:0 0 0 3px rgba(64,180,255,.1)}
+  .form-group textarea{min-height:100px;resize:vertical}
+  .link-row{display:grid;grid-template-columns:1fr 2fr .8fr auto;gap:.6rem;align-items:center;margin-bottom:.6rem}
+  .link-row input{padding:.6rem .8rem;font-size:.85rem}
+  .btn-remove-link{background:rgba(255,80,80,.15);border:none;color:#ff8a8a;border-radius:12px;padding:.6rem;cursor:pointer;font-size:1rem;transition:.2s}
+  .btn-remove-link:hover{background:rgba(255,80,80,.3)}
+  .form-actions{display:flex;gap:1rem;margin-top:2rem;justify-content:flex-end}
+
   .lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:2rem}
   .lightbox.active{display:flex}
   .lightbox img{max-width:92vw;max-height:88vh;border-radius:24px;box-shadow:0 40px 100px rgba(0,0,0,.8);animation:zoomIn .35s cubic-bezier(.23,1,.32,1)}
@@ -142,6 +161,7 @@
     .detail-preview{aspect-ratio:16/10}
     .links-list{grid-template-columns:1fr}
     .topbar{padding:.8rem 1rem}
+    .link-row{grid-template-columns:1fr 1fr}
   }
 </style>
 </head>
@@ -163,8 +183,10 @@
         <div class="search-box">
           <input type="text" id="searchInput" placeholder="搜索资源名称、描述或目录…" autocomplete="off">
         </div>
-        <div style="display:flex;gap:.8rem">
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap">
           <button class="btn btn-outline" id="refreshBtn">⟳ 刷新</button>
+          <button class="btn btn-primary" id="addBtn">+ 新增资源</button>
+          <button class="btn btn-outline" id="publishBtn" title="将当前列表发布到 GitHub（需 config.json 中的 Token）">📤 发布</button>
         </div>
       </div>
       <div id="cardGrid" class="card-grid">
@@ -181,10 +203,30 @@
     <span class="crumb" id="crumb">加载中…</span>
   </div>
   <div class="detail-wrap" id="detailWrap">
-    <div class="state">
-      <div class="spinner"></div>
-      <p>正在加载资源详情…</p>
-    </div>
+    <div class="state"><div class="spinner"></div><p>正在加载资源详情…</p></div>
+  </div>
+</div>
+
+<!-- 模态框 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">新增资源</h2>
+    <form id="resourceForm">
+      <input type="hidden" id="editId" value="">
+      <div class="form-group"><label>名称 *</label><input type="text" id="formName" required placeholder="例如：程序化武器生成系统"></div>
+      <div class="form-group"><label>描述</label><textarea id="formDesc" placeholder="详细描述…"></textarea></div>
+      <div class="form-group"><label>下载目录（可选）</label><input type="text" id="formDownloadDir" placeholder="例如：assets/weapons"></div>
+      <div class="form-group"><label>预览媒体 URL（图片或视频）</label><input type="text" id="formPreview" placeholder="https://…"></div>
+      <div class="form-group">
+        <label>下载链接</label>
+        <div id="linksContainer"></div>
+        <button type="button" class="btn btn-outline btn-sm" id="addLinkBtn" style="margin-top:.5rem">+ 添加链接</button>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" id="cancelModalBtn">取消</button>
+        <button type="submit" class="btn btn-primary">保存</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -198,15 +240,21 @@
 
 <script>
 /* ==================== 配置 ==================== */
-const RAW_URL = 'https://cdn.jsdelivr.net/gh/zhangjiashu210303/UE-resources@main/assets.json';
+const REPO_OWNER = 'zhangjiashu210303';
+const REPO_NAME  = 'UE-resources';
+const BRANCH     = 'main';
+const FILE_PATH  = 'assets.json';
+// 国内加速读取地址
+const RAW_URL = `https://cdn.jsdelivr.net/gh/${REPO_OWNER}/${REPO_NAME}@${BRANCH}/${FILE_PATH}`;
+// 同目录下的 config.json（存拆段 Token）
+const CONFIG_URL = './config.json';
 
 /* ==================== 全局 ==================== */
 let assets = [];
-let currentMode = 'list';        // 'list' | 'detail'
+let currentMode = 'list';
 let searchQuery = '';
 let isListVisible = false;
 
-/* ==================== 元素 ==================== */
 const listView = document.getElementById('listView');
 const detailView = document.getElementById('detailView');
 const hero = document.getElementById('hero');
@@ -214,19 +262,78 @@ const listSection = document.getElementById('listSection');
 const cardGrid = document.getElementById('cardGrid');
 const searchInput = document.getElementById('searchInput');
 const refreshBtn = document.getElementById('refreshBtn');
+const addBtn = document.getElementById('addBtn');
+const publishBtn = document.getElementById('publishBtn');
 const detailWrap = document.getElementById('detailWrap');
 const crumb = document.getElementById('crumb');
+const modalOverlay = document.getElementById('modalOverlay');
+const modalTitle = document.getElementById('modalTitle');
+const resourceForm = document.getElementById('resourceForm');
+const editIdInput = document.getElementById('editId');
+const formName = document.getElementById('formName');
+const formDesc = document.getElementById('formDesc');
+const formDownloadDir = document.getElementById('formDownloadDir');
+const formPreview = document.getElementById('formPreview');
+const linksContainer = document.getElementById('linksContainer');
+const addLinkBtn = document.getElementById('addLinkBtn');
+const cancelModalBtn = document.getElementById('cancelModalBtn');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 const toast = document.getElementById('toast');
 
+/* ==================== Token：config.json 拆段 + localStorage 降级 ==================== */
+let _configCache = null;
+
+async function loadConfigToken() {
+  if (_configCache !== null) return _configCache;
+  try {
+    const url = CONFIG_URL + '?v=' + Date.now();   // 绕过 GitHub Pages 缓存
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const cfg = await res.json();
+    const p = cfg && cfg.github_token_parts;
+    if (!p || !p.a || !p.b || !p.c) {
+      throw new Error('config.json 缺少 github_token_parts.a/b/c');
+    }
+    const token = String(p.a) + String(p.b) + String(p.c);
+    _configCache = token;
+    console.log('✅ Token 已从 config.json 读取');
+    return token;
+  } catch (err) {
+    console.warn('读取 config.json 失败:', err);
+    _configCache = '';
+    return '';
+  }
+}
+
+async function getToken() {
+  // 1) 优先 config.json
+  const cfgToken = await loadConfigToken();
+  if (cfgToken) return cfgToken;
+  // 2) 降级到 localStorage（?token= 存过的）
+  return localStorage.getItem('gh_token') || '';
+}
+
+// 首次用 ?token= 访问时存进 localStorage，作为 config.json 的备用
+(function saveTokenFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const t = params.get('token');
+  if (t) {
+    localStorage.setItem('gh_token', t);
+    params.delete('token');
+    const qs = params.toString();
+    const clean = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+    if (window.history.replaceState) window.history.replaceState({}, '', clean);
+  }
+})();
+
 /* ==================== 工具 ==================== */
-function showToast(msg, duration = 2600) {
+function showToast(msg, d = 2600) {
   toast.textContent = msg;
   toast.classList.add('show');
   clearTimeout(window._tt);
-  window._tt = setTimeout(() => toast.classList.remove('show'), duration);
+  window._tt = setTimeout(() => toast.classList.remove('show'), d);
 }
 function escapeHtml(s) {
   if (!s) return '';
@@ -250,39 +357,29 @@ function linkIconEmoji(name) {
   return '🔗';
 }
 
-/* ==================== 数据加载 ==================== */
+/* ==================== 读取 assets.json ==================== */
 async function loadAssets() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(RAW_URL, { cache: 'no-cache' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const res = await fetch(RAW_URL, { cache: 'no-cache', signal: controller.signal });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
     const data = await res.json();
     if (!Array.isArray(data)) throw new Error('JSON 根节点不是数组');
     assets = data;
-    return true;
+    return { ok: true };
   } catch (err) {
+    clearTimeout(timer);
     console.error('加载失败:', err);
     assets = generatePreviewAssets();
-    return false;
+    return { ok: false, error: err.message };
   }
 }
 
 function generatePreviewAssets() {
   const names = ['程序化武器生成系统 PWAS','可定制图标包 · 通用','Ultra Dynasty Sky 9.7','废弃地铁站场景包','军事基地场景包','Blockout Tools 关卡原型','BODYCAM FPS KIT V4','专业图标包 Pro Icon Pack','轴心点工具 Pivot Tool','武器定制系统','高级粒子特效包','动态天空系统'];
   const descs = ['基于蓝图的全程序化武器动画框架，支持后坐力、摇摆、瞄准等实时生成。','包含100个独特图标和32个可自定义按钮，平色或渐变选项。','高品质动态天空，包含云层、体积光和天气系统。','废弃地铁站完整场景，包含道具、材质和蓝图。','军事基地场景包，包含建筑、载具和掩体。','轻量级关卡遮挡工具，快速灰盒设计，支持三平面材质。','第一人称视角拍摄套件，模拟执法记录仪效果。','灵活智能的图标工具，适用于物品栏、界面和主菜单。','在虚幻编辑器中修改和烘烤网格枢轴点，27种预设。','完整的武器定制系统，支持配件、皮肤和模块化。','高级Niagara粒子特效合集，包含爆炸、烟雾、魔法等。','动态天空系统，支持昼夜循环和体积云。'];
-  const links = [
-    [{name:'百度网盘',url:'https://pan.baidu.com/s/1HshiVxHykOd2FINSqknYMw',code:'Bdqn'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/s/1UaT1rzUh8eIPBvhl_3Rqmg',code:'bwoo'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/s/1DzvRBOgeiq8KcoWTeqpBdA',code:'x91e'}],
-    [{name:'夸克网盘',url:'https://pan.quark.cn/s/d50b7e6976af'}],
-    [{name:'夸克网盘',url:'https://pan.quark.cn/s/c920bf0db0e2'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/wap/init?surl=dg4IHvX5WM7QWuprDIFtyg',code:'znuk'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/wap/init?surl=v83osfX5pQYUPZr7iELTJQ',code:'d9hz'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/wap/init?surl=2O1xmX4Nw1Ge09e2-sbp2w',code:'zsnr'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/share/init?surl=ULkV8SRj66mf7WlRpdnZVg',code:'ncb6'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/s/1SJGC8DFTQOBHP7H1xum74A',code:'sqxU'}],
-    [{name:'百度网盘',url:'https://pan.baidu.com/s/1example',code:'exmp'}],
-    [{name:'夸克网盘',url:'https://pan.quark.cn/s/example'}]
-  ];
   const arr = [];
   for (let i = 0; i < 12; i++) {
     const c = document.createElement('canvas');
@@ -306,7 +403,7 @@ function generatePreviewAssets() {
       name: names[i] || ('资源 ' + (i+1)),
       desc: descs[i] || '预览示例',
       preview: c.toDataURL('image/png'),
-      links: links[i] || [{name:'示例网盘',url:'#',code:'demo'}]
+      links: [{ name: '示例网盘', url: '#', code: 'demo' }]
     });
   }
   return arr;
@@ -314,21 +411,13 @@ function generatePreviewAssets() {
 
 /* ==================== 列表渲染 ==================== */
 function renderList() {
-  if (!assets.length) {
-    cardGrid.innerHTML = '<div class="loading-state"><p>暂无资源</p></div>';
-    return;
-  }
+  if (!assets.length) { cardGrid.innerHTML = '<div class="loading-state"><p>暂无资源</p></div>'; return; }
   const q = searchQuery.toLowerCase().trim();
   const filtered = assets.filter(a => {
     if (!q) return true;
-    return (a.name||'').toLowerCase().includes(q) ||
-           (a.desc||'').toLowerCase().includes(q) ||
-           (a.downloadDir||'').toLowerCase().includes(q);
+    return (a.name||'').toLowerCase().includes(q) || (a.desc||'').toLowerCase().includes(q) || (a.downloadDir||'').toLowerCase().includes(q);
   });
-  if (!filtered.length) {
-    cardGrid.innerHTML = '<div class="loading-state"><p>没有匹配的资源</p></div>';
-    return;
-  }
+  if (!filtered.length) { cardGrid.innerHTML = '<div class="loading-state"><p>没有匹配的资源</p></div>'; return; }
   cardGrid.innerHTML = filtered.map((asset, index) => {
     const previewUrl = asset.preview || '';
     const isVideo = /\.(mp4|webm|mov|avi)$/i.test(previewUrl);
@@ -352,129 +441,169 @@ function renderList() {
           <p class="card-desc">${escapeHtml(asset.desc || '暂无描述')}</p>
           <div class="card-actions">
             ${linkButtons || '<span style="color:#4a5a6a;font-size:.8rem;">暂无链接</span>'}
-            <a href="${detailUrl}" class="detail-btn">详情 →</a>
+            <div style="display:flex;gap:.3rem;margin-left:auto">
+              <button class="icon-btn edit-btn" data-id="${escapeHtml(asset.id)}" title="编辑">✎</button>
+              <button class="icon-btn delete-btn" data-id="${escapeHtml(asset.id)}" title="删除">🗑</button>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
+
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const a = assets.find(x => String(x.id) === btn.dataset.id);
+      if (a) openModal(a);
+    });
+  });
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!confirm('确定删除这个资源？')) return;
+      assets = assets.filter(x => String(x.id) !== btn.dataset.id);
+      renderList();
+      showToast('已删除（本地），点「发布」同步到 GitHub');
+    });
+  });
 }
 
 /* ==================== 详情渲染 ==================== */
 function renderDetail(asset) {
   crumb.textContent = asset.name || asset.id;
   document.title = (asset.name || 'UE 资源') + ' · 详情';
-
   const previewUrl = asset.preview || '';
   const isVideo = /\.(mp4|webm|mov|avi)$/i.test(previewUrl);
-
   let previewHtml;
   if (previewUrl && isVideo) {
-    previewHtml = `
-      <div class="detail-preview" style="cursor:pointer" onclick="window.open('${escapeHtml(previewUrl)}','_blank')">
-        <video src="${escapeHtml(previewUrl)}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>
-        <span class="badge">🎬 视频预览</span>
-        <span class="zoom-hint">点击播放 ↗</span>
-      </div>`;
+    previewHtml = `<div class="detail-preview" style="cursor:pointer" onclick="window.open('${escapeHtml(previewUrl)}','_blank')"><video src="${escapeHtml(previewUrl)}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video><span class="badge">🎬 视频预览</span><span class="zoom-hint">点击播放 ↗</span></div>`;
   } else if (previewUrl) {
-    previewHtml = `
-      <div class="detail-preview" id="previewBox">
-        <img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(asset.name)}" loading="lazy">
-        <span class="zoom-hint">点击放大 🔍</span>
-      </div>`;
+    previewHtml = `<div class="detail-preview" id="previewBox"><img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(asset.name)}" loading="lazy"><span class="zoom-hint">点击放大 🔍</span></div>`;
   } else {
     previewHtml = `<div class="detail-preview" style="cursor:default;display:flex;align-items:center;justify-content:center;color:#4a5a6a;background:#0d1218;">暂无预览图</div>`;
   }
-
   const links = asset.links || [];
-  const linksHtml = links.length
-    ? links.map(link => {
-        const direct = isDirectDownload(link.url);
-        const iconCls = linkIconClass(link.name);
-        const iconEmoji = linkIconEmoji(link.name);
-        const codeHtml = link.code ? `<span class="code-badge">提取码：${escapeHtml(link.code)}</span>` : '';
-        const subText = direct ? '直链下载' : (link.code ? '网盘 · 需要提取码' : '网盘链接');
-        return `
-          <a class="link-card" href="${escapeHtml(link.url)}" target="_blank" rel="noopener" ${direct ? 'download' : ''}>
-            <div class="link-left">
-              <div class="link-icon ${iconCls}">${iconEmoji}</div>
-              <div class="link-text">
-                <div class="link-name">${escapeHtml(link.name || '下载')}</div>
-                <div class="link-sub">${subText}</div>
-                ${codeHtml}
-              </div>
-            </div>
-            <span class="link-go">${direct ? '⬇' : '↗'}</span>
-          </a>`;
-      }).join('')
-    : `<div style="color:#6d7f93;font-size:.9rem;padding:1rem 0;">暂无下载链接</div>`;
-
+  const linksHtml = links.length ? links.map(link => {
+    const direct = isDirectDownload(link.url);
+    const iconCls = linkIconClass(link.name);
+    const iconEmoji = linkIconEmoji(link.name);
+    const codeHtml = link.code ? `<span class="code-badge">提取码：${escapeHtml(link.code)}</span>` : '';
+    const subText = direct ? '直链下载' : (link.code ? '网盘 · 需要提取码' : '网盘链接');
+    return `<a class="link-card" href="${escapeHtml(link.url)}" target="_blank" rel="noopener" ${direct ? 'download' : ''}><div class="link-left"><div class="link-icon ${iconCls}">${iconEmoji}</div><div class="link-text"><div class="link-name">${escapeHtml(link.name || '下载')}</div><div class="link-sub">${subText}</div>${codeHtml}</div></div><span class="link-go">${direct ? '⬇' : '↗'}</span></a>`;
+  }).join('') : `<div style="color:#6d7f93;font-size:.9rem;padding:1rem 0;">暂无下载链接</div>`;
   const metaChips = [];
   if (asset.id) metaChips.push(`<span class="meta-chip">ID：<code>${escapeHtml(asset.id)}</code></span>`);
   if (asset.downloadDir) metaChips.push(`<span class="meta-chip">目录：<code>${escapeHtml(asset.downloadDir)}</code></span>`);
   metaChips.push(`<span class="meta-chip">${links.length} 个下载链接</span>`);
-
-  detailWrap.innerHTML = `
-    <article class="detail-card">
-      ${previewHtml}
-      <div class="detail-body">
-        <span class="detail-id">UE RESOURCE · ${escapeHtml(asset.id || 'N/A')}</span>
-        <h1 class="detail-title">${escapeHtml(asset.name)}</h1>
-        <p class="detail-desc">${escapeHtml(asset.desc || '暂无描述')}</p>
-        <div class="detail-meta">${metaChips.join('')}</div>
-        <div class="links-section">
-          <h3>下载链接</h3>
-          <div class="links-list">${linksHtml}</div>
-        </div>
-      </div>
-    </article>
-  `;
-
-  const previewBox = document.getElementById('previewBox');
-  if (previewBox) {
-    previewBox.addEventListener('click', () => openLightbox(previewUrl));
-  }
+  detailWrap.innerHTML = `<article class="detail-card">${previewHtml}<div class="detail-body"><span class="detail-id">UE RESOURCE · ${escapeHtml(asset.id || 'N/A')}</span><h1 class="detail-title">${escapeHtml(asset.name)}</h1><p class="detail-desc">${escapeHtml(asset.desc || '暂无描述')}</p><div class="detail-meta">${metaChips.join('')}</div><div class="links-section"><h3>下载链接</h3><div class="links-list">${linksHtml}</div></div></div></article>`;
+  const box = document.getElementById('previewBox');
+  if (box) box.addEventListener('click', () => openLightbox(previewUrl));
 }
-
 function renderDetailError(title, message) {
   crumb.textContent = title;
   document.title = title + ' · UE 资源';
-  detailWrap.innerHTML = `
-    <div class="state" style="padding-top:4rem">
-      <div style="font-size:3rem;margin-bottom:1rem;">🧭</div>
-      <h2>${escapeHtml(title)}</h2>
-      <p>${escapeHtml(message)}</p>
-      <a class="back-btn" href="./" style="margin-top:.5rem;">← 返回资源列表</a>
-    </div>
-  `;
+  detailWrap.innerHTML = `<div class="state" style="padding-top:4rem"><div style="font-size:3rem;margin-bottom:1rem">🧭</div><h2>${escapeHtml(title)}</h2><p>${escapeHtml(message)}</p><a class="back-btn" href="./" style="margin-top:.5rem">← 返回资源列表</a></div>`;
 }
 
 /* ==================== 灯箱 ==================== */
-function openLightbox(url) {
-  if (!url) return;
-  lightboxImg.src = url;
-  lightbox.classList.add('active');
-}
+function openLightbox(url) { if (!url) return; lightboxImg.src = url; lightbox.classList.add('active'); }
 lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
 lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('active'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') lightbox.classList.remove('active'); });
 
-/* ==================== 滚动切换（仅列表模式） ==================== */
+/* ==================== 模态框 ==================== */
+function createLinkRow(name = '', url = '', code = '') {
+  const row = document.createElement('div');
+  row.className = 'link-row';
+  row.innerHTML = `<input type="text" class="link-name" placeholder="网盘名称" value="${escapeHtml(name)}"><input type="text" class="link-url" placeholder="链接地址" value="${escapeHtml(url)}"><input type="text" class="link-code" placeholder="提取码" value="${escapeHtml(code)}"><button type="button" class="btn-remove-link" title="删除">✕</button>`;
+  row.querySelector('.btn-remove-link').addEventListener('click', () => row.remove());
+  return row;
+}
+function openModal(resource = null) {
+  linksContainer.innerHTML = '';
+  if (resource) {
+    modalTitle.textContent = '编辑资源';
+    editIdInput.value = resource.id || '';
+    formName.value = resource.name || '';
+    formDesc.value = resource.desc || '';
+    formDownloadDir.value = resource.downloadDir || '';
+    formPreview.value = resource.preview || '';
+    (resource.links || []).forEach(l => linksContainer.appendChild(createLinkRow(l.name, l.url, l.code || '')));
+    if (!(resource.links || []).length) linksContainer.appendChild(createLinkRow());
+  } else {
+    modalTitle.textContent = '新增资源';
+    editIdInput.value = '';
+    formName.value = ''; formDesc.value = ''; formDownloadDir.value = ''; formPreview.value = '';
+    linksContainer.appendChild(createLinkRow());
+  }
+  modalOverlay.classList.add('active');
+  formName.focus();
+}
+function closeModal() { modalOverlay.classList.remove('active'); }
+function collectFormData() {
+  const id = editIdInput.value || String(Date.now());
+  const name = formName.value.trim();
+  if (!name) { showToast('请填写资源名称'); return null; }
+  const links = [];
+  linksContainer.querySelectorAll('.link-row').forEach(row => {
+    const n = row.querySelector('.link-name').value.trim();
+    const u = row.querySelector('.link-url').value.trim();
+    const c = row.querySelector('.link-code').value.trim();
+    if (n && u) links.push({ name: n, url: u, ...(c ? { code: c } : {}) });
+  });
+  return { id, name, desc: formDesc.value.trim(), downloadDir: formDownloadDir.value.trim() || undefined, preview: formPreview.value.trim() || undefined, links };
+}
+
+/* ==================== 发布到 GitHub ==================== */
+async function publishToGitHub() {
+  let token = await getToken();
+
+  if (!token) {
+    token = prompt('config.json 读取失败，请手动输入 GitHub Token（Contents: Read and write）：');
+    if (!token) return;
+    localStorage.setItem('gh_token', token);
+  }
+
+  if (!confirm('确定将当前资源列表发布到 GitHub 吗？')) return;
+
+  const api = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+  try {
+    const getRes = await fetch(api + `?ref=${BRANCH}`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!getRes.ok) {
+      if (getRes.status === 401 || getRes.status === 403) {
+        localStorage.removeItem('gh_token');
+        _configCache = null;
+        throw new Error('Token 无效或权限不足（需要 Contents: Read and write）。已清除缓存，请检查 config.json 或重新输入。');
+      }
+      throw new Error(`获取文件信息失败: HTTP ${getRes.status}`);
+    }
+    const info = await getRes.json();
+    const content = JSON.stringify(assets, null, 2);
+    const b64 = btoa(unescape(encodeURIComponent(content)));
+    const putRes = await fetch(api, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '📦 更新资源列表', content: b64, sha: info.sha, branch: BRANCH })
+    });
+    if (!putRes.ok) throw new Error(`提交失败: HTTP ${putRes.status}`);
+    showToast('✅ 已发布到 GitHub');
+  } catch (err) {
+    console.error(err);
+    showToast(`❌ 发布失败：${err.message}`, 5000);
+  }
+}
+
+/* ==================== 滚动切换 ==================== */
 let ticking = false;
 window.addEventListener('scroll', () => {
   if (currentMode !== 'list') return;
   if (!ticking) {
     requestAnimationFrame(() => {
-      const y = window.scrollY;
-      const hh = hero.offsetHeight;
+      const y = window.scrollY, hh = hero.offsetHeight;
       if (y > hh * 0.1 && !isListVisible) {
-        hero.classList.add('hidden');
-        listSection.classList.add('visible');
-        isListVisible = true;
+        hero.classList.add('hidden'); listSection.classList.add('visible'); isListVisible = true;
       } else if (y < hh * 0.1 && isListVisible) {
-        hero.classList.remove('hidden');
-        listSection.classList.remove('visible');
-        isListVisible = false;
+        hero.classList.remove('hidden'); listSection.classList.remove('visible'); isListVisible = false;
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
       ticking = false;
@@ -486,43 +615,49 @@ window.addEventListener('scroll', () => {
 /* ==================== 事件 ==================== */
 searchInput.addEventListener('input', e => { searchQuery = e.target.value; renderList(); });
 refreshBtn.addEventListener('click', async () => {
-  cardGrid.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>正在从 GitHub 加载资源…</p></div>';
-  const ok = await loadAssets();
+  cardGrid.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>正在加载资源…</p></div>';
+  _configCache = null; // 刷新时也重读 config.json
+  const r = await loadAssets();
   renderList();
-  showToast(ok ? `✅ 已加载 ${assets.length} 个资源` : '⚠️ 加载失败，显示预览示例');
+  showToast(r.ok ? `✅ 已加载 ${assets.length} 个资源` : `⚠️ 加载失败：${r.error}`);
+});
+addBtn.addEventListener('click', () => openModal(null));
+publishBtn.addEventListener('click', publishToGitHub);
+cancelModalBtn.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+addLinkBtn.addEventListener('click', () => linksContainer.appendChild(createLinkRow()));
+resourceForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const data = collectFormData();
+  if (!data) return;
+  const idx = assets.findIndex(a => String(a.id) === String(data.id));
+  if (idx !== -1) { assets[idx] = data; showToast('✅ 已更新（本地），点「发布」同步'); }
+  else { assets.push(data); showToast('✅ 已新增（本地），点「发布」同步'); }
+  closeModal();
+  renderList();
 });
 
 /* ==================== 入口 ==================== */
-function getIdFromUrl() {
-  return new URLSearchParams(window.location.search).get('id') || null;
-}
+function getIdFromUrl() { return new URLSearchParams(window.location.search).get('id') || null; }
 
 (async function init() {
   const id = getIdFromUrl();
-  const ok = await loadAssets();
+  const r = await loadAssets();
 
   if (id) {
-    /* 详情模式 */
     currentMode = 'detail';
-    document.body.style.overflow = '';
     listView.classList.remove('active');
     detailView.classList.add('active');
     window.scrollTo(0, 0);
-
     const asset = assets.find(a => String(a.id) === String(id));
-    if (!asset) {
-      renderDetailError('资源不存在', `在 assets.json 中找不到 ID 为「${id}」的资源，可能已被删除或 ID 有误。`);
-    } else {
-      renderDetail(asset);
-    }
+    if (!asset) renderDetailError('资源不存在', `找不到 ID 为「${id}」的资源。`);
+    else renderDetail(asset);
   } else {
-    /* 列表模式 */
     currentMode = 'list';
     detailView.classList.remove('active');
     listView.classList.add('active');
-    document.title = 'UE 资源中心 · 极光下载站';
-
-    if (!ok) showToast('⚠️ 加载失败，显示预览示例');
+    document.title = 'UE 资源中心';
+    if (!r.ok) showToast(`⚠️ 加载失败：${r.error}（已显示预览示例）`, 5000);
     renderList();
     window.scrollTo(0, 0);
     isListVisible = false;
