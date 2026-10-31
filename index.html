@@ -30,8 +30,9 @@
   .hero .hint span{display:inline-block;width:8px;height:8px;border-radius:50%;background:#40b4ff;box-shadow:0 0 12px #40b4ff}
   @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 
-  .list-section{position:relative;min-height:100vh;padding:4rem 1.5rem 6rem;margin-top:100vh;z-index:20;transition:margin-top .75s cubic-bezier(.23,1,.32,1)}
-  .list-section.visible{margin-top:0}
+  body.list-mode{overflow:hidden}
+  .list-section{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;padding:4rem 1.5rem 6rem;z-index:20;transform:translateY(105%);transition:transform .75s cubic-bezier(.23,1,.32,1);will-change:transform;-webkit-overflow-scrolling:touch}
+  .list-section.visible{transform:translateY(0)}
   .container{max-width:1400px;margin:0 auto}
 
   .toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:3rem;padding:.5rem 0}
