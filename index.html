@@ -594,44 +594,65 @@ async function publishToGitHub() {
 }
 
 /* ==================== 滚动切换 ==================== */
-const ENTER_THRESHOLD = 0.1;  // 向下滚过 hero 高度的 10% → 进入列表
-const BACK_THRESHOLD  = 2;    // 向上滚到距顶 ≤2px（真正滑到头）→ 回到 hero
+let isAnimating = false;   // 切换过程中锁住，避免重复触发
 
-let ticking = false;
-let lastScrollY = window.scrollY;
-let switchLock = 0;           // 切换后短暂锁定，避免布局高度变化引起的抖动
+// 进入列表：收起 Hero、显示列表，并自动滚到列表顶部，到位后停住
+function enterList() {
+  if (isAnimating || isListVisible) return;
+  isAnimating = true;
+  hero.classList.add('hidden');
+  listSection.classList.add('visible');
+  isListVisible = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });   // 自动滚到顶头
+  setTimeout(() => { isAnimating = false; }, 600);
+}
 
+// 回到 Hero：显示 Hero、隐藏列表，滚到顶部
+function exitList() {
+  if (isAnimating || !isListVisible) return;
+  isAnimating = true;
+  hero.classList.remove('hidden');
+  listSection.classList.remove('visible');
+  isListVisible = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => { isAnimating = false; }, 600);
+}
+
+/* 向下滚：超过阈值 → 进入列表并自动定位到顶部 */
 window.addEventListener('scroll', () => {
-  if (currentMode !== 'list') return;
-  if (ticking) return;
-  ticking = true;
+  if (currentMode !== 'list' || isAnimating) return;
+  if (!isListVisible && window.scrollY > hero.offsetHeight * 0.1) {
+    enterList();
+  }
+}, { passive: true });
 
-  requestAnimationFrame(() => {
-    ticking = false;
+/* 滚轮：Hero 状态下向下 → 进入列表；列表顶部向上滑一点点 → 回 Hero */
+window.addEventListener('wheel', (e) => {
+  if (currentMode !== 'list' || isAnimating) return;
+  if (!isListVisible) {
+    if (e.deltaY > 0) enterList();
+  } else {
+    // 已经在列表顶部，再往上滑一点点就回 Hero
+    if (window.scrollY <= 5 && e.deltaY < 0) exitList();
+  }
+}, { passive: true });
 
-    const y  = window.scrollY;
-    const hh = hero.offsetHeight;
-    const goingUp = y < lastScrollY;
-    lastScrollY = y;
+/* 移动端触摸：手指上滑进入列表；列表顶部手指下拉一点点 → 回 Hero */
+let touchStartY = 0;
+window.addEventListener('touchstart', (e) => {
+  if (currentMode !== 'list' || isAnimating) return;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
 
-    if (performance.now() < switchLock) return;
-
-    // 向下滚过阈值 → 收起 Hero，显示列表
-    if (y > hh * ENTER_THRESHOLD && !isListVisible) {
-      hero.classList.add('hidden');
-      listSection.classList.add('visible');
-      isListVisible = true;
-      switchLock = performance.now() + 450;
-    }
-    // 向上滚到真正的顶部（滑到头）→ 恢复 Hero
-    else if (y <= BACK_THRESHOLD && goingUp && isListVisible) {
-      hero.classList.remove('hidden');
-      listSection.classList.remove('visible');
-      isListVisible = false;
-      switchLock = performance.now() + 450;
-    }
-  });
-});
+window.addEventListener('touchmove', (e) => {
+  if (currentMode !== 'list' || isAnimating) return;
+  const deltaY = e.touches[0].clientY - touchStartY;   // 正数=手指往下拉
+  if (!isListVisible) {
+    if (deltaY < -20) enterList();                    // 手指上滑 → 进列表
+  } else {
+    if (window.scrollY <= 5 && deltaY > 30) exitList(); // 顶部下拉一点点 → 回 Hero
+  }
+}, { passive: true });
 
 /* ==================== 事件 ==================== */
 searchInput.addEventListener('input', e => { searchQuery = e.target.value; renderList(); });
