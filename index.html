@@ -594,22 +594,43 @@ async function publishToGitHub() {
 }
 
 /* ==================== 滚动切换 ==================== */
+const ENTER_THRESHOLD = 0.1;  // 向下滚过 hero 高度的 10% → 进入列表
+const BACK_THRESHOLD  = 2;    // 向上滚到距顶 ≤2px（真正滑到头）→ 回到 hero
+
 let ticking = false;
+let lastScrollY = window.scrollY;
+let switchLock = 0;           // 切换后短暂锁定，避免布局高度变化引起的抖动
+
 window.addEventListener('scroll', () => {
   if (currentMode !== 'list') return;
-  if (!ticking) {
-    requestAnimationFrame(() => {
-      const y = window.scrollY, hh = hero.offsetHeight;
-      if (y > hh * 0.1 && !isListVisible) {
-        hero.classList.add('hidden'); listSection.classList.add('visible'); isListVisible = true;
-      } else if (y < hh * 0.1 && isListVisible) {
-        hero.classList.remove('hidden'); listSection.classList.remove('visible'); isListVisible = false;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      ticking = false;
-    });
-    ticking = true;
-  }
+  if (ticking) return;
+  ticking = true;
+
+  requestAnimationFrame(() => {
+    ticking = false;
+
+    const y  = window.scrollY;
+    const hh = hero.offsetHeight;
+    const goingUp = y < lastScrollY;
+    lastScrollY = y;
+
+    if (performance.now() < switchLock) return;
+
+    // 向下滚过阈值 → 收起 Hero，显示列表
+    if (y > hh * ENTER_THRESHOLD && !isListVisible) {
+      hero.classList.add('hidden');
+      listSection.classList.add('visible');
+      isListVisible = true;
+      switchLock = performance.now() + 450;
+    }
+    // 向上滚到真正的顶部（滑到头）→ 恢复 Hero
+    else if (y <= BACK_THRESHOLD && goingUp && isListVisible) {
+      hero.classList.remove('hidden');
+      listSection.classList.remove('visible');
+      isListVisible = false;
+      switchLock = performance.now() + 450;
+    }
+  });
 });
 
 /* ==================== 事件 ==================== */
