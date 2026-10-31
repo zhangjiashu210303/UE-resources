@@ -30,6 +30,7 @@
   .hero .hint span{display:inline-block;width:8px;height:8px;border-radius:50%;background:#40b4ff;box-shadow:0 0 12px #40b4ff}
   @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 
+  /* 列表页独立滚动容器：body 不滚动，彻底避免 scrollY 抖动 */
   body.list-mode{overflow:hidden}
   .list-section{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;padding:4rem 1.5rem 6rem;z-index:20;transform:translateY(105%);transition:transform .75s cubic-bezier(.23,1,.32,1);will-change:transform;-webkit-overflow-scrolling:touch}
   .list-section.visible{transform:translateY(0)}
@@ -594,52 +595,48 @@ async function publishToGitHub() {
   }
 }
 
-
-/* ==================== 滚动切换 ==================== */
-const ENTER_DELTA = 10;      // 滚轮/触摸触发阈值（px）
-let isAnimating = false;     // 切换动画期间锁定
+/* ==================== 滚动切换（独立滚动容器，无 scrollY 抖动） ==================== */
+const SWITCH_MS = 780;        // 与 0.75s 动画对齐 + 缓冲
+const TOUCH_THRESHOLD = 10;   // 触摸/滚轮触发阈值（px）
+let isAnimating = false;
 
 function enterList() {
   if (isAnimating || isListVisible) return;
   isAnimating = true;
+  isListVisible = true;
+  document.body.classList.add('list-mode');   // body 停止滚动，列表用自身 scrollTop
   hero.classList.add('hidden');
   listSection.classList.add('visible');
-  isListVisible = true;
-  window.scrollTo(0, 0);     // 立即回到列表顶部（toolbar 贴顶）
-  setTimeout(() => { isAnimating = false; }, 780);  // 过渡 0.75s + 缓冲
+  listSection.scrollTop = 0;                  // 一进列表精确停在顶部
+  setTimeout(() => { isAnimating = false; }, SWITCH_MS);
 }
 
 function exitList() {
   if (isAnimating || !isListVisible) return;
   isAnimating = true;
+  isListVisible = false;
   hero.classList.remove('hidden');
   listSection.classList.remove('visible');
-  isListVisible = false;
-  window.scrollTo(0, 0);
-  setTimeout(() => { isAnimating = false; }, 780);
+  listSection.scrollTop = 0;
+  setTimeout(() => {
+    isAnimating = false;
+    document.body.classList.remove('list-mode');
+  }, SWITCH_MS);
 }
 
-/* scroll 兜底 + 动画期间锁顶（实现"停住"） */
-window.addEventListener('scroll', () => {
-  if (currentMode !== 'list') return;
-  if (isAnimating) {
-    if (window.scrollY !== 0) window.scrollTo(0, 0);  // 强制回顶
-    return;
-  }
-  if (!isListVisible && window.scrollY > 10) enterList();
-}, { passive: true });
-
-/* 桌面滚轮 */
+/* 桌面：滚轮 */
 window.addEventListener('wheel', (e) => {
   if (currentMode !== 'list' || isAnimating) return;
+  const dy = e.deltaY;
+  if (Math.abs(dy) < 1) return;
   if (!isListVisible) {
-    if (e.deltaY > 0) enterList();                    // Hero 下滚 → 进列表
+    if (dy > 0) enterList();                            // Hero 下滚 → 进列表
   } else {
-    if (window.scrollY <= 0 && e.deltaY < 0) exitList(); // 列表顶端再上滑 → 回 Hero
+    if (listSection.scrollTop <= 0 && dy < 0) exitList(); // 列表顶端再上滑 → 回 Hero
   }
 }, { passive: true });
 
-/* 移动端触摸 */
+/* 移动端：触摸 */
 let touchStartY = 0;
 window.addEventListener('touchstart', (e) => {
   if (currentMode !== 'list' || isAnimating) return;
@@ -648,13 +645,21 @@ window.addEventListener('touchstart', (e) => {
 
 window.addEventListener('touchmove', (e) => {
   if (currentMode !== 'list' || isAnimating) return;
-  const deltaY = e.touches[0].clientY - touchStartY;  // 正=手指下拉
+  const dy = e.touches[0].clientY - touchStartY;        // 正=手指下拉
   if (!isListVisible) {
-    if (deltaY < -ENTER_DELTA) enterList();           // 手指上滑 → 进列表
+    if (dy < -TOUCH_THRESHOLD) enterList();             // 手指上滑 → 进列表
   } else {
-    if (window.scrollY <= 0 && deltaY > ENTER_DELTA) exitList(); // 顶部下拉 → 回 Hero
+    if (listSection.scrollTop <= 0 && dy > TOUCH_THRESHOLD) exitList(); // 顶部下拉 → 回 Hero
   }
 }, { passive: true });
+
+/* 详情页返回时，把 listSection 回滚到顶部 */
+window.addEventListener('pageshow', () => {
+  if (currentMode === 'list') {
+    listSection.scrollTop = 0;
+  }
+});
+
 /* ==================== 事件 ==================== */
 searchInput.addEventListener('input', e => { searchQuery = e.target.value; renderList(); });
 refreshBtn.addEventListener('click', async () => {
@@ -691,6 +696,7 @@ function getIdFromUrl() { return new URLSearchParams(window.location.search).get
     currentMode = 'detail';
     listView.classList.remove('active');
     detailView.classList.add('active');
+    document.body.classList.remove('list-mode');   // 详情页正常 body 滚动
     window.scrollTo(0, 0);
     const asset = assets.find(a => String(a.id) === String(id));
     if (!asset) renderDetailError('资源不存在', `找不到 ID 为「${id}」的资源。`);
@@ -700,9 +706,11 @@ function getIdFromUrl() { return new URLSearchParams(window.location.search).get
     detailView.classList.remove('active');
     listView.classList.add('active');
     document.title = 'UE 资源中心';
+    document.body.classList.add('list-mode');      // 列表页 body 不滚动，由 listSection 自己滚
     if (!r.ok) showToast(`⚠️ 加载失败：${r.error}（已显示预览示例）`, 5000);
     renderList();
     window.scrollTo(0, 0);
+    listSection.scrollTop = 0;
     isListVisible = false;
     hero.classList.remove('hidden');
     listSection.classList.remove('visible');
